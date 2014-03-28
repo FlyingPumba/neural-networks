@@ -5,9 +5,17 @@ class PerceptronSimple():
     """Perceptron Simple"""
     def __init__(self):
         dataset = np.array([[1,2],[1,2]])
-        train_network(dataset)
+        print(dataset.shape)
+        self.train_network(dataset)
 
-    def train_network(dataset, batch=False): 
-        D = np.zeros(datset.shape)
-        print(D.shape)
+    def train_network(dataset, batch=False):
+        D = np.zeros((2,3))
+        #dataset.shape
+        #self.D = np.zeros(dataset.shape)
+        #print(D.shape)
 
+def main():
+    a = PerceptronSimple()
+
+if __name__ == "__main__":
+    main()
