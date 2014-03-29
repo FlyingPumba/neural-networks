@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import data as data
 
 class PerceptronSimple():
     """Perceptron Simple"""
@@ -125,19 +126,14 @@ class PerceptronSimple():
         print "The network output for %s is: %s" % (input, Y)
 
 def main():
-    trainingset = np.array([
-        [[0,0],[0,0]],
-        [[0,1],[1,0]],
-        [[1,0],[1,0]],
-        [[1,1],[1,1]]
-        ])
+    
     # input nodes: 2, output nodes: 2, lRate: 0.2, epsilon: 0.1
-    a = PerceptronSimple(2, 2, 0.2, 0.1, trainingset)
+    a = PerceptronSimple(2, 2, 0.2, 0.1, data.ANDOR.trainingset)
 
-    testset = np.array([[0,0], [0,1], [1,0], [1,1]])
+    
     print "\nTesting the network"
     for i in range(0,4):
-        a.evaluate(testset[i])
+        a.evaluate(data.ANDOR.testset[i])
 
     # print some nice graphics
     #plt.plot(testset)
