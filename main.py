@@ -1,5 +1,5 @@
 import numpy as np
-import scipy as sci
+import matplotlib.pyplot as plt
 
 class PerceptronSimple():
     """Perceptron Simple"""
@@ -30,6 +30,8 @@ class PerceptronSimple():
         cant_epochs = 0
         max_epochs = 1000
 
+        errors_in_each_training = []
+
         while True:
             # begin epoch
             print "The %d epoch has begun \n" % cant_epochs
@@ -58,6 +60,8 @@ class PerceptronSimple():
                 E = Z - Y
                 print "Error is: %s" % E
                 max_error = np.amax(E)
+                errors_in_each_training.append(max_error)
+
                 accumulated_error = accumulated_error + max_error * max_error
 
                 # calculate the delta
@@ -83,6 +87,7 @@ class PerceptronSimple():
                 break
 
         print "Final weight matrix is: \n%s\n" % self.W
+        self.plotErrorThroughLearning(errors_in_each_training)
 
     def activation(self, Y):
         # avoid returning -1
@@ -91,6 +96,17 @@ class PerceptronSimple():
             return 0
         else:
             return aux
+
+    def plotErrorThroughLearning(self, errors_list):
+        answer = ""
+        while (answer != "y") & (answer != "n"):
+            answer = raw_input("Do you wanna see the error throuh learning ? (y/n)")
+
+        if(answer == "y"):
+            plt.plot(errors_list)
+            plt.ylabel("network error")
+            plt.xlabel("pattern number")
+            plt.show()
 
     def evaluate(self, input):
         # create input array
@@ -117,9 +133,16 @@ def main():
         ])
     # input nodes: 2, output nodes: 2, lRate: 0.2, epsilon: 0.1
     a = PerceptronSimple(2, 2, 0.2, 0.1, trainingset)
+
     testset = np.array([[0,0], [0,1], [1,0], [1,1]])
+    print "\nTesting the network"
     for i in range(0,4):
         a.evaluate(testset[i])
+
+    # print some nice graphics
+    #plt.plot(testset)
+    #plt.ylabel("test set")
+    #plt.show()
 
 
 if __name__ == "__main__":
