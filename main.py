@@ -3,19 +3,13 @@ import scipy as sci
 
 class PerceptronSimple():
     """Perceptron Simple"""
-    def __init__(self, cant_input_nodes, cant_output_nodes, learning_rate):
+    def __init__(self, cant_input_nodes, cant_output_nodes, learning_rate, trainingset):
         self.nInput = cant_input_nodes
         self.nOutput = cant_output_nodes
         self.lRate = learning_rate
+        self.dataset = trainingset
 
-        dataset = np.array([
-            [[0,0],[0,0]],
-            [[0,1],[1,0]],
-            [[1,0],[1,0]],
-            [[1,1],[1,1]]
-            ])
-
-        self.train_network(dataset)
+        self.train_network(self.dataset)
 
     def train_network(self, dataset, batch=False):
         print "Data set size is:"
@@ -69,7 +63,7 @@ class PerceptronSimple():
                 transposedX = X.reshape(X.shape+(1,))
                 delta = self.lRate * np.multiply(transposedX, E)
 
-                print delta
+                print "Delta error is: %s" % delta
                 if(batch):
                     self.D = self.D + delta
                 else:
@@ -96,8 +90,34 @@ class PerceptronSimple():
         else:
             return aux
 
+    def evaluate(self, input):
+        # create input array
+        X = np.zeros(self.nInput+1)
+        for j in range(0, self.nInput):
+            X[j] = input[j]
+        X[self.nInput] = -1
+
+        # calculate the network output
+        auxMatrix = np.dot(X,self.W)
+
+        Y = np.zeros(self.nOutput)
+        for j in range(0, self.nOutput):
+            Y[j] = self.activation(auxMatrix[j])
+
+        print "The network output for %s is: %s" % (input, Y)
+
 def main():
-    a = PerceptronSimple(2, 2, 0.2)
+    trainingset = np.array([
+        [[0,0],[0,0]],
+        [[0,1],[1,0]],
+        [[1,0],[1,0]],
+        [[1,1],[1,1]]
+        ])
+    a = PerceptronSimple(2, 2, 0.2, trainingset)
+    testset = np.array([[0,0], [0,1], [1,0], [1,1]])
+    for i in range(0,4):
+        a.evaluate(testset[i])
+
 
 if __name__ == "__main__":
     main()
