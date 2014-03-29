@@ -31,45 +31,62 @@ class PerceptronSimple():
         self.W = np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nOutput))
         print "Initial weight matrix \n %s \n" % self.W
 
-        # begin epoch
-        for i in range(0, cant_patterns):
-            print "Training pattern %d. Input: %s -> Expected output: %s" % (i, dataset[i,0], dataset[i,1])
-            Z = dataset[i,1]
+        cant_epochs = 0
+        max_epochs = 1000
 
-            # create input array
-            X = np.zeros(self.nInput+1)
-            for j in range(0, self.nInput):
-                X[j] = dataset[i,0,j]
-            X[self.nInput] = -1
+        accumulated_error = 0
+        epsilon = 0.5
 
-            # calculate the network output
-            auxMatrix = np.dot(X,self.W)
-            print auxMatrix
+        while True:
+            # begin epoch
+            print "The %d epoch has begun" % cant_epochs
+            for i in range(0, cant_patterns):
+                print "Training pattern %d. Input: %s -> Expected output: %s" % (i, dataset[i,0], dataset[i,1])
+                Z = dataset[i,1]
 
-            Y = np.zeros(self.nOutput)
-            for j in range(0, self.nOutput):
-                Y[j] = self.activation(auxMatrix[j])
+                # create input array
+                X = np.zeros(self.nInput+1)
+                for j in range(0, self.nInput):
+                    X[j] = dataset[i,0,j]
+                X[self.nInput] = -1
 
-            print Y
+                # calculate the network output
+                auxMatrix = np.dot(X,self.W)
+                print auxMatrix
 
-            # calculate the error
-            E = Z - Y
-            print "Error is: %s" % E
+                Y = np.zeros(self.nOutput)
+                for j in range(0, self.nOutput):
+                    Y[j] = self.activation(auxMatrix[j])
 
-            # calculate the delta
-            transposedX = X.reshape(X.shape+(1,))
-            delta = self.lRate * np.multiply(transposedX, E)
+                print Y
 
-            print delta
+                # calculate the error
+                E = Z - Y
+                print "Error is: %s" % E
+                accumulated_error = accumulated_error + (E[0]*E[1])
+
+                # calculate the delta
+                transposedX = X.reshape(X.shape+(1,))
+                delta = self.lRate * np.multiply(transposedX, E)
+
+                print delta
+                if(batch):
+                    self.D = self.D + delta
+                else:
+                    self.W = self.W + delta
+            
             if(batch):
-                self.D = self.D + delta
-            else:
-                self.W = self.W + delta
-        
-        if(batch):
-            self.W = self.W + self.D
+                self.W = self.W + self.D
 
-        print self.W
+            cant_epochs = cant_epochs + 1
+            if(cant_epochs >= max_epochs):
+                print "REACHED MAX EPOCHS"
+                break
+            if(epsilon >= accumulated_error/cant_patterns):
+                print "REACHED BETTER ERROR THAN EPSILON"
+                break
+
+            print "Final weight matrix is: %s" % self.W
 
     def activation(self, Y):
         # avoid returning -1
