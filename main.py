@@ -3,11 +3,13 @@ import scipy as sci
 
 class PerceptronSimple():
     """Perceptron Simple"""
-    def __init__(self, cant_input_nodes, cant_output_nodes, learning_rate, trainingset):
+    def __init__(self, cant_input_nodes, cant_output_nodes, learning_rate, epsilon, trainingset):
         self.nInput = cant_input_nodes
         self.nOutput = cant_output_nodes
         self.lRate = learning_rate
         self.dataset = trainingset
+        self.epsilon = epsilon
+        print self.epsilon
 
         self.train_network(self.dataset)
 
@@ -28,12 +30,11 @@ class PerceptronSimple():
         cant_epochs = 0
         max_epochs = 1000
 
-        accumulated_error = 0
-        epsilon = 0.5
-
         while True:
             # begin epoch
-            print "The %d epoch has begun" % cant_epochs
+            print "The %d epoch has begun \n" % cant_epochs
+            accumulated_error = 0
+
             for i in range(0, cant_patterns):
                 print "Training pattern %d. Input: %s -> Expected output: %s" % (i, dataset[i,0], dataset[i,1])
                 Z = dataset[i,1]
@@ -46,24 +47,25 @@ class PerceptronSimple():
 
                 # calculate the network output
                 auxMatrix = np.dot(X,self.W)
-                print auxMatrix
 
                 Y = np.zeros(self.nOutput)
                 for j in range(0, self.nOutput):
                     Y[j] = self.activation(auxMatrix[j])
 
-                print Y
+                print "Network output is: %s" % Y
 
                 # calculate the error
                 E = Z - Y
                 print "Error is: %s" % E
-                accumulated_error = accumulated_error + (E[0]*E[1])
+                max_error = np.amax(E)
+                accumulated_error = accumulated_error + max_error * max_error
 
                 # calculate the delta
                 transposedX = X.reshape(X.shape+(1,))
                 delta = self.lRate * np.multiply(transposedX, E)
+                print "Delta error is: \n%s\n" % delta
 
-                print "Delta error is: %s" % delta
+                # learn !
                 if(batch):
                     self.D = self.D + delta
                 else:
@@ -74,13 +76,13 @@ class PerceptronSimple():
 
             cant_epochs = cant_epochs + 1
             if(cant_epochs >= max_epochs):
-                print "REACHED MAX EPOCHS"
+                print "REACHED MAX EPOCHS\n"
                 break
-            if(epsilon >= accumulated_error/cant_patterns):
-                print "REACHED BETTER ERROR THAN EPSILON"
+            if(self.epsilon >= accumulated_error/cant_patterns):
+                print "REACHED BETTER ERROR THAN EPSILON\n"
                 break
 
-            print "Final weight matrix is: %s" % self.W
+        print "Final weight matrix is: \n%s\n" % self.W
 
     def activation(self, Y):
         # avoid returning -1
@@ -113,7 +115,8 @@ def main():
         [[1,0],[1,0]],
         [[1,1],[1,1]]
         ])
-    a = PerceptronSimple(2, 2, 0.2, trainingset)
+    # input nodes: 2, output nodes: 2, lRate: 0.2, epsilon: 0.1
+    a = PerceptronSimple(2, 2, 0.2, 0.1, trainingset)
     testset = np.array([[0,0], [0,1], [1,0], [1,1]])
     for i in range(0,4):
         a.evaluate(testset[i])
