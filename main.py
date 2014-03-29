@@ -130,7 +130,6 @@ def main():
     # input nodes: 2, output nodes: 2, lRate: 0.2, epsilon: 0.1
     a = PerceptronSimple(2, 2, 0.2, 0.1, data.ANDOR.trainingset)
 
-    
     print "\nTesting the network"
     for i in range(0,4):
         a.evaluate(data.ANDOR.testset[i])
