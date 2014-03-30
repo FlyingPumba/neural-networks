@@ -10,7 +10,7 @@ class AND():
         [[1,0],[0]],
         [[1,1],[1]]
         ])
-    testset = booleanInput
+    testset = trainingset
 
 class OR():
     trainingset = np.array([
@@ -19,7 +19,7 @@ class OR():
         [[1,0],[1]],
         [[1,1],[1]]
         ])
-    testset = booleanInput
+    testset = trainingset
 
 class ANDOR():
     trainingset = np.array([
@@ -28,7 +28,7 @@ class ANDOR():
         [[1,0],[1,0]],
         [[1,1],[1,1]]
         ])
-    testset = booleanInput
+    testset = trainingset
 
 class XOR():
     trainingset = np.array([
@@ -37,7 +37,7 @@ class XOR():
         [[1,0],[1]],
         [[1,1],[0]]
         ])
-    testset = booleanInput
+    testset = trainingset
 
 class SimpleOCR():
     trainingset = np.asarray([
@@ -68,9 +68,7 @@ class SimpleOCR():
         [l.Y, [1,1,0,0,1]], # Y -> 25
         [l.Z, [1,1,0,1,0]], # Z -> 26
         ])
-    testset = np.asarray([l.A,l.B,l.C,l.D,l.E,l.F,
-        l.G,l.H,l.I,l.J,l.K,l.L,l.M,l.N,l.O,l.P,
-        l.Q,l.R,l.S,l.T,l.U,l.V,l.W,l.X,l.Y,l.Z])
+    testset = trainingset
 
     def getTestSetWithNoise(percentageOfNoise):
         return testset

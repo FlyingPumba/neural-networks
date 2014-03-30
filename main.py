@@ -3,44 +3,27 @@ from perceptronsimple import PerceptronSimple as ps
 
 def networkANDOR(lRate, epsilon):
     a = ps(2, 2, lRate, epsilon, data.ANDOR.trainingset)
-
-    print "\nTesting the network"
-    cant_patterns = data.ANDOR.testset.shape[0]
-    print "%d patterns\n" % cant_patterns
-    for i in range(0,cant_patterns):
-        a.evaluate(data.ANDOR.testset[i])
+    a.testNetwork(data.ANDOR.testset)
 
 def networkAND(lRate, epsilon):
     a = ps(2, 1, lRate, epsilon, data.AND.trainingset)
-
-    print "\nTesting the network"
-    cant_patterns = data.AND.testset.shape[0]
-    print "%d patterns\n" % cant_patterns
-    for i in range(0,cant_patterns):
-        a.evaluate(data.AND.testset[i])
+    a.testNetwork(data.AND.testset)
 
 def networkOR(lRate, epsilon):
     a = ps(2, 1, lRate, epsilon, data.OR.trainingset)
-
-    print "\nTesting the network"
-    cant_patterns = data.OR.testset.shape[0]
-    print "%d patterns\n" % cant_patterns
-    for i in range(0,cant_patterns):
-        a.evaluate(data.OR.testset[i])
+    a.testNetwork(data.OR.testset)
 
 def networkXOR(lRate, epsilon):
     a = ps(2, 1, lRate, epsilon, data.XOR.trainingset)
-
-    print "\nTesting the network"
-    cant_patterns = data.XOR.testset.shape[0]
-    print "%d patterns\n" % cant_patterns
-    for i in range(0,cant_patterns):
-        a.evaluate(data.XOR.testset[i])
+    a.testNetwork(data.XOR.testset)
 
 def networkSimpleOCR(lRate, epsilon):
     a = ps(25, 5, lRate, epsilon, data.SimpleOCR.trainingset)
+    a.testNetwork(data.SimpleOCR.testset)
 
-    print "\nTesting the network"
-    cant_patterns = data.SimpleOCR.testset.shape[0]
-    for i in range(0,cant_patterns):
-        a.evaluate(data.SimpleOCR.testset[i])
+def main():
+    a = ps(25, 5, 0.2, 0.1, data.SimpleOCR.trainingset)
+    a.testNetwork(data.SimpleOCR.testset)
+
+if __name__ == "__main__":
+    main()

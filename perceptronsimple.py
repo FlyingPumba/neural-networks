@@ -48,6 +48,8 @@ class PerceptronSimple():
                 # calculate the error
                 E = Z - Y
                 print "Error is: %s" % E
+                 # XXX: in the following line,
+                 # what happens with the -1 values ? Is this affecting the delta calculation ?
                 max_error = np.amax(E)
                 errors_in_each_training.append(max_error)
 
@@ -126,3 +128,18 @@ class PerceptronSimple():
         X[self.nInput] = -1
 
         return X
+
+    def testNetwork(self, testset):
+        print "\nTesting the network"
+        cant_patterns = testset.shape[0]
+        for i in range(0, cant_patterns):
+            print "Testing pattern %d" % i
+
+            Y = self.evaluate(testset[i,0])
+
+            print "Expected output is: %s" % testset[i,1]
+            Z = testset[i,1]
+
+            # calculate the error
+            E = Z - Y
+            print "Error is: %s\n" % E
