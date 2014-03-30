@@ -70,5 +70,31 @@ class SimpleOCR():
         ])
     testset = trainingset
 
-    def getTestSetWithNoise(percentageOfNoise):
-        return testset
+    @staticmethod
+    def getTestSetWithNoise(noiseRate):
+        cant_patterns = SimpleOCR.trainingset.shape[0]
+        new_testset = []
+        for i in range(0, cant_patterns):
+            # alter the pattern
+            new_testset.append([SimpleOCR.alterPattern(noiseRate, SimpleOCR.trainingset[i,0]), SimpleOCR.trainingset[i,1]])
+        return np.asarray(new_testset)
+
+    @staticmethod
+    def alterPattern(noiseRate, pattern):
+        cant_values = np.size(pattern)
+        new_pattern = np.zeros(pattern.shape)
+
+        for i in range(0,cant_values):
+            s = np.random.uniform(0,1)
+
+            if(s<noiseRate):
+                # alter the value
+                if(pattern[i]==0):
+                    new_pattern[i] = 1
+                else:
+                    new_pattern[i] = 0
+            else:
+                # copy the same value
+                new_pattern[i] = pattern[i]
+
+        return new_pattern
