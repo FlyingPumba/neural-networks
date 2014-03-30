@@ -40,7 +40,7 @@ def networkXOR(lRate, epsilon):
 def networkSimpleOCR(lRate, epsilon):
     a = ps(25, 5, lRate, epsilon, data.SimpleOCR.trainingset)
 
-    #print "\nTesting the network"
-    #cant_patterns = data.XOR.testset.shape[0]
-    #for i in range(0,cant_patterns):
-    #    a.evaluate(data.XOR.testset[i])
+    print "\nTesting the network"
+    cant_patterns = data.SimpleOCR.testset.shape[0]
+    for i in range(0,cant_patterns):
+        a.evaluate(data.SimpleOCR.testset[i])

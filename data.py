@@ -68,3 +68,9 @@ class SimpleOCR():
         [l.Y, [1,1,0,0,1]], # Y -> 25
         [l.Z, [1,1,0,1,0]], # Z -> 26
         ])
+    testset = np.asarray([l.A,l.B,l.C,l.D,l.E,l.F,
+        l.G,l.H,l.I,l.J,l.K,l.L,l.M,l.N,l.O,l.P,
+        l.Q,l.R,l.S,l.T,l.U,l.V,l.W,l.X,l.Y,l.Z])
+
+    def getTestSetWithNoise(percentageOfNoise):
+        return testset
