@@ -39,24 +39,11 @@ class PerceptronSimple():
 
             for i in range(0, cant_patterns):
                 print "Training pattern %d" % i
-                print "Input is: %s" % dataset[i,0]
+
+                Y = self.evaluate(dataset[i,0])
+
                 print "Expected output is: %s" % dataset[i,1]
                 Z = dataset[i,1]
-
-                # create input array
-                X = np.zeros(self.nInput+1)
-                for j in range(0, self.nInput):
-                    X[j] = dataset[i,0][j]
-                X[self.nInput] = -1
-
-                # calculate the network output
-                auxMatrix = np.dot(X,self.W)
-
-                Y = np.zeros(self.nOutput)
-                for j in range(0, self.nOutput):
-                    Y[j] = self.activation(auxMatrix[j])
-
-                print "Network output is: %s" % Y
 
                 # calculate the error
                 E = Z - Y
@@ -67,6 +54,7 @@ class PerceptronSimple():
                 accumulated_error = accumulated_error + max_error * max_error
 
                 # calculate the delta
+                X = self.getInputWithThreshold(dataset[i,0])
                 transposedX = X.reshape(X.shape+(1,))
                 delta = self.lRate * np.multiply(transposedX, E)
                 print "Delta error is: \n%s\n" % delta
@@ -108,7 +96,7 @@ class PerceptronSimple():
     def plotErrorThroughLearning(self, errors_list):
         answer = ""
         while (answer != "y") & (answer != "n"):
-            answer = raw_input("Do you wanna see the error throuh learning ? (y/n) ")
+            answer = raw_input("Do you wanna see the error through learning ? (y/n) ")
 
         if(answer == "y"):
             plt.plot(errors_list)
@@ -117,11 +105,8 @@ class PerceptronSimple():
             plt.show()
 
     def evaluate(self, input):
-        # create input array
-        X = np.zeros(self.nInput+1)
-        for j in range(0, self.nInput):
-            X[j] = input[j]
-        X[self.nInput] = -1
+        print "Input: %s" % input
+        X = self.getInputWithThreshold(input)
 
         # calculate the network output
         auxMatrix = np.dot(X,self.W)
@@ -130,4 +115,14 @@ class PerceptronSimple():
         for j in range(0, self.nOutput):
             Y[j] = self.activation(auxMatrix[j])
 
-        print "The network output for %s is: %s" % (input, Y)
+        print "Output: %s" % Y
+        return Y
+
+    def getInputWithThreshold(self, input):
+        # create input array
+        X = np.zeros(self.nInput+1)
+        for j in range(0, self.nInput):
+            X[j] = input[j]
+        X[self.nInput] = -1
+
+        return X
