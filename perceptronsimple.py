@@ -38,7 +38,9 @@ class PerceptronSimple():
             accumulated_error = 0
 
             for i in range(0, cant_patterns):
-                print "Training pattern %d. Input: %s -> Expected output: %s" % (i, dataset[i,0], dataset[i,1])
+                print "Training pattern %d" % i
+                print "Input is: %s" % dataset[i,0]
+                print "Expected output is: %s" % dataset[i,1]
                 Z = dataset[i,1]
 
                 # create input array
