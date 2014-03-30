@@ -80,10 +80,10 @@ class PerceptronSimple():
 
             cant_epochs = cant_epochs + 1
             if(cant_epochs >= max_epochs):
-                print "REACHED MAX EPOCHS\n"
+                print "REACHED MAX EPOCHS (total epochs = %d)\n" % cant_epochs
                 break
             if(self.epsilon >= accumulated_error/cant_patterns):
-                print "REACHED BETTER ERROR THAN EPSILON\n"
+                print "REACHED BETTER ERROR THAN EPSILON (e = %d)\n" % (accumulated_error/cant_patterns)
                 break
 
         print "Final weight matrix is: \n%s\n" % self.W
