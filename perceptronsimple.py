@@ -10,7 +10,6 @@ class PerceptronSimple():
         self.lRate = learning_rate
         self.dataset = trainingset
         self.epsilon = epsilon
-        print self.epsilon
 
         self.train_network(self.dataset)
 
@@ -45,7 +44,7 @@ class PerceptronSimple():
                 # create input array
                 X = np.zeros(self.nInput+1)
                 for j in range(0, self.nInput):
-                    X[j] = dataset[i,0,j]
+                    X[j] = dataset[i,0][j]
                 X[self.nInput] = -1
 
                 # calculate the network output
@@ -101,7 +100,7 @@ class PerceptronSimple():
     def plotErrorThroughLearning(self, errors_list):
         answer = ""
         while (answer != "y") & (answer != "n"):
-            answer = raw_input("Do you wanna see the error throuh learning ? (y/n)")
+            answer = raw_input("Do you wanna see the error throuh learning ? (y/n) ")
 
         if(answer == "y"):
             plt.plot(errors_list)
