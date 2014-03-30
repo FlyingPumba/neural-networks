@@ -81,7 +81,7 @@ class PerceptronSimple():
 
             if(keep_going == False):
                 print "total epochs = %d\n" % cant_epochs
-                print "last e = %.5f\n" % (accumulated_error/cant_patterns)
+                print "last e = %.10f\n" % (accumulated_error/cant_patterns)
                 break
 
         print "Final weight matrix is: \n%s\n" % self.W
@@ -132,6 +132,8 @@ class PerceptronSimple():
     def testNetwork(self, testset):
         print "\nTesting the network"
         cant_patterns = testset.shape[0]
+        patterns_with_error = 0
+
         for i in range(0, cant_patterns):
             print "Testing pattern %d" % i
 
@@ -143,3 +145,8 @@ class PerceptronSimple():
             # calculate the error
             E = Z - Y
             print "Error is: %s\n" % E
+
+            if(np.size(np.nonzero(E)) != 0):
+                patterns_with_error = patterns_with_error + 1
+
+        print "There were %d errors over %d patterns" % (patterns_with_error, cant_patterns)
