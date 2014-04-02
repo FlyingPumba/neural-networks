@@ -88,12 +88,8 @@ class PerceptronSimple():
         self.plotErrorThroughLearning(errors_in_each_training)
 
     def activation(self, Y):
-        # avoid returning -1
-        aux = np.sign(Y)
-        if(aux == -1):
-            return 0
-        else:
-            return aux
+        # use hiperbolic tangent
+        return np.tanh(Y)
 
     def plotErrorThroughLearning(self, errors_list):
         answer = ""
@@ -113,9 +109,7 @@ class PerceptronSimple():
         # calculate the network output
         auxMatrix = np.dot(X,self.W)
 
-        Y = np.zeros(self.nOutput)
-        for j in range(0, self.nOutput):
-            Y[j] = self.activation(auxMatrix[j])
+        Y = self.activation(auxMatrix)
 
         print "Output: %s" % Y
         return Y
