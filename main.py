@@ -23,7 +23,7 @@ def networkSimpleOCR(lRate, epsilon):
 
 def main():
     #a = ps(25, 5, 0.2, 0.1, data.SimpleOCR.trainingset)
-    a = ps(25, 5, 0.1, 0.08, data.SimpleOCR.trainingset)
+    a = ps(25, 5, 0.2, 0.1, data.SimpleOCR.trainingset)
     a.testNetwork(data.SimpleOCR.testset)
     a.testNetwork(data.SimpleOCR.getTestSetWithNoise(0.02))
 

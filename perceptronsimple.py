@@ -50,10 +50,10 @@ class PerceptronSimple():
                 print "Error is: %s" % E
                  # XXX: in the following line,
                  # what happens with the -1 values ? Is this affecting the delta calculation ?
-                max_error = np.amax(E)
-                errors_in_each_training.append(max_error)
+                pattern_error = np.dot(E, E)
+                errors_in_each_training.append(pattern_error)
 
-                accumulated_error = accumulated_error + max_error * max_error
+                accumulated_error = accumulated_error + pattern_error
 
                 # calculate the delta
                 X = self.getInputWithThreshold(dataset[i,0])
