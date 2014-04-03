@@ -30,7 +30,7 @@ class PerceptronSimple():
         cant_epochs = 0
         max_epochs = 1000
 
-        errors_in_each_training = []
+        self.errors_in_each_training = []
 
         while True:
             # begin epoch
@@ -51,7 +51,7 @@ class PerceptronSimple():
                  # XXX: in the following line,
                  # what happens with the -1 values ? Is this affecting the delta calculation ?
                 pattern_error = np.dot(E, E)
-                errors_in_each_training.append(pattern_error)
+                self.errors_in_each_training.append(pattern_error)
 
                 accumulated_error = accumulated_error + pattern_error
 
@@ -85,7 +85,7 @@ class PerceptronSimple():
                 break
 
         print "Final weight matrix is: \n%s\n" % self.W
-        self.plotErrorThroughLearning(errors_in_each_training)
+        self.plotErrorThroughLearning(self.errors_in_each_training)
 
     def activation(self, Y):
         # use hiperbolic tangent

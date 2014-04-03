@@ -12,22 +12,27 @@ def networkANDOR(lRate, epsilon):
 
 def networkAND(lRate, epsilon):
     a = ps(2, 1, lRate, epsilon, data.AND.trainingset)
+    a.plotErrorThroughLearning(a.errors_in_each_training)
     a.testNetwork(data.AND.testset)
 
 def networkOR(lRate, epsilon):
     a = ps(2, 1, lRate, epsilon, data.OR.trainingset)
+    a.plotErrorThroughLearning(a.errors_in_each_training)
     a.testNetwork(data.OR.testset)
 
 def networkXOR(lRate, epsilon):
     a = ps(2, 1, lRate, epsilon, data.XOR.trainingset)
+    a.plotErrorThroughLearning(a.errors_in_each_training)
     a.testNetwork(data.XOR.testset)
 
 def networkBinaryOCR(lRate, epsilon, testepsilon):
     a = ps(25, 5, lRate, epsilon, data.BinaryOCR.trainingset)
+    a.plotErrorThroughLearning(a.errors_in_each_training)
     a.testNetwork(data.SimpleOCR.testset, testepsilon)
 
 def networkBipolarOCR(lRate, epsilon, testepsilon):
     a = ps(25, 5, lRate, epsilon, data.BipolarOCR.trainingset)
+    a.plotErrorThroughLearning(a.errors_in_each_training)
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
 def main(argv):
@@ -39,11 +44,10 @@ def main(argv):
         
     #a = ps(25, 5, 0.2, 0.1, data.SimpleOCR.trainingset)
     a = ps(25, 5, 0.2, 0.1, data.BipolarOCR.trainingset)
-    print "debug text"
     sys.stdout = original_stdout
+    a.plotErrorThroughLearning(a.errors_in_each_training)
     a.testNetwork(data.BipolarOCR.testset, 0.1)
     a.testNetwork(data.BipolarOCR.getTestSetWithNoise(0.02), 0.1)
-    print "test text"
 
 if __name__ == "__main__":
     main(sys.argv[1:])
