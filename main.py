@@ -1,5 +1,10 @@
 import data as data
 from perceptronsimple import PerceptronSimple as ps
+import sys
+
+class NullDevice():
+    def write(self, s):
+        pass
 
 def networkANDOR(lRate, epsilon):
     a = ps(2, 2, lRate, epsilon, data.ANDOR.trainingset)
@@ -25,11 +30,20 @@ def networkBipolarOCR(lRate, epsilon, testepsilon):
     a = ps(25, 5, lRate, epsilon, data.BipolarOCR.trainingset)
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
-def main():
+def main(argv):
+    original_stdout = sys.stdout
+    if(argv[0] == "-s"):
+        print "Shutting down debug output"
+        print "Training network..."
+        sys.stdout = NullDevice()
+        
     #a = ps(25, 5, 0.2, 0.1, data.SimpleOCR.trainingset)
     a = ps(25, 5, 0.2, 0.1, data.BipolarOCR.trainingset)
+    print "debug text"
+    sys.stdout = original_stdout
     a.testNetwork(data.BipolarOCR.testset, 0.1)
     a.testNetwork(data.BipolarOCR.getTestSetWithNoise(0.02), 0.1)
+    print "test text"
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
