@@ -17,15 +17,19 @@ def networkXOR(lRate, epsilon):
     a = ps(2, 1, lRate, epsilon, data.XOR.trainingset)
     a.testNetwork(data.XOR.testset)
 
-def networkSimpleOCR(lRate, epsilon):
-    a = ps(25, 5, lRate, epsilon, data.SimpleOCR.trainingset)
-    a.testNetwork(data.SimpleOCR.testset)
+def networkBinaryOCR(lRate, epsilon, testepsilon):
+    a = ps(25, 5, lRate, epsilon, data.BinaryOCR.trainingset)
+    a.testNetwork(data.SimpleOCR.testset, testepsilon)
+
+def networkBipolarOCR(lRate, epsilon, testepsilon):
+    a = ps(25, 5, lRate, epsilon, data.BipolarOCR.trainingset)
+    a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
 def main():
     #a = ps(25, 5, 0.2, 0.1, data.SimpleOCR.trainingset)
-    a = ps(25, 5, 0.2, 0.1, data.SimpleOCR.trainingset)
-    a.testNetwork(data.SimpleOCR.testset)
-    a.testNetwork(data.SimpleOCR.getTestSetWithNoise(0.02))
+    a = ps(25, 5, 0.2, 0.1, data.BipolarOCR.trainingset)
+    a.testNetwork(data.BipolarOCR.testset, 0.1)
+    a.testNetwork(data.BipolarOCR.getTestSetWithNoise(0.02), 0.1)
 
 if __name__ == "__main__":
     main()

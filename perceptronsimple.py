@@ -123,7 +123,7 @@ class PerceptronSimple():
 
         return X
 
-    def testNetwork(self, testset):
+    def testNetwork(self, testset, testepsilon):
         print "\nTesting the network"
         cant_patterns = testset.shape[0]
         patterns_with_error = 0
@@ -140,7 +140,8 @@ class PerceptronSimple():
             E = Z - Y
             print "Error is: %s\n" % E
 
-            if(np.size(np.nonzero(E)) != 0):
+            absolute_errors = np.absolute(E)
+            if(np.size(absolute_errors[absolute_errors>testepsilon]) != 0):
                 patterns_with_error = patterns_with_error + 1
 
         print "There were %d errors over %d patterns" % (patterns_with_error, cant_patterns)

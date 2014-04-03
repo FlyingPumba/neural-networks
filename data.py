@@ -72,11 +72,11 @@ class SimpleOCR():
 
     @staticmethod
     def getTestSetWithNoise(noiseRate):
-        cant_patterns = SimpleOCR.trainingset.shape[0]
+        cant_patterns = trainingset.shape[0]
         new_testset = []
         for i in range(0, cant_patterns):
             # alter the pattern
-            new_testset.append([SimpleOCR.alterPattern(noiseRate, SimpleOCR.trainingset[i,0]), SimpleOCR.trainingset[i,1]])
+            new_testset.append([SimpleOCR.alterPattern(noiseRate, trainingset[i,0]), trainingset[i,1]])
         return np.asarray(new_testset)
 
     @staticmethod
