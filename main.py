@@ -6,24 +6,25 @@ class NullDevice():
     def write(self, s):
         pass
 
-def networkANDOR(lRate, epsilon):
+def networkANDOR(lRate, epsilon, testepsilon):
     a = ps(2, 2, lRate, epsilon, data.ANDOR.trainingset)
-    a.testNetwork(data.ANDOR.testset)
+    a.plotErrorThroughLearning(a.errors_in_each_training)
+    a.testNetwork(data.ANDOR.testset, testepsilon)
 
-def networkAND(lRate, epsilon):
+def networkAND(lRate, epsilon, testepsilon):
     a = ps(2, 1, lRate, epsilon, data.AND.trainingset)
     a.plotErrorThroughLearning(a.errors_in_each_training)
-    a.testNetwork(data.AND.testset)
+    a.testNetwork(data.AND.testset, testepsilon)
 
-def networkOR(lRate, epsilon):
+def networkOR(lRate, epsilon, testepsilon):
     a = ps(2, 1, lRate, epsilon, data.OR.trainingset)
     a.plotErrorThroughLearning(a.errors_in_each_training)
-    a.testNetwork(data.OR.testset)
+    a.testNetwork(data.OR.testset, testepsilon)
 
-def networkXOR(lRate, epsilon):
+def networkXOR(lRate, epsilon, testepsilon):
     a = ps(2, 1, lRate, epsilon, data.XOR.trainingset)
     a.plotErrorThroughLearning(a.errors_in_each_training)
-    a.testNetwork(data.XOR.testset)
+    a.testNetwork(data.XOR.testset, testepsilon)
 
 def networkBinaryOCR(lRate, epsilon, testepsilon):
     a = ps(25, 5, lRate, epsilon, data.BinaryOCR.trainingset)

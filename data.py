@@ -1,41 +1,41 @@
 import numpy as np
 import ocrletters as l
 
-booleanInput = np.array([[0,0], [0,1], [1,0], [1,1]])
+booleanInput = np.array([[-1,-1], [-1,1], [1,-1], [1,1]])
 
 class AND():
     trainingset = np.array([
-        [[0,0],[0]],
-        [[0,1],[0]],
-        [[1,0],[0]],
+        [[-1,-1],[-1]],
+        [[-1,1],[-1]],
+        [[1,-1],[-1]],
         [[1,1],[1]]
         ])
     testset = trainingset
 
 class OR():
     trainingset = np.array([
-        [[0,0],[0]],
-        [[0,1],[1]],
-        [[1,0],[1]],
+        [[-1,-1],[-1]],
+        [[-1,1],[1]],
+        [[1,-1],[1]],
         [[1,1],[1]]
         ])
     testset = trainingset
 
 class ANDOR():
     trainingset = np.array([
-        [[0,0],[0,0]],
-        [[0,1],[1,0]],
-        [[1,0],[1,0]],
+        [[-1,-1],[-1,-1]],
+        [[-1,1],[1,-1]],
+        [[1,-1],[1,-1]],
         [[1,1],[1,1]]
         ])
     testset = trainingset
 
 class XOR():
     trainingset = np.array([
-        [[0,0],[0]],
-        [[0,1],[1]],
-        [[1,0],[1]],
-        [[1,1],[0]]
+        [[-1,-1],[-1]],
+        [[-1,1],[1]],
+        [[1,-1],[1]],
+        [[1,1],[-1]]
         ])
     testset = trainingset
 

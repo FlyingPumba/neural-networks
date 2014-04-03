@@ -49,7 +49,7 @@ class PerceptronSimple():
                 E = Z - Y
                 print "Error is: %s" % E
                  # XXX: in the following line,
-                 # what happens with the -1 values ? Is this affecting the delta calculation ?
+
                 pattern_error = np.dot(E, E)
                 self.errors_in_each_training.append(pattern_error)
 
@@ -58,7 +58,7 @@ class PerceptronSimple():
                 # calculate the delta
                 X = self.getInputWithThreshold(dataset[i,0])
                 transposedX = X.reshape(X.shape+(1,))
-                delta = self.lRate * np.multiply(transposedX, E)
+                delta = self.lRate * np.multiply(transposedX, E) * (1 - (np.tanh(np.dot(X,self.W)))**2)
                 print "Delta error is: \n%s\n" % delta
 
                 # learn !
