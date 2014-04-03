@@ -98,3 +98,14 @@ class SimpleOCR():
                 new_pattern[i] = pattern[i]
 
         return new_pattern
+
+class BinaryOCR(SimpleOCR):
+    # Idem to SimpleOCR
+    trainingset = SimpleOCR.trainingset
+    #testset = trainingset
+
+class BipolarOCR(SimpleOCR):
+    # Swithc 0s for -1s
+    trainingset = SimpleOCR.trainingset
+    #trainingset[trainingset == 0] = -1
+    #testset = trainingset
