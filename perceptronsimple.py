@@ -30,12 +30,13 @@ class PerceptronSimple():
         cant_epochs = 0
         max_epochs = 1000
 
-        self.errors_in_each_training = []
+        self.errors_in_each_epoch = []
+        self.errors_in_each_pattern = []
 
         while True:
             # begin epoch
             print "The %d epoch has begun \n" % cant_epochs
-            accumulated_error = 0
+            self.errors_in_each_pattern = []
 
             for i in range(0, cant_patterns):
                 print "Training pattern %d" % i
@@ -51,9 +52,7 @@ class PerceptronSimple():
                  # XXX: in the following line,
 
                 pattern_error = np.dot(E, E)
-                self.errors_in_each_training.append(pattern_error)
-
-                accumulated_error = accumulated_error + pattern_error
+                self.errors_in_each_pattern.append(pattern_error)
 
                 # calculate the delta
                 X = self.getInputWithThreshold(dataset[i,0])
@@ -71,17 +70,19 @@ class PerceptronSimple():
                 self.W = self.W + self.D
 
             cant_epochs = cant_epochs + 1
+            self.errors_in_each_epoch.append(np.max(self.errors_in_each_pattern))
+            
             keep_going = True
             if(cant_epochs >= max_epochs):
                 print "REACHED MAX EPOCHS\n"
                 keep_going = False
-            if(self.epsilon >= accumulated_error/cant_patterns):
-                print "REACHED BETTER ERROR THAN EPSILON\n"
+            if(self.epsilon >= np.max(self.errors_in_each_pattern)):
+                print "REACHED BETTER ERROR THAN EPSILON IN LAST EPOCH\n"
                 keep_going = False
 
             if(keep_going == False):
                 print "total epochs = %d\n" % cant_epochs
-                print "last e = %.10f\n" % (accumulated_error/cant_patterns)
+                print "last e = %.10f\n" % np.max(self.errors_in_each_pattern)
                 break
 
         print "Final weight matrix is: \n%s\n" % self.W
