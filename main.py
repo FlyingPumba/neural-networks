@@ -38,7 +38,7 @@ def networkBipolarOCR(lRate, epsilon, testepsilon):
 
 def main(argv):
     original_stdout = sys.stdout
-    if(argv[0] == "-s"):
+    if(len(argv) > 0 and argv[0] == "-s"):
         print "Shutting down debug output"
         print "Training network..."
         sys.stdout = NullDevice()
