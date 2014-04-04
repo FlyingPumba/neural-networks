@@ -85,7 +85,6 @@ class PerceptronSimple():
                 break
 
         print "Final weight matrix is: \n%s\n" % self.W
-        self.plotErrorThroughLearning(self.errors_in_each_training)
 
     def activation(self, Y):
         # use hiperbolic tangent
