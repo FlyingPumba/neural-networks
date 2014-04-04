@@ -1,4 +1,6 @@
 import data as data
+import datautil as util
+import numpy as np
 from perceptronsimple import PerceptronSimple as ps
 import sys
 
@@ -37,6 +39,10 @@ def networkBipolarOCR(lRate, epsilon, testepsilon):
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
 def main(argv):
+    # numpy print options
+    np.set_printoptions(suppress=True)
+    np.set_printoptions(precision=5)
+
     original_stdout = sys.stdout
     if(len(argv) > 0 and argv[0] == "-s"):
         print "Shutting down debug output"
@@ -44,11 +50,11 @@ def main(argv):
         sys.stdout = NullDevice()
         
     #a = ps(25, 5, 0.2, 0.1, data.SimpleOCR.trainingset)
-    a = ps(25, 5, 0.2, 0.1, data.BipolarOCR.trainingset)
+    a = ps(25, 5, 0.1, 0.05, data.BipolarOCR.trainingset)
     sys.stdout = original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_training)
     a.testNetwork(data.BipolarOCR.testset, 0.1)
-    a.testNetwork(data.BipolarOCR.getTestSetWithNoise(0.02), 0.1)
+    a.testNetwork(util.getTestSetWithNoise(data.BipolarOCR.testset, 0.02), 0.1)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
