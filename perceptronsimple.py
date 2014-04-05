@@ -28,7 +28,7 @@ class PerceptronSimple():
         print "Initial weight matrix \n %s \n" % self.W
 
         cant_epochs = 0
-        max_epochs = 1000
+        max_epochs = 3000
 
         self.errors_in_each_epoch = []
         self.errors_in_each_pattern = []
@@ -58,7 +58,7 @@ class PerceptronSimple():
                 X = self.getInputWithThreshold(dataset[i,0])
                 transposedX = X.reshape(X.shape+(1,))
                 delta = self.lRate * np.multiply(transposedX, E) * (1 - (np.tanh(np.dot(X,self.W)))**2)
-                print "Delta error is: \n%s\n" % delta
+                #print "Delta error is: \n%s\n" % delta
 
                 # learn !
                 if(batch):
