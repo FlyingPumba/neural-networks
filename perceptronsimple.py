@@ -78,10 +78,10 @@ class PerceptronSimple():
             
             keep_going = True
             if(cant_epochs >= max_epochs):
-                print "REACHED MAX EPOCHS\n"
+                print "\nREACHED MAX EPOCHS\n"
                 keep_going = False
             if(self.epsilon >= np.max(self.errors_in_each_pattern)):
-                print "REACHED BETTER ERROR THAN EPSILON IN LAST EPOCH\n"
+                print "\nREACHED BETTER ERROR THAN EPSILON IN LAST EPOCH\n"
                 keep_going = False
 
             if(keep_going == False):
@@ -133,7 +133,7 @@ class PerceptronSimple():
         patterns_with_error = 0
 
         for i in range(0, cant_patterns):
-            print "Testing pattern %d" % (i+1)
+            print "\nTesting pattern %d" % (i+1)
 
             Y = self.evaluate(testset[i,0])
 
@@ -142,10 +142,11 @@ class PerceptronSimple():
 
             # calculate the error
             E = Z - Y
-            print "Error is: %s\n" % E
+            print "Error is: %s" % E
 
             absolute_errors = np.absolute(E)
             if(np.size(absolute_errors[absolute_errors>testepsilon]) != 0):
+                print "WRONG OUTPUT"
                 patterns_with_error = patterns_with_error + 1
 
         print "There were %d errors over %d patterns" % (patterns_with_error, cant_patterns)
