@@ -74,7 +74,7 @@ def main(argv):
         elif("xor" in argv):
             networkXOR(0.05,0.01,0.1)
         elif("bipolarocr" in argv):
-            networkBipolarOCR(0.07,0.01,0.1)
+            networkBipolarOCR(0.01,0.01,0.1)
         else:
             a = ps(25, 5, 0.1, 0.05, data.BipolarOCR.trainingset)
             sys.stdout = original_stdout

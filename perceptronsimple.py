@@ -11,7 +11,7 @@ class PerceptronSimple():
         self.dataset = trainingset
         self.epsilon = epsilon
 
-        self.train_network(self.dataset)
+        self.train_network(self.dataset, batch=True)
 
     def train_network(self, dataset, batch=False, stochastic=True):
         print "Data set size is:"
@@ -21,7 +21,7 @@ class PerceptronSimple():
         cant_patterns = dataset.shape[0]
 
         # create D matrix for batch learning
-        self.D = np.zeros(dataset.shape)
+        self.D = np.zeros((self.nInput+1, self.nOutput))
 
         # create the Weight matrix (nInput+1 for the threshold)
         self.W = np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nOutput))
