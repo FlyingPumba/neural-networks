@@ -28,7 +28,7 @@ class PerceptronSimple():
         print "Initial weight matrix \n %s \n" % self.W
 
         cant_epochs = 0
-        max_epochs = 3000
+        max_epochs = 1000
 
         self.errors_in_each_epoch = []
         self.errors_in_each_pattern = []
@@ -146,7 +146,7 @@ class PerceptronSimple():
 
             absolute_errors = np.absolute(E)
             if(np.size(absolute_errors[absolute_errors>testepsilon]) != 0):
-                print "WRONG OUTPUT"
+                print "-----> WRONG OUTPUT"
                 patterns_with_error = patterns_with_error + 1
 
-        print "There were %d errors over %d patterns" % (patterns_with_error, cant_patterns)
+        print "\nThere were %d errors over %d patterns" % (patterns_with_error, cant_patterns)
