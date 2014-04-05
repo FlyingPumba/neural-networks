@@ -13,7 +13,7 @@ class PerceptronSimple():
 
         self.train_network(self.dataset)
 
-    def train_network(self, dataset, batch=False):
+    def train_network(self, dataset, batch=False, stochastic=True):
         print "Data set size is:"
         print "%s \n" % (dataset.shape,)
 
@@ -37,6 +37,10 @@ class PerceptronSimple():
             # begin epoch
             print "The %d epoch has begun \n" % cant_epochs
             self.errors_in_each_pattern = []
+
+            # stochastic learning
+            if(stochastic):
+                np.random.shuffle(self.dataset)
 
             for i in range(0, cant_patterns):
                 print "Training pattern %d" % i
@@ -129,7 +133,7 @@ class PerceptronSimple():
         patterns_with_error = 0
 
         for i in range(0, cant_patterns):
-            print "Testing pattern %d" % i
+            print "Testing pattern %d" % (i+1)
 
             Y = self.evaluate(testset[i,0])
 
