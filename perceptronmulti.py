@@ -28,12 +28,9 @@ class PerceptronMulti():
         # create the Weight matrix (nInput+1 for the threshold)
         self.W = []
         self.W.append(np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nHiddenNodes[0])))
-        for i in range(1, self.nHiddenLayers-1)
+        for i in range(1, self.nHiddenLayers):
             self.W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[i-1], self.nHiddenNodes[i])))
-        self.W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[self.nHiddenLayers-1], self.nOutput))
-
-
-        print "Initial weight matrix \n %s \n" % self.W
+        self.W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[self.nHiddenLayers-1], self.nOutput)))
 
         cant_epochs = 0
         max_epochs = 1000
@@ -54,19 +51,18 @@ class PerceptronMulti():
                 print "Training pattern %d" % i
                 self.X = self.getInputWithThreshold(dataset[i,0])
                 self.Y = self.evaluate(self.X)
+                print "Output is: %s" % self.Y[-1]
 
                 print "Expected output is: %s" % dataset[i,1]
                 Z = dataset[i,1]
 
                 self.G = self.backPropagation(self.Y,Z)
 
-                self.W = self.updateWeights(self.W,self.G,self.lRate)
-
                 # learn !
                 if(batch):
-                    self.D = self.D + delta
+                    self.D = self.updateWeights(self.W,self.G,self.lRate)
                 else:
-                    self.W = self.W + delta
+                    self.W = self.updateWeights(self.W,self.G,self.lRate)
             
             if(batch):
                 self.W = self.W + self.D
@@ -102,10 +98,11 @@ class PerceptronMulti():
 
     def evaluate(self, input):
         Y = []
-        Y.append(self.activation(np.dot(X,self.W[0])))
-        for i in range(1, self.nHiddenLayers-1)
+        Y.append(self.activation(np.dot(self.X,self.W[0])))
+        for i in range(1, self.nHiddenLayers):
             Y.append(self.activation(np.dot(Y[i-1],self.W[i])))
-
+        Y.append(self.activation(np.dot(Y[self.nHiddenLayers-1],self.W[self.nHiddenLayers])))
+        #print "%s" % Y
         return Y
 
     def activation(self, Y):
@@ -114,8 +111,7 @@ class PerceptronMulti():
 
     def backPropagation(self, Y, Z):
         # calculate the error
-        E = []
-        E.append(Z-Y[-1])
+        E = Z-Y[-1]
 
         pattern_error = np.dot(E, E)
         self.errors_in_each_pattern.append(pattern_error)
@@ -123,10 +119,12 @@ class PerceptronMulti():
         L = self.nHiddenLayers
         G = []
 
-        for i in range(L, 1):
-            aux = (1 - (np.tanh(np.dot(Y[i-1],self.W[i])))**2) * E[L-i]
-            G.append(aux*Y[i-1])
-            E.append(aux*self.W[i].T)
+        for i in xrange(L, 0, -1):
+            transposedInput = Y[i-1].reshape(Y[i-1].shape+(1,))
+            d = (1 - (np.tanh(np.dot(Y[i-1],self.W[i])))**2)
+            aux = d * transposedInput * E 
+            G.append(aux)
+            E = np.dot(aux,self.W[i].T)
         return G
 
     def updateWeights(self, W, G, eta):
@@ -152,12 +150,13 @@ class PerceptronMulti():
             print "\nTesting pattern %d" % (i+1)
 
             Y = self.evaluate(testset[i,0])
-
+            print "Output is: %s" % self.Y[-1]
+            
             print "Expected output is: %s" % testset[i,1]
             Z = testset[i,1]
 
             # calculate the error
-            E = Z - Y
+            E = Z - Y[-1]
             print "Error is: %s" % E
 
             absolute_errors = np.absolute(E)
