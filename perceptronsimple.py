@@ -24,7 +24,7 @@ class PerceptronSimple():
         self.W = np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nOutput))
 
         cant_epochs = 0
-        max_epochs = 10000
+        max_epochs = 1000
 
         self.errors_in_each_epoch = []
         self.appendEpochError = self.errors_in_each_epoch.append        
@@ -113,7 +113,7 @@ class PerceptronSimple():
             self.evaluate()
 
             print "Expected output is: %s" % testset[i,1]
-            Z = testset[i,1]
+            self.Z = testset[i,1]
 
             # calculate the error
             E = self.Z - self.Y
