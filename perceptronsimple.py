@@ -42,7 +42,7 @@ class PerceptronSimple():
             if(stochastic):
                 np.random.shuffle(self.dataset)
 
-            for i in range(0, cant_patterns):
+            for i in xrange(cant_patterns):
                 print "Training pattern %d" % i
 
                 Y = self.evaluate(dataset[i,0])
@@ -53,7 +53,6 @@ class PerceptronSimple():
                 # calculate the error
                 E = Z - Y
                 print "Error is: %s" % E
-                 # XXX: in the following line,
 
                 pattern_error = np.dot(E, E)
                 self.errors_in_each_pattern.append(pattern_error)
@@ -121,7 +120,7 @@ class PerceptronSimple():
     def getInputWithThreshold(self, input):
         # create input array
         X = np.zeros(self.nInput+1)
-        for j in range(0, self.nInput):
+        for j in xrange(self.nInput):
             X[j] = input[j]
         X[self.nInput] = -1
 
@@ -132,7 +131,7 @@ class PerceptronSimple():
         cant_patterns = testset.shape[0]
         patterns_with_error = 0
 
-        for i in range(0, cant_patterns):
+        for i in xrange(cant_patterns):
             print "\nTesting pattern %d" % (i+1)
 
             Y = self.evaluate(testset[i,0])
