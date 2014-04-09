@@ -14,9 +14,6 @@ class PerceptronSimple():
         self.train_network(self.dataset)
 
     def train_network(self, dataset, batch=False, stochastic=True):
-        print "Data set size is:"
-        print "%s \n" % (dataset.shape,)
-
         # how many training patterns do we have ?
         cant_patterns = dataset.shape[0]
 
@@ -25,43 +22,36 @@ class PerceptronSimple():
 
         # create the Weight matrix (nInput+1 for the threshold)
         self.W = np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nOutput))
-        print "Initial weight matrix \n %s \n" % self.W
 
         cant_epochs = 0
-        max_epochs = 1000
+        max_epochs = 10000
 
         self.errors_in_each_epoch = []
-        self.errors_in_each_pattern = []
+        self.appendEpochError = self.errors_in_each_epoch.append        
 
         while True:
             # begin epoch
             print "The %d epoch has begun \n" % cant_epochs
-            self.errors_in_each_pattern = []
+            errors_in_each_pattern = []
+            appendPatternError = errors_in_each_pattern.append
 
             # stochastic learning
             if(stochastic):
                 np.random.shuffle(self.dataset)
 
             for i in xrange(cant_patterns):
-                print "Training pattern %d" % i
-
-                Y = self.evaluate(dataset[i,0])
-
-                print "Expected output is: %s" % dataset[i,1]
-                Z = dataset[i,1]
+                self.X = self.getInputWithThreshold(dataset[i,0])
+                self.evaluate()
+                self.Z = dataset[i,1]
 
                 # calculate the error
-                E = Z - Y
-                print "Error is: %s" % E
-
-                pattern_error = np.dot(E, E)
-                self.errors_in_each_pattern.append(pattern_error)
+                E = self.Z - self.Y
+                
+                appendPatternError(np.dot(E, E))
 
                 # calculate the delta
-                X = self.getInputWithThreshold(dataset[i,0])
-                transposedX = X.reshape(X.shape+(1,))
-                delta = self.lRate * np.multiply(transposedX, E) * (1 - (np.tanh(np.dot(X,self.W)))**2)
-                #print "Delta error is: \n%s\n" % delta
+                transposedX = self.X.reshape(self.X.shape+(1,))
+                delta = self.lRate * np.multiply(transposedX, E) * (1 - (np.tanh(np.dot(self.X,self.W)))**2)
 
                 # learn !
                 if(batch):
@@ -73,26 +63,20 @@ class PerceptronSimple():
                 self.W = self.W + self.D
 
             cant_epochs = cant_epochs + 1
-            self.errors_in_each_epoch.append(np.max(self.errors_in_each_pattern))
+            self.appendEpochError(np.max(errors_in_each_pattern))
             
             keep_going = True
             if(cant_epochs >= max_epochs):
                 print "\nREACHED MAX EPOCHS\n"
                 keep_going = False
-            if(self.epsilon >= np.max(self.errors_in_each_pattern)):
+            if(self.epsilon >= np.max(errors_in_each_pattern)):
                 print "\nREACHED BETTER ERROR THAN EPSILON IN LAST EPOCH\n"
                 keep_going = False
 
             if(keep_going == False):
                 print "total epochs = %d\n" % cant_epochs
-                print "last e = %.10f\n" % np.max(self.errors_in_each_pattern)
+                print "last e = %.10f\n" % np.max(errors_in_each_pattern)
                 break
-
-        print "Final weight matrix is: \n%s\n" % self.W
-
-    def activation(self, Y):
-        # use hiperbolic tangent
-        return np.tanh(Y)
 
     def plotErrorThroughLearning(self, errors_list):
         answer = ""
@@ -105,17 +89,9 @@ class PerceptronSimple():
             plt.xlabel("pattern number")
             plt.show()
 
-    def evaluate(self, input):
-        print "Input: %s" % input
-        X = self.getInputWithThreshold(input)
-
+    def evaluate(self):
         # calculate the network output
-        auxMatrix = np.dot(X,self.W)
-
-        Y = self.activation(auxMatrix)
-
-        print "Output: %s" % Y
-        return Y
+        self.Y = np.tanh(np.dot(self.X,self.W))
 
     def getInputWithThreshold(self, input):
         # create input array
@@ -133,14 +109,14 @@ class PerceptronSimple():
 
         for i in xrange(cant_patterns):
             print "\nTesting pattern %d" % (i+1)
-
-            Y = self.evaluate(testset[i,0])
+            self.X = self.getInputWithThreshold(testset[i,0])
+            self.evaluate()
 
             print "Expected output is: %s" % testset[i,1]
             Z = testset[i,1]
 
             # calculate the error
-            E = Z - Y
+            E = self.Z - self.Y
             print "Error is: %s" % E
 
             absolute_errors = np.absolute(E)
