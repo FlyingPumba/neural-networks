@@ -21,9 +21,6 @@ class PerceptronMulti():
         # how many training patterns do we have ?
         cant_patterns = dataset.shape[0]
 
-        # create D matrix for batch learning
-        D = np.zeros(dataset.shape)
-
         # create the Weight matrix (nInput+1 for the threshold)
         W = []
         W.append(np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nHiddenNodes[0])))
@@ -48,6 +45,9 @@ class PerceptronMulti():
                 np.random.shuffle(dataset)
 
             for i in xrange(cant_patterns):
+                if(batch):
+                    D = np.zeros(dataset.shape)
+
                 print "Training pattern %d" % i
                 X = self.getInputWithThreshold(dataset[i,0])
                 Y = self.evaluate(X, W)
@@ -60,7 +60,7 @@ class PerceptronMulti():
                 pattern_error = np.dot(E, E)
                 appendPatternError(pattern_error)
 
-                G = self.backPropagation(Y,Z, W)
+                G = self.backPropagation(X,Y,Z,W)
 
                 # learn !
                 if(batch):
@@ -111,24 +111,33 @@ class PerceptronMulti():
 
         return Y
 
-    def backPropagation(self, Y, Z, weights):
+    def backPropagation(self,X, Y, Z, weights):
         # calculate the error
         E = Z-Y[-1]
 
         L = self.nHiddenLayers
         G = []
         append = G.append
+
         for i in xrange(L, 0, -1):
             transposedInput = Y[i-1].reshape(Y[i-1].shape+(1,))
             derivative = (1 - (np.tanh(np.dot(Y[i-1],weights[i])))**2)
             d = derivative * E
             append(d*transposedInput)
             E = np.dot(d,weights[i].T)
+
+        transposedInput = X.reshape(X.shape+(1,))
+        derivative = (1 - (np.tanh(np.dot(X,weights[0])))**2)
+        d = derivative * E
+        append(d*transposedInput)
+        E = np.dot(d,weights[i].T)
+
         return G
 
     def updateWeights(self, W, G, eta):
-        for i in xrange(1, self.nHiddenLayers, 1):
-            W[i] = W[i] + eta*G[i]
+        #remember that G is backwards
+        for i in xrange(0, self.nHiddenLayers, 1):
+            W[i] = W[i] + eta*G[self.nHiddenLayers-i]
         return W
 
     def getInputWithThreshold(self, input):

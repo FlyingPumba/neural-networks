@@ -10,20 +10,17 @@ class PerceptronSimple():
         self.lRate = learning_rate
         self.epsilon = epsilon
 
-        self.train_network(trainingset, batch=True)
+        self.train_network(trainingset)
 
     def train_network(self, dataset, batch=False, stochastic=True):
         # how many training patterns do we have ?
         cant_patterns = dataset.shape[0]
 
-        # create D matrix for batch learning
-        D = np.zeros((self.nInput+1, self.nOutput))
-
         # create the Weight matrix (nInput+1 for the threshold)
         W = np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nOutput))
 
         cant_epochs = 0
-        max_epochs = 100
+        max_epochs = 10000
 
         self.errors_in_each_epoch = []
         self.appendEpochError = self.errors_in_each_epoch.append        
@@ -39,6 +36,9 @@ class PerceptronSimple():
                 np.random.shuffle(dataset)
 
             for i in xrange(cant_patterns):
+                if(batch):
+                    D = np.zeros((self.nInput+1, self.nOutput))
+
                 X = self.getInputWithThreshold(dataset[i,0])
                 Y = np.tanh(np.dot(X,W))
                 Z = dataset[i,1]

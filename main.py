@@ -60,7 +60,7 @@ def networkBipolarOCR(lRate, epsilon, testepsilon):
 def networkMultiOCR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(25, [8,8], 5, lRate, epsilon, data.BipolarOCR.trainingset)
+    a = pm(25, [5], 5, lRate, epsilon, data.BipolarOCR.trainingset)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
@@ -85,7 +85,7 @@ def main(argv):
         elif("bipolarocr" in argv):
             networkBipolarOCR(0.01,0.01,0.1)
         elif("multiocr" in argv):
-            networkMultiOCR(0.07,0.01,0.1)
+            networkMultiOCR(0.01,0.01,0.1)
         else:
             a = ps(25, 5, 0.1, 0.05, data.BipolarOCR.trainingset)
             sys.stdout = original_stdout
