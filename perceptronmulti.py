@@ -120,10 +120,10 @@ class PerceptronMulti():
         append = G.append
         for i in xrange(L, 0, -1):
             transposedInput = Y[i-1].reshape(Y[i-1].shape+(1,))
-            d = (1 - (np.tanh(np.dot(Y[i-1],weights[i])))**2)
-            aux = d * transposedInput * E 
-            append(aux)
-            E = np.dot(aux,weights[i].T)
+            derivative = (1 - (np.tanh(np.dot(Y[i-1],weights[i])))**2)
+            d = derivative * E
+            append(d*transposedInput)
+            E = np.dot(d,weights[i].T)
         return G
 
     def updateWeights(self, W, G, eta):
