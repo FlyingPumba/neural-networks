@@ -2,6 +2,7 @@ import data as data
 import datautil as util
 import numpy as np
 from perceptronsimple import PerceptronSimple as ps
+from perceptronmulti import PerceptronMulti as pm
 import sys
 
 class NullDevice():
@@ -56,6 +57,14 @@ def networkBipolarOCR(lRate, epsilon, testepsilon):
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
+def networkMultiOCR(lRate, epsilon, testepsilon):
+    if(main.silent):
+        sys.stdout = NullDevice()
+    a = pm(25, [8,8], 5, lRate, epsilon, data.BipolarOCR.trainingset)
+    sys.stdout = main.original_stdout
+    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.testNetwork(data.BipolarOCR.testset, testepsilon)
+
 def main(argv):
     main.original_stdout = sys.stdout
     if(len(argv) > 0):
@@ -74,7 +83,10 @@ def main(argv):
         elif("xor" in argv):
             networkXOR(0.05,0.01,0.1)
         elif("bipolarocr" in argv):
-            networkBipolarOCR(0.01,0.01,0.1)
+            #networkBipolarOCR(0.01,0.01,0.1)
+            networkBipolarOCR(0.07,0.01,0.1)
+        elif("multiocr" in argv):
+            networkMultiOCR(0.07,0.01,0.1)
         else:
             a = ps(25, 5, 0.1, 0.05, data.BipolarOCR.trainingset)
             sys.stdout = original_stdout
