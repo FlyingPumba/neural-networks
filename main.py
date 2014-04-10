@@ -9,7 +9,7 @@ class NullDevice():
     def write(self, s):
         pass
 
-def networkANDOR(lRate, epsilon, testepsilon):
+def simpleANDOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
     a = ps(2, 2, lRate, epsilon, data.ANDOR.trainingset)
@@ -17,7 +17,7 @@ def networkANDOR(lRate, epsilon, testepsilon):
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.ANDOR.testset, testepsilon)
 
-def networkAND(lRate, epsilon, testepsilon):
+def simpleAND(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
     a = ps(2, 1, lRate, epsilon, data.AND.trainingset)
@@ -25,7 +25,7 @@ def networkAND(lRate, epsilon, testepsilon):
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.AND.testset, testepsilon)
 
-def networkOR(lRate, epsilon, testepsilon):
+def simpleOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
     a = ps(2, 1, lRate, epsilon, data.OR.trainingset)
@@ -33,7 +33,7 @@ def networkOR(lRate, epsilon, testepsilon):
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.OR.testset, testepsilon)
 
-def networkXOR(lRate, epsilon, testepsilon):
+def simpleXOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
     a = ps(2, 1, lRate, epsilon, data.XOR.trainingset)
@@ -41,15 +41,7 @@ def networkXOR(lRate, epsilon, testepsilon):
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.XOR.testset, testepsilon)
 
-def networkBinaryOCR(lRate, epsilon, testepsilon):
-    if(main.silent):
-        sys.stdout = NullDevice()
-    a = ps(25, 5, lRate, epsilon, data.BinaryOCR.trainingset)
-    sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
-    a.testNetwork(data.SimpleOCR.testset, testepsilon)
-
-def networkBipolarOCR(lRate, epsilon, testepsilon):
+def simpleOCR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
     a = ps(25, 5, lRate, epsilon, data.BipolarOCR.trainingset)
@@ -57,10 +49,42 @@ def networkBipolarOCR(lRate, epsilon, testepsilon):
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
-def networkMultiOCR(lRate, epsilon, testepsilon):
+def multiANDOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(25, [5], 5, lRate, epsilon, data.BipolarOCR.trainingset)
+    a = pm(2, [500], 2, lRate, epsilon, data.ANDOR.trainingset)
+    sys.stdout = main.original_stdout
+    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.testNetwork(data.ANDOR.testset, testepsilon)
+
+def multiAND(lRate, epsilon, testepsilon):
+    if(main.silent):
+        sys.stdout = NullDevice()
+    a = pm(2, [500], 1, lRate, epsilon, data.AND.trainingset)
+    sys.stdout = main.original_stdout
+    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.testNetwork(data.AND.testset, testepsilon)
+
+def multiOR(lRate, epsilon, testepsilon):
+    if(main.silent):
+        sys.stdout = NullDevice()
+    a = pm(2, [500], 1, lRate, epsilon, data.OR.trainingset)
+    sys.stdout = main.original_stdout
+    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.testNetwork(data.OR.testset, testepsilon)
+
+def multiXOR(lRate, epsilon, testepsilon):
+    if(main.silent):
+        sys.stdout = NullDevice()
+    a = pm(2, [500], 1, lRate, epsilon, data.XOR.trainingset)
+    sys.stdout = main.original_stdout
+    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.testNetwork(data.XOR.testset, testepsilon)
+
+def multiOCR(lRate, epsilon, testepsilon):
+    if(main.silent):
+        sys.stdout = NullDevice()
+    a = pm(25, [500], 5, lRate, epsilon, data.BipolarOCR.trainingset)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
@@ -75,23 +99,26 @@ def main(argv):
         else:
             main.silent = False
         if("andor" in argv):
-            networkANDOR(0.05,0.01,0.1)
+            simpleANDOR(0.05,0.01,0.1)
         elif("and" in argv):
-            networkAND(0.05,0.01,0.1)
+            simpleAND(0.05,0.01,0.1)
         elif("or" in argv):
-            networkOR(0.05,0.01,0.1)
+            simpleOR(0.05,0.01,0.1)
         elif("xor" in argv):
-            networkXOR(0.05,0.01,0.1)
-        elif("bipolarocr" in argv):
-            networkBipolarOCR(0.01,0.01,0.1)
+            simpleXOR(0.05,0.01,0.1)
+        elif("ocr" in argv):
+            simpleOCR(0.01,0.01,0.1)
+            #a.testNetwork(util.getTestSetWithNoise(data.BipolarOCR.testset, 0.02), 0.1)
+        elif("multiand" in argv):
+            multiAND(0.01,0.01,0.1)
+        elif("multior" in argv):
+            multiOR(0.01,0.01,0.1)
+        elif("multixor" in argv):
+            multiXOR(0.1,0.01,0.2)
+        elif("multiandor" in argv):
+            multiANDOR(0.01,0.01,0.1)
         elif("multiocr" in argv):
-            networkMultiOCR(0.01,0.01,0.1)
-        else:
-            a = ps(25, 5, 0.1, 0.05, data.BipolarOCR.trainingset)
-            sys.stdout = original_stdout
-            a.plotErrorThroughLearning(a.errors_in_each_epoch)
-            a.testNetwork(data.BipolarOCR.testset, 0.1)
-            a.testNetwork(util.getTestSetWithNoise(data.BipolarOCR.testset, 0.02), 0.1)
+            multiOCR(0.1,0.01,0.1)
 
 # numpy print options
 np.set_printoptions(suppress=True)

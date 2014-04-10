@@ -46,6 +46,7 @@ class PerceptronMulti():
 
             for i in xrange(cant_patterns):
                 if(batch):
+                    #XXX: is this okey ???
                     D = np.zeros(dataset.shape)
 
                 print "Training pattern %d" % i
@@ -130,7 +131,6 @@ class PerceptronMulti():
         derivative = (1 - (np.tanh(np.dot(X,weights[0])))**2)
         d = derivative * E
         append(d*transposedInput)
-        E = np.dot(d,weights[i].T)
 
         return G
 
