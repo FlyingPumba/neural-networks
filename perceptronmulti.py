@@ -43,10 +43,6 @@ class PerceptronMulti():
             # stochastic learning
             if(stochastic):
                 np.random.shuffle(dataset)
-            
-            if(batch):
-                #XXX: is this okey ???
-                D = np.zeros(dataset.shape)
 
             for i in xrange(cant_patterns):
                 print "Training pattern %d" % i
@@ -136,7 +132,8 @@ class PerceptronMulti():
 
     def updateWeights(self, W, G, eta):
         #remember that G is backwards
-        for i in xrange(0, self.nHiddenLayers, 1):
+        for i in xrange(0, self.nHiddenLayers+1, 1):
+            print "i: %d, hidden-i: %d" % (i, self.nHiddenLayers-i) 
             W[i] = W[i] + eta*G[self.nHiddenLayers-i]
         return W
 

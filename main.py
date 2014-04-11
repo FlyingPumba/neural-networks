@@ -52,7 +52,7 @@ def simpleOCR(lRate, epsilon, testepsilon):
 def multiANDOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [500], 2, lRate, epsilon, data.ANDOR.trainingset)
+    a = pm(2, [10], 2, lRate, epsilon, data.ANDOR.trainingset)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.ANDOR.testset, testepsilon)
@@ -60,7 +60,7 @@ def multiANDOR(lRate, epsilon, testepsilon):
 def multiAND(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [500], 1, lRate, epsilon, data.AND.trainingset)
+    a = pm(2, [10], 1, lRate, epsilon, data.AND.trainingset)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.AND.testset, testepsilon)
@@ -68,7 +68,7 @@ def multiAND(lRate, epsilon, testepsilon):
 def multiOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [500], 1, lRate, epsilon, data.OR.trainingset)
+    a = pm(2, [10], 1, lRate, epsilon, data.OR.trainingset)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.OR.testset, testepsilon)
@@ -76,7 +76,7 @@ def multiOR(lRate, epsilon, testepsilon):
 def multiXOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [500], 1, lRate, epsilon, data.XOR.trainingset)
+    a = pm(2, [10], 1, lRate, epsilon, data.XOR.trainingset)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.XOR.testset, testepsilon)
@@ -84,7 +84,7 @@ def multiXOR(lRate, epsilon, testepsilon):
 def multiOCR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(25, [500], 5, lRate, epsilon, data.BipolarOCR.trainingset)
+    a = pm(25, [10], 5, lRate, epsilon, data.BipolarOCR.trainingset)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
@@ -110,7 +110,7 @@ def main(argv):
             simpleOCR(0.01,0.01,0.1)
             #a.testNetwork(util.getTestSetWithNoise(data.BipolarOCR.testset, 0.02), 0.1)
         elif("multiand" in argv):
-            multiAND(0.01,0.01,0.1)
+            multiAND(0.05,0.01,0.1)
         elif("multior" in argv):
             multiOR(0.01,0.01,0.1)
         elif("multixor" in argv):
