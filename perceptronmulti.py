@@ -99,7 +99,7 @@ class PerceptronMulti():
         if(answer == "y"):
             plt.plot(errors_list)
             plt.ylabel("network error")
-            plt.xlabel("pattern number")
+            plt.xlabel("epoch number")
             plt.show()
 
     def evaluate(self, input, weights):
