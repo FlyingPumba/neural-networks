@@ -43,12 +43,12 @@ class PerceptronMulti():
             # stochastic learning
             if(stochastic):
                 np.random.shuffle(dataset)
+            
+            if(batch):
+                #XXX: is this okey ???
+                D = np.zeros(dataset.shape)
 
             for i in xrange(cant_patterns):
-                if(batch):
-                    #XXX: is this okey ???
-                    D = np.zeros(dataset.shape)
-
                 print "Training pattern %d" % i
                 X = self.getInputWithThreshold(dataset[i,0])
                 Y = self.evaluate(X, W)

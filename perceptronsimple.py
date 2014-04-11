@@ -35,10 +35,10 @@ class PerceptronSimple():
             if(stochastic):
                 np.random.shuffle(dataset)
 
-            for i in xrange(cant_patterns):
-                if(batch):
-                    D = np.zeros((self.nInput+1, self.nOutput))
+            if(batch):
+                D = np.zeros((self.nInput+1, self.nOutput))
 
+            for i in xrange(cant_patterns):
                 X = self.getInputWithThreshold(dataset[i,0])
                 Y = np.tanh(np.dot(X,W))
                 Z = dataset[i,1]
