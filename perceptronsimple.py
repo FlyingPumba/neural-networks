@@ -107,6 +107,7 @@ class PerceptronSimple():
             print "\nTesting pattern %d" % (i+1)
             X = self.getInputWithThreshold(testset[i,0])
             Y = np.tanh(np.dot(X,self.W))
+            print "Output is: %s" % Y
 
             print "Expected output is: %s" % testset[i,1]
             Z = testset[i,1]
