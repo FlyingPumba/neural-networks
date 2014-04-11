@@ -11,10 +11,11 @@ class PerceptronMulti():
         self.nHiddenLayers = len(array_cant_hidden_nodes)
         self.lRate = learning_rate
         self.epsilon = epsilon
+        self.alpha = 0.01
 
-        self.train_network(trainingset, batch=True, stochastic=False)
+        self.train_network(trainingset, batch=False, stochastic=False, momentum=False)
 
-    def train_network(self, dataset, batch=False, stochastic=True):
+    def train_network(self, dataset, batch=False, stochastic=True, momentum=False):
         print "Data set size is:"
         print "%s \n" % (dataset.shape,)
 
@@ -51,6 +52,8 @@ class PerceptronMulti():
                     D.append(np.zeros((self.nHiddenNodes[i-1], self.nHiddenNodes[i])))
                 D.append(np.zeros((self.nHiddenNodes[self.nHiddenLayers-1], self.nOutput)))
 
+            if(momentum):
+                Gm = []
 
             for i in xrange(cant_patterns):
                 print "Training pattern %d" % i
@@ -72,6 +75,11 @@ class PerceptronMulti():
                     D = self.updateWeights(D,G,self.lRate)
                 else:
                     W = self.updateWeights(W,G,self.lRate)
+
+                if(momentum):
+                    if(len(Gm) > 0):
+                        W = self.addMomentum(W, Gm, self.alpha)
+                    Gm = G
             
             if(batch):
                 for i in xrange(0, self.nHiddenLayers+1, 1):
@@ -143,6 +151,12 @@ class PerceptronMulti():
         #remember that G is backwards
         for i in xrange(0, self.nHiddenLayers+1, 1):
             W[i] = W[i] + eta*G[self.nHiddenLayers-i]
+        return W
+
+    def addMomentum(self, W, Gm, alpha):
+        #remember that Gm is backwards
+        for i in xrange(0, self.nHiddenLayers+1, 1):
+            W[i] = W[i] + alpha*Gm[self.nHiddenLayers-i]
         return W
 
     def getInputWithThreshold(self, input):

@@ -112,13 +112,13 @@ def main(argv):
         elif("multiand" in argv):
             multiAND(0.05,0.01,0.1)
         elif("multior" in argv):
-            multiOR(0.01,0.01,0.1)
+            multiOR(0.05,0.01,0.1)
         elif("multixor" in argv):
-            multiXOR(0.1,0.01,0.2)
+            multiXOR(0.05,0.01,0.2)
         elif("multiandor" in argv):
-            multiANDOR(0.01,0.01,0.1)
+            multiANDOR(0.05,0.01,0.1)
         elif("multiocr" in argv):
-            multiOCR(0.1,0.01,0.1)
+            multiOCR(0.05,0.01,0.1)
 
 # numpy print options
 np.set_printoptions(suppress=True)
