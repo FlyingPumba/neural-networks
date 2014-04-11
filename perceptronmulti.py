@@ -12,7 +12,7 @@ class PerceptronMulti():
         self.lRate = learning_rate
         self.epsilon = epsilon
 
-        self.train_network(trainingset, batch=False, stochastic=False)
+        self.train_network(trainingset, batch=True, stochastic=False)
 
     def train_network(self, dataset, batch=False, stochastic=True):
         print "Data set size is:"
@@ -44,6 +44,14 @@ class PerceptronMulti():
             if(stochastic):
                 np.random.shuffle(dataset)
 
+            if(batch):
+                D = []
+                D.append(np.zeros((self.nInput+1, self.nHiddenNodes[0])))
+                for i in xrange(1, self.nHiddenLayers, 1):
+                    D.append(np.zeros((self.nHiddenNodes[i-1], self.nHiddenNodes[i])))
+                D.append(np.zeros((self.nHiddenNodes[self.nHiddenLayers-1], self.nOutput)))
+
+
             for i in xrange(cant_patterns):
                 print "Training pattern %d" % i
                 X = self.getInputWithThreshold(dataset[i,0])
@@ -61,12 +69,13 @@ class PerceptronMulti():
 
                 # learn !
                 if(batch):
-                    D = self.updateWeights(W,G,self.lRate)
+                    D = self.updateWeights(D,G,self.lRate)
                 else:
                     W = self.updateWeights(W,G,self.lRate)
             
             if(batch):
-                W = W + D
+                for i in xrange(0, self.nHiddenLayers+1, 1):
+                    W[i] = W[i] + D[i]
 
             cant_epochs = cant_epochs + 1
             self.appendEpochError(np.max(errors_in_each_pattern))
@@ -133,7 +142,6 @@ class PerceptronMulti():
     def updateWeights(self, W, G, eta):
         #remember that G is backwards
         for i in xrange(0, self.nHiddenLayers+1, 1):
-            print "i: %d, hidden-i: %d" % (i, self.nHiddenLayers-i) 
             W[i] = W[i] + eta*G[self.nHiddenLayers-i]
         return W
 
