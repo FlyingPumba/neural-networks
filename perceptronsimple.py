@@ -10,7 +10,7 @@ class PerceptronSimple():
         self.lRate = learning_rate
         self.epsilon = epsilon
 
-        self.train_network(trainingset, stochastic=False)
+        self.train_network(trainingset, batch=False, stochastic=False)
 
     def train_network(self, dataset, batch=False, stochastic=True):
         # how many training patterns do we have ?

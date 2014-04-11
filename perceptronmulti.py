@@ -12,7 +12,7 @@ class PerceptronMulti():
         self.lRate = learning_rate
         self.epsilon = epsilon
 
-        self.train_network(trainingset)
+        self.train_network(trainingset, batch=False, stochastic=False)
 
     def train_network(self, dataset, batch=False, stochastic=True):
         print "Data set size is:"
