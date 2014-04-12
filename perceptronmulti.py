@@ -11,11 +11,16 @@ class PerceptronMulti():
         self.nHiddenLayers = len(array_cant_hidden_nodes)
         self.lRate = learning_rate
         self.epsilon = epsilon
+        #momentum parameter
         self.alpha = 0.01
+        #dlr parameters
+        self.a = 0.1
+        self.b = 0.1
+        self.gapOfErrorsToCorrect = 3
 
-        self.train_network(trainingset, batch=False, stochastic=False, momentum=False)
+        self.train_network(trainingset, batch=False, stochastic=False, momentum=False, dlr=False)
 
-    def train_network(self, dataset, batch=False, stochastic=True, momentum=False):
+    def train_network(self, dataset, batch=False, stochastic=True, momentum=False, dlr=False):
         print "Data set size is:"
         print "%s \n" % (dataset.shape,)
 
@@ -29,6 +34,9 @@ class PerceptronMulti():
             W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[i-1], self.nHiddenNodes[i])))
         W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[self.nHiddenLayers-1], self.nOutput)))
 
+        if(dlr):
+            Wdlr = []
+
         cant_epochs = 0
         max_epochs = 1000
 
@@ -37,7 +45,7 @@ class PerceptronMulti():
 
         while True:
             # begin epoch
-            print "The %d epoch has begun \n" % cant_epochs
+            print "\nThe %d epoch has begun \n" % cant_epochs
             errors_in_each_pattern = []
             appendPatternError = errors_in_each_pattern.append
 
@@ -54,6 +62,26 @@ class PerceptronMulti():
 
             if(momentum):
                 Gm = []
+
+
+
+            if(dlr and cant_epochs % self.gapOfErrorsToCorrect == 0):
+                #update the learning rate
+                if(len(self.errors_in_each_epoch) > self.gapOfErrorsToCorrect):
+                    gap = self.errors_in_each_epoch[-1] - self.errors_in_each_epoch[-(self.gapOfErrorsToCorrect+1)]
+                    print "gap: %.10f" % gap
+                    if(gap < 0) :
+                        #speed up !
+                        self.lRate = self.lRate + self.a
+                        print "new lRate: %.5f" % self.lRate
+                    elif(gap > 0):
+                        #slow down
+                        self.lRate = self.lRate - (self.lRate * self.b)
+                        print "new lRate: %.5f" % self.lRate
+                        #erase last epochs
+                        W = Wdlr
+
+                    #raw_input()
 
             for i in xrange(cant_patterns):
                 print "Training pattern %d" % i
@@ -84,6 +112,11 @@ class PerceptronMulti():
             if(batch):
                 for i in xrange(0, self.nHiddenLayers+1, 1):
                     W[i] = W[i] + D[i]
+
+            if(dlr and cant_epochs % self.gapOfErrorsToCorrect == 0):
+                print "saving W on epoch: %d" % cant_epochs
+                #raw_input()
+                Wdlr = W
 
             cant_epochs = cant_epochs + 1
             self.appendEpochError(np.max(errors_in_each_pattern))
