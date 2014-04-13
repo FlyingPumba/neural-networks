@@ -89,6 +89,14 @@ def multiOCR(lRate, epsilon, testepsilon):
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
+def multiSin(lRate, epsilon, testepsilon):
+    if(main.silent):
+        sys.stdout = NullDevice()
+    a = pm(2, [10], 1, lRate, epsilon, data.Sin.trainingset)
+    sys.stdout = main.original_stdout
+    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.testNetwork(data.Sin.trainingset, testepsilon)
+
 def main(argv):
     main.original_stdout = sys.stdout
     if(len(argv) > 0):
@@ -119,6 +127,8 @@ def main(argv):
             multiANDOR(0.05,0.01,0.1)
         elif("multiocr" in argv):
             multiOCR(0.05,0.01,0.1)
+        elif("multisin" in argv):
+            multiSin(0.05,0.01,0.1)
 
 # numpy print options
 np.set_printoptions(suppress=True)

@@ -94,3 +94,4 @@ class Sin():
         y = np.random.uniform(y0, y2pi)
         output = np.sin(x+y/2)
         append([[x,y],[output]])
+    trainingset = np.asarray(trainingset)
