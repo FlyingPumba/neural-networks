@@ -26,3 +26,8 @@ def alterPattern(noiseRate, pattern):
             new_pattern[i] = pattern[i]
 
     return new_pattern
+
+def rangef(min, max, step):
+    while min<max:
+        yield min
+        min = min+step

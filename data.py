@@ -1,5 +1,6 @@
 import numpy as np
 import ocrletters as l
+import datautil as du
 
 booleanInput = np.array([[-1,-1], [-1,1], [1,-1], [1,1]])
 
@@ -83,3 +84,13 @@ class BipolarOCR(OCR):
         trainingset[i,0] = OCR.trainingset[i,0]*2-1
         trainingset[i,1] = OCR.trainingset[i,1]*2-1
     testset = trainingset
+
+class Sin():
+    trainingset = []
+    append = trainingset.append
+    for x in du.rangef(-20,20,0.1):
+        y0 = -2*x
+        y2pi = 4*np.pi - 2*x
+        y = np.random.uniform(y0, y2pi)
+        output = np.sin(x+y/2)
+        append([[x,y],[output]])
