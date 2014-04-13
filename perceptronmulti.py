@@ -63,8 +63,6 @@ class PerceptronMulti():
             if(momentum):
                 Gm = []
 
-
-
             if(dlr and cant_epochs % self.gapOfErrorsToCorrect == 0):
                 #update the learning rate
                 if(len(self.errors_in_each_epoch) > self.gapOfErrorsToCorrect):
