@@ -39,7 +39,7 @@ class XOR():
         ])
     testset = trainingset
 
-class SimpleOCR():
+class OCR():
     trainingset = np.asarray([
         [l.A, np.array([0,0,0,0,1])], # A -> 1
         [l.B, np.array([0,0,0,1,0])], # B -> 2
@@ -70,16 +70,16 @@ class SimpleOCR():
         ])
     testset = trainingset
 
-class BinaryOCR(SimpleOCR):
-    # Idem to SimpleOCR
-    trainingset = SimpleOCR.trainingset
+class BinaryOCR(OCR):
+    # Idem to OCR
+    trainingset = OCR.trainingset
     testset = trainingset
 
-class BipolarOCR(SimpleOCR):
+class BipolarOCR(OCR):
     # Swithc 0s for -1s
-    trainingset = np.copy(SimpleOCR.trainingset)
+    trainingset = np.copy(OCR.trainingset)
     cant_patterns = trainingset.shape[0]
     for i in range(0, cant_patterns):
-        trainingset[i,0] = SimpleOCR.trainingset[i,0]*2-1
-        trainingset[i,1] = SimpleOCR.trainingset[i,1]*2-1
+        trainingset[i,0] = OCR.trainingset[i,0]*2-1
+        trainingset[i,1] = OCR.trainingset[i,1]*2-1
     testset = trainingset
