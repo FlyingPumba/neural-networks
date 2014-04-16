@@ -76,7 +76,7 @@ def multiOR(lRate, epsilon, testepsilon):
 def multiXOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [10], 1, lRate, epsilon, data.XOR.trainingset)
+    a = pm(2, [3], 1, lRate, epsilon, data.XOR.trainingset)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning(a.errors_in_each_epoch)
     a.testNetwork(data.XOR.testset, testepsilon)

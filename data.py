@@ -95,3 +95,4 @@ class Sin():
         output = np.sin(x+y/2)
         append([[x,y],[output]])
     trainingset = np.asarray(trainingset)
+    # TODO: implementar para que llegue a todos los valores entre 0 y 2pi

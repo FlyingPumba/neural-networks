@@ -49,7 +49,7 @@ class PerceptronSimple():
                 appendPatternError(np.dot(E, E))
 
                 # calculate the delta
-                transposedX = X.reshape(X.shape+(1,))
+                transposedX = np.array([X]).T
                 delta = self.lRate * np.multiply(transposedX, E) * (1 - (np.tanh(np.dot(X,W)))**2)
 
                 # learn !
