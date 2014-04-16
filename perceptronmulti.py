@@ -43,6 +43,9 @@ class PerceptronMulti():
         self.errors_in_each_epoch = []
         self.appendEpochError = self.errors_in_each_epoch.append
 
+        self.errors_in_each_epoch_sum = []
+        self.appendEpochErrorSum = self.errors_in_each_epoch_sum.append
+
         while True:
             # begin epoch
             print "\nThe %d epoch has begun \n" % cant_epochs
@@ -118,6 +121,7 @@ class PerceptronMulti():
 
             cant_epochs = cant_epochs + 1
             self.appendEpochError(np.max(errors_in_each_pattern))
+            self.appendEpochErrorSum(np.sum(errors_in_each_pattern))
             
             keep_going = True
             if(cant_epochs >= max_epochs):
@@ -135,13 +139,14 @@ class PerceptronMulti():
 
         print "Final weight matrix is: \n%s\n" % self.W
 
-    def plotErrorThroughLearning(self, errors_list):
+    def plotErrorThroughLearning(self):
         answer = ""
         while (answer != "y") & (answer != "n"):
             answer = raw_input("Do you wanna see the error through learning ? (y/n) ")
 
         if(answer == "y"):
-            plt.plot(errors_list)
+            plt.plot(self.errors_in_each_epoch)
+            plt.plot(self.errors_in_each_epoch_sum)
             plt.ylabel("network error")
             plt.xlabel("epoch number")
             plt.show()

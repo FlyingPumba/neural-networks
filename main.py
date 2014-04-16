@@ -14,7 +14,7 @@ def simpleANDOR(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = ps(2, 2, lRate, epsilon, data.ANDOR.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.ANDOR.testset, testepsilon)
 
 def simpleAND(lRate, epsilon, testepsilon):
@@ -22,7 +22,7 @@ def simpleAND(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = ps(2, 1, lRate, epsilon, data.AND.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.AND.testset, testepsilon)
 
 def simpleOR(lRate, epsilon, testepsilon):
@@ -30,7 +30,7 @@ def simpleOR(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = ps(2, 1, lRate, epsilon, data.OR.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.OR.testset, testepsilon)
 
 def simpleXOR(lRate, epsilon, testepsilon):
@@ -38,7 +38,7 @@ def simpleXOR(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = ps(2, 1, lRate, epsilon, data.XOR.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.XOR.testset, testepsilon)
 
 def simpleOCR(lRate, epsilon, testepsilon):
@@ -46,7 +46,7 @@ def simpleOCR(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = ps(25, 5, lRate, epsilon, data.BipolarOCR.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
 def multiANDOR(lRate, epsilon, testepsilon):
@@ -54,7 +54,7 @@ def multiANDOR(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = pm(2, [10], 2, lRate, epsilon, data.ANDOR.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.ANDOR.testset, testepsilon)
 
 def multiAND(lRate, epsilon, testepsilon):
@@ -62,7 +62,7 @@ def multiAND(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = pm(2, [10], 1, lRate, epsilon, data.AND.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.AND.testset, testepsilon)
 
 def multiOR(lRate, epsilon, testepsilon):
@@ -70,7 +70,7 @@ def multiOR(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = pm(2, [10], 1, lRate, epsilon, data.OR.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.OR.testset, testepsilon)
 
 def multiXOR(lRate, epsilon, testepsilon):
@@ -78,7 +78,7 @@ def multiXOR(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = pm(2, [3], 1, lRate, epsilon, data.XOR.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.XOR.testset, testepsilon)
 
 def multiOCR(lRate, epsilon, testepsilon):
@@ -86,7 +86,7 @@ def multiOCR(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = pm(25, [10], 5, lRate, epsilon, data.BipolarOCR.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
 
 def multiSin(lRate, epsilon, testepsilon):
@@ -94,7 +94,7 @@ def multiSin(lRate, epsilon, testepsilon):
         sys.stdout = NullDevice()
     a = pm(2, [10], 1, lRate, epsilon, data.Sin.trainingset)
     sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning(a.errors_in_each_epoch)
+    a.plotErrorThroughLearning()
     a.testNetwork(data.Sin.trainingset, testepsilon)
 
 def main(argv):
