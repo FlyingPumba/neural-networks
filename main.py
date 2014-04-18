@@ -115,14 +115,14 @@ def main(argv):
         elif("xor" in argv):
             simpleXOR(0.05,0.01,0.1)
         elif("ocr" in argv):
-            simpleOCR(0.01,0.01,0.1)
+            simpleOCR(0.1,0.01,0.1)
             #a.testNetwork(util.getTestSetWithNoise(data.BipolarOCR.testset, 0.02), 0.1)
         elif("multiand" in argv):
             multiAND(0.05,0.01,0.1)
         elif("multior" in argv):
             multiOR(0.05,0.01,0.1)
         elif("multixor" in argv):
-            multiXOR(0.05,0.01,0.2)
+            multiXOR(0.2,0.01,0.1)
         elif("multiandor" in argv):
             multiANDOR(0.05,0.01,0.1)
         elif("multiocr" in argv):

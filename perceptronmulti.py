@@ -97,13 +97,13 @@ class PerceptronMulti():
                 pattern_error = np.dot(E, E)
                 appendPatternError(pattern_error)
 
-                G = self.backPropagation(X,Y,Z,W)
+                W = self.backPropagation(X,Y,Z,W)
 
                 # learn !
-                if(batch):
-                    D = self.updateWeights(D,G,self.lRate)
-                else:
-                    W = self.updateWeights(W,G,self.lRate)
+                #if(batch):
+                    #D = self.updateWeights(D,G,self.lRate)
+                #else:
+                    #W = self.updateWeights(W,G,self.lRate)
 
                 if(momentum):
                     if(len(Gm) > 0):
@@ -170,18 +170,22 @@ class PerceptronMulti():
         append = G.append
 
         for i in xrange(L, 0, -1):
+            derivative = 1 - np.tanh(Y[i])**2
             transposedInput = np.array([Y[i-1]]).T
-            derivative = (1 - (np.tanh(np.dot(Y[i-1],weights[i])))**2)
-            d = derivative * E
-            append(d*transposedInput)
-            E = np.dot(d,weights[i].T)
+            aux = E * derivative
+            delta = transposedInput * aux
+            weights[i] = weights[i] + delta
+            #append(delta)
+            E = np.dot(aux,weights[i].T)
 
+        derivative = 1 - np.tanh([Y[0]])**2
         transposedInput = np.array([X]).T
-        derivative = (1 - (np.tanh(np.dot(X,weights[0])))**2)
-        d = derivative * E
-        append(d*transposedInput)
+        aux = E * derivative
+        delta = transposedInput * aux
+        weights[0] = weights[0] + delta
+        #append(delta)
 
-        return G
+        return weights
 
     def updateWeights(self, W, G, eta):
         #remember that G is backwards
