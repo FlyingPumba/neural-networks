@@ -18,7 +18,7 @@ class PerceptronMulti():
         self.b = 0.1
         self.gapOfErrorsToCorrect = 3
 
-        self.train_network(trainingset, batch=False, stochastic=False, momentum=False, dlr=False)
+        self.train_network(trainingset, batch=False, stochastic=True, momentum=False, dlr=False)
 
     def train_network(self, dataset, batch=False, stochastic=True, momentum=False, dlr=False):
         print "Data set size is:"
@@ -108,7 +108,7 @@ class PerceptronMulti():
                 if(momentum):
                     if(len(Gm) > 0):
                         W = self.addMomentum(W, Gm, self.alpha)
-                    Gm = G
+                    Gm = W
             
             if(batch):
                 for i in xrange(0, self.nHiddenLayers+1, 1):
@@ -196,7 +196,7 @@ class PerceptronMulti():
     def addMomentum(self, W, Gm, alpha):
         #remember that Gm is backwards
         for i in xrange(0, self.nHiddenLayers+1, 1):
-            W[i] = W[i] + alpha*Gm[self.nHiddenLayers-i]
+            W[i] = W[i] + alpha*Gm[i]
         return W
 
     def getInputWithThreshold(self, input):
