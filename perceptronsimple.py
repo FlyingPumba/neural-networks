@@ -52,9 +52,8 @@ class PerceptronSimple():
                 appendPatternError(np.dot(E, E))
 
                 # calculate the delta
-                derivative = 1 - np.tanh(Y)**2
                 transposedX = np.array([X]).T
-                delta = self.lRate * transposedX * E * derivative
+                delta = self.lRate * transposedX * E
                 
                 # learn !
                 if(batch):

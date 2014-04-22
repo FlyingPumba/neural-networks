@@ -3,17 +3,21 @@ import datautil as util
 import numpy as np
 from perceptronmulti import PerceptronMulti as pm
 
-def validateMultiSin(lRate, epsilon, testepsilon):
-    if(main.silent):
-        sys.stdout = NullDevice()
-    a = pm(2, [10], 1, lRate, epsilon, data.Sin.trainingset)
-    sys.stdout = main.original_stdout
-    a.plotErrorThroughLearning()
-    a.testNetwork(data.Sin.trainingset, testepsilon)
+# numpy print options
+np.set_printoptions(suppress=True)
+np.set_printoptions(precision=5)
 
 def validateMultiOCR(plot = False):
+    trainingset = np.copy(data.BipolarOCR.trainingset[5:])
+    validationset = np.copy(data.BipolarOCR.trainingset[:5])
+    net = pm(25, [10], 5, 0.05, 0.01)
+    net.train_network(trainingset, stochastic=True)
+    print "Errors for the network: %s" % net.testNetwork(validationset, 0.1)
+
+def validateMultiOCRALL(plot = False):
     # split the training set into 10 arrays
-    chunks = np.array_split(data.BipolarOCR.trainingset, 10)
+    nChunks = 4
+    chunks = np.array_split(data.BipolarOCR.trainingset, nChunks)
 
     a1CantErrorsOnTest = []
     a2CantErrorsOnTest = []
@@ -44,17 +48,20 @@ def validateMultiOCR(plot = False):
     h3CantErrorsOnTest = []
 
 
-    for i in xrange(10):
+    for i in xrange(nChunks):
         # the i-th chunk is going to be the validation array
         validationSet = np.array(chunks[i])
         trainingset = []
         # add al the other chunks to the trainingset
-        for j in xrange(10):
+        for j in xrange(nChunks):
             if j != i:
                 for k in xrange(len(chunks[j])):
                     trainingset.append(np.array(chunks[j][k]))
 
         trainingset = np.array(trainingset)
+
+        print "validationSet: %s" % validationSet
+        raw_input()
 
         # test this training set with different parameters
 

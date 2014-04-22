@@ -73,15 +73,15 @@ class PerceptronMulti():
                 #update the learning rate
                 if(len(self.errors_in_each_epoch) > self.gapOfErrorsToCorrect):
                     gap = self.errors_in_each_epoch[-1] - self.errors_in_each_epoch[-(self.gapOfErrorsToCorrect+1)]
-                    print "gap: %.10f" % gap
+                    #print "gap: %.10f" % gap
                     if(gap < 0) :
                         #speed up !
                         self.lRate = self.lRate + self.a
-                        print "new lRate: %.5f" % self.lRate
+                        #print "new lRate: %.5f" % self.lRate
                     elif(gap > 0):
                         #slow down
                         self.lRate = self.lRate - (self.lRate * self.b)
-                        print "new lRate: %.5f" % self.lRate
+                        #print "new lRate: %.5f" % self.lRate
                         #erase last epochs
                         W = Wdlr
 
@@ -100,18 +100,18 @@ class PerceptronMulti():
                 pattern_error = np.dot(E, E)
                 appendPatternError(pattern_error)
 
-                W = self.backPropagation(X,Y,Z,W)
+                G = self.backPropagation(X,Y,Z,W)
 
-                # learn !
-                #if(batch):
-                    #D = self.updateWeights(D,G,self.lRate)
-                #else:
-                    #W = self.updateWeights(W,G,self.lRate)
+                #learn !
+                if(batch):
+                    D = self.updateWeights(D,G,self.lRate)
+                else:
+                    W = self.updateWeights(W,G,self.lRate)
 
                 if(momentum):
                     if(len(Gm) > 0):
                         W = self.addMomentum(W, Gm, self.alpha)
-                    Gm = W
+                    Gm = G
             
             if(batch):
                 for i in xrange(0, self.nHiddenLayers+1, 1):
@@ -174,22 +174,20 @@ class PerceptronMulti():
         append = G.append
 
         for i in xrange(L, 0, -1):
-            derivative = 1 - np.tanh(Y[i])**2
+            derivative = 1 - Y[i]**2
             transposedInput = np.array([Y[i-1]]).T
             aux = E * derivative
             delta = transposedInput * aux
-            weights[i] = weights[i] + self.lRate * delta
-            #append(delta)
+            append(delta)
             E = np.dot(aux,weights[i].T)
 
-        derivative = 1 - np.tanh([Y[0]])**2
+        derivative = 1 - Y[0]**2
         transposedInput = np.array([X]).T
         aux = E * derivative
         delta = transposedInput * aux
-        weights[0] = weights[0] + self.lRate * delta
-        #append(delta)
+        append(delta)
 
-        return weights
+        return G
 
     def updateWeights(self, W, G, eta):
         #remember that G is backwards
@@ -200,7 +198,7 @@ class PerceptronMulti():
     def addMomentum(self, W, Gm, alpha):
         #remember that Gm is backwards
         for i in xrange(0, self.nHiddenLayers+1, 1):
-            W[i] = W[i] + alpha*Gm[i]
+            W[i] = W[i] + alpha*Gm[self.nHiddenLayers-i]
         return W
 
     def getInputWithThreshold(self, input):

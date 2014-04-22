@@ -128,7 +128,7 @@ def main(argv):
         elif("xor" in argv):
             simpleXOR(0.05,0.01,0.1)
         elif("ocr" in argv):
-            simpleOCR(0.1,0.01,0.1)
+            simpleOCR(0.05,0.01,0.1)
             #a.testNetwork(util.getTestSetWithNoise(data.BipolarOCR.testset, 0.02), 0.1)
         elif("multiand" in argv):
             multiAND(0.05,0.01,0.1)
@@ -147,7 +147,7 @@ def main(argv):
             if(main.validacion):
                 val.validateMultiSin()
             else:
-                multiSin(0.2,0.01,0.1)
+                multiSin(0.1,0.01,0.1)
 
 # numpy print options
 np.set_printoptions(suppress=True)
