@@ -174,7 +174,7 @@ class PerceptronMulti():
             transposedInput = np.array([Y[i-1]]).T
             aux = E * derivative
             delta = transposedInput * aux
-            weights[i] = weights[i] + delta
+            weights[i] = weights[i] + self.lRate * delta
             #append(delta)
             E = np.dot(aux,weights[i].T)
 
@@ -182,7 +182,7 @@ class PerceptronMulti():
         transposedInput = np.array([X]).T
         aux = E * derivative
         delta = transposedInput * aux
-        weights[0] = weights[0] + delta
+        weights[0] = weights[0] + self.lRate * delta
         #append(delta)
 
         return weights
