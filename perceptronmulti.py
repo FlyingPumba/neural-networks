@@ -4,7 +4,7 @@ import data as data
 
 class PerceptronMulti():
     """Perceptron Multicapa"""
-    def __init__(self, cant_input_nodes, array_cant_hidden_nodes, cant_output_nodes, learning_rate, epsilon, trainingset):
+    def __init__(self, cant_input_nodes, array_cant_hidden_nodes, cant_output_nodes, learning_rate, epsilon):
         self.nInput = cant_input_nodes
         self.nOutput = cant_output_nodes
         self.nHiddenNodes = array_cant_hidden_nodes
@@ -12,13 +12,16 @@ class PerceptronMulti():
         self.lRate = learning_rate
         self.epsilon = epsilon
         #momentum parameter
-        self.alpha = 0.01
+        # self.alpha = self.lRate * 0.1
+        # print "alpha: %.8f" % self.alpha
+        # raw_input()
+        # self.alpha = 0.001
+        # self.alpha = 0.0001
+        self.alpha = 0.00001
         #dlr parameters
         self.a = 0.1
         self.b = 0.1
         self.gapOfErrorsToCorrect = 3
-
-        self.train_network(trainingset, batch=False, stochastic=True, momentum=False, dlr=False)
 
     def train_network(self, dataset, batch=False, stochastic=True, momentum=False, dlr=False):
         print "Data set size is:"
@@ -85,12 +88,12 @@ class PerceptronMulti():
                     #raw_input()
 
             for i in xrange(cant_patterns):
-                print "Training pattern %d" % i
+                #print "Training pattern %d" % i
                 X = self.getInputWithThreshold(dataset[i,0])
                 Y = self.evaluate(X, W)
-                print "Output is: %s" % Y[-1]
+                #print "Output is: %s" % Y[-1]
 
-                print "Expected output is: %s" % dataset[i,1]
+                #print "Expected output is: %s" % dataset[i,1]
                 Z = dataset[i,1]
 
                 E = Z-Y[-1]
@@ -115,7 +118,7 @@ class PerceptronMulti():
                     W[i] = W[i] + D[i]
 
             if(dlr and cant_epochs % self.gapOfErrorsToCorrect == 0):
-                print "saving W on epoch: %d" % cant_epochs
+                #print "saving W on epoch: %d" % cant_epochs
                 #raw_input()
                 Wdlr = W
 
@@ -149,6 +152,7 @@ class PerceptronMulti():
             plt.plot(self.errors_in_each_epoch_sum)
             plt.ylabel("network error")
             plt.xlabel("epoch number")
+            #plt.title('Title of the graphic')
             plt.show()
 
     def evaluate(self, input, weights):
@@ -232,3 +236,4 @@ class PerceptronMulti():
                 patterns_with_error = patterns_with_error + 1
 
         print "\nThere were %d errors over %d patterns" % (patterns_with_error, cant_patterns)
+        return patterns_with_error

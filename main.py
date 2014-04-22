@@ -3,6 +3,7 @@ import datautil as util
 import numpy as np
 from perceptronsimple import PerceptronSimple as ps
 from perceptronmulti import PerceptronMulti as pm
+import validacion as val
 import sys
 
 class NullDevice():
@@ -106,6 +107,12 @@ def main(argv):
             main.silent = True
         else:
             main.silent = False
+
+        if("-validate" in argv):
+            main.validacion = True
+        else:
+            main.validacion = False
+
         if("andor" in argv):
             simpleANDOR(0.05,0.01,0.1)
         elif("and" in argv):
@@ -126,9 +133,15 @@ def main(argv):
         elif("multiandor" in argv):
             multiANDOR(0.05,0.01,0.1)
         elif("multiocr" in argv):
-            multiOCR(0.05,0.01,0.1)
+            if(main.validacion):
+                val.validateMultiOCR(plot = False)
+            else:
+                multiOCR(0.05,0.01,0.1)
         elif("multisin" in argv):
-            multiSin(0.2,0.01,0.1)
+            if(main.validacion):
+                val.validateMultiSin()
+            else:
+                multiSin(0.2,0.01,0.1)
 
 # numpy print options
 np.set_printoptions(suppress=True)
