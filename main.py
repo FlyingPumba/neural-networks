@@ -80,7 +80,7 @@ def multiXOR(lRate, epsilon, testepsilon):
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning()
     a.testNetwork(data.XOR.testset, testepsilon)
-
+    
 def multiOCR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
@@ -128,7 +128,7 @@ def main(argv):
         elif("multiocr" in argv):
             multiOCR(0.05,0.01,0.1)
         elif("multisin" in argv):
-            multiSin(0.05,0.01,0.1)
+            multiSin(0.2,0.01,0.1)
 
 # numpy print options
 np.set_printoptions(suppress=True)

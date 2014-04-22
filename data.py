@@ -88,11 +88,17 @@ class BipolarOCR(OCR):
 class Sin():
     trainingset = []
     append = trainingset.append
-    for x in du.rangef(-20,20,0.1):
-        y0 = -2*x
-        y2pi = 4*np.pi - 2*x
-        y = np.random.uniform(y0, y2pi)
-        output = np.sin(x+y/2)
+    flag = True
+    x = 0
+    y = 0
+    for output in du.rangef(0,2*np.pi,0.05):
+        if(flag):
+            x = np.random.uniform(-10,10)
+            y = 2*(output - x)
+            flag = False
+        else:
+            y = np.random.uniform(-10,10)
+            x = output - y/2
+            flag = True
         append([[x,y],[output]])
     trainingset = np.asarray(trainingset)
-    # TODO: implementar para que llegue a todos los valores entre 0 y 2pi
