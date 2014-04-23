@@ -52,6 +52,8 @@ class PerceptronMulti():
             print "\nThe %d epoch has begun \n" % cant_epochs
             errors_in_each_pattern = []
             appendPatternError = errors_in_each_pattern.append
+            errors_in_each_pattern_abs = []
+            appendPatternErrorAbs = errors_in_each_pattern_abs.append
 
             # stochastic learning
             if(stochastic):
@@ -98,6 +100,7 @@ class PerceptronMulti():
                 E = Z-Y[-1]
                 pattern_error = np.dot(E, E)
                 appendPatternError(pattern_error)
+                appendPatternErrorAbs(np.sum(np.absolute(E)/2))
 
                 G = self.backPropagation(X,Y,Z,W)
 
@@ -125,7 +128,7 @@ class PerceptronMulti():
 
             cant_epochs = cant_epochs + 1
             self.appendEpochError(np.max(errors_in_each_pattern))
-            self.appendEpochErrorSum(np.sum(errors_in_each_pattern))
+            self.appendEpochErrorSum(np.sum(errors_in_each_pattern_abs))
             
             keep_going = True
             if(cant_epochs >= max_epochs):

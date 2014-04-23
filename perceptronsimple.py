@@ -34,6 +34,8 @@ class PerceptronSimple():
             print "The %d epoch has begun \n" % cant_epochs
             errors_in_each_pattern = []
             appendPatternError = errors_in_each_pattern.append
+            errors_in_each_pattern_abs = []
+            appendPatternErrorAbs = errors_in_each_pattern_abs.append
 
             # stochastic learning
             if(stochastic):
@@ -52,6 +54,7 @@ class PerceptronSimple():
                 E = Z - Y
                 
                 appendPatternError(np.dot(E, E))
+                appendPatternErrorAbs(np.sum(np.absolute(E)/2))
 
                 # calculate the delta
                 transposedX = np.array([X]).T
@@ -68,7 +71,7 @@ class PerceptronSimple():
 
             cant_epochs = cant_epochs + 1
             self.appendEpochError(np.max(errors_in_each_pattern))
-            self.appendEpochErrorSum(np.sum(errors_in_each_pattern))
+            self.appendEpochErrorSum(np.sum(errors_in_each_pattern_abs))
             
             keep_going = True
             if(cant_epochs >= max_epochs):
