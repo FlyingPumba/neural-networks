@@ -29,13 +29,16 @@ class PerceptronMulti():
 
         # how many training patterns do we have ?
         cant_patterns = dataset.shape[0]
+        trainingset = np.copy(dataset)
 
         # create the Weight matrix (nInput+1 for the threshold)
         W = []
         W.append(np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nHiddenNodes[0])))
         for i in xrange(1, self.nHiddenLayers, 1):
-            W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[i-1], self.nHiddenNodes[i])))
-        W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[self.nHiddenLayers-1], self.nOutput)))
+            W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[i-1]+1, self.nHiddenNodes[i])))
+        W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[self.nHiddenLayers-1]+1, self.nOutput)))
+
+        print "W: %s" % W 
 
         if(dlr):
             Wdlr = []
@@ -57,14 +60,15 @@ class PerceptronMulti():
 
             # stochastic learning
             if(stochastic):
-                np.random.shuffle(dataset)
+                trainingset = np.copy(dataset)
+                np.random.shuffle(trainingset)
 
             if(batch):
                 D = []
                 D.append(np.zeros((self.nInput+1, self.nHiddenNodes[0])))
                 for i in xrange(1, self.nHiddenLayers, 1):
-                    D.append(np.zeros((self.nHiddenNodes[i-1], self.nHiddenNodes[i])))
-                D.append(np.zeros((self.nHiddenNodes[self.nHiddenLayers-1], self.nOutput)))
+                    D.append(np.zeros((self.nHiddenNodes[i-1]+1, self.nHiddenNodes[i])))
+                D.append(np.zeros((self.nHiddenNodes[self.nHiddenLayers-1]+1, self.nOutput)))
 
             if(momentum):
                 Gm = []
@@ -89,12 +93,12 @@ class PerceptronMulti():
 
             for i in xrange(cant_patterns):
                 #print "Training pattern %d" % i
-                X = self.getInputWithThreshold(dataset[i,0])
+                X = trainingset[i,0]
                 Y = self.evaluate(X, W)
                 #print "Output is: %s" % Y[-1]
 
                 #print "Expected output is: %s" % dataset[i,1]
-                Z = dataset[i,1]
+                Z = trainingset[i,1]
 
                 E = Z-Y[-1]
                 pattern_error = np.dot(E, E)
@@ -107,6 +111,8 @@ class PerceptronMulti():
                     D = self.updateWeights(D,G,self.lRate)
                 else:
                     W = self.updateWeights(W,G,self.lRate)
+
+                #print "W: %s" % W
 
                 if(momentum):
                     if(len(Gm) > 0):
@@ -158,16 +164,23 @@ class PerceptronMulti():
     def evaluate(self, input, weights):
         Y = []
         append = Y.append
-        append(np.tanh(np.dot(input,weights[0])))
+        append(np.tanh(np.dot(self.addBias(input),weights[0])))
+        #print "Y[-1]: %s" % self.addBias(Y[-1])
+
         for i in xrange(1, self.nHiddenLayers, 1):
-            append(np.tanh(np.dot(Y[i-1],weights[i])))
-        append(np.tanh(np.dot(Y[self.nHiddenLayers-1],weights[self.nHiddenLayers])))
+            append(np.tanh(self.addBias(np.dot(Y[i-1]),weights[i])))
+            #print "Y[-1]: %s" % self.addBias(Y[-1])
+
+        #print "W[%d]: %s" % (self.nHiddenLayers, weights[self.nHiddenLayers])
+        append(np.tanh(np.dot(self.addBias(Y[-1]),weights[self.nHiddenLayers])))
 
         return Y
 
     def backPropagation(self,X, Y, Z, weights):
         # calculate the error
+        #print "Y[-1]: %s" % Y[-1]
         E = Z-Y[-1]
+        #print "E: %s" % E
 
         L = self.nHiddenLayers
         G = []
@@ -175,16 +188,19 @@ class PerceptronMulti():
 
         for i in xrange(L, 0, -1):
             derivative = 1 - Y[i]**2
-            transposedInput = np.array([Y[i-1]]).T
-            aux = E * derivative
-            delta = transposedInput * aux
+            transposedInput = np.array([self.addBias(Y[i-1])]).T
+            D = E * derivative
+            delta = transposedInput * D
+            #print "delta: %s" % delta
             append(delta)
-            E = np.dot(aux,weights[i].T)
+            E = self.removeBias(np.dot(D,weights[i].T))
+            #print "E: %s" % E
 
         derivative = 1 - Y[0]**2
-        transposedInput = np.array([X]).T
-        aux = E * derivative
-        delta = transposedInput * aux
+        transposedInput = np.array([self.addBias(X)]).T
+        D = E * derivative
+        delta = transposedInput * D
+        #print "delta: %s" % delta
         append(delta)
 
         return G
@@ -201,14 +217,14 @@ class PerceptronMulti():
             W[i] = W[i] + alpha*Gm[self.nHiddenLayers-i]
         return W
 
-    def getInputWithThreshold(self, input):
-        # create input array
-        X = np.zeros(self.nInput+1)
-        for j in xrange(self.nInput):
-            X[j] = input[j]
-        X[self.nInput] = -1
+    def addBias(self, input):
+        X = np.resize(input, np.size(input)+1)
+        X[-1] = -1
 
         return X
+
+    def removeBias(self, input):
+        return input[:-1]
 
     def testNetwork(self, testset, testepsilon):
         print "\nTesting the network"
@@ -217,7 +233,7 @@ class PerceptronMulti():
 
         for i in xrange(cant_patterns):
             print "\nTesting pattern %d" % (i+1)
-            X = self.getInputWithThreshold(testset[i,0])
+            X = testset[i,0]
             Y = self.evaluate(X, self.W)
             print "Output is: %s" % Y[-1]
             

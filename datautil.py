@@ -1,31 +1,48 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
-def getTestSetWithNoise(testset, noiseRate):
+def getTestSetWithNoise(testset, noiseRate, plot=False):
     cant_patterns = testset.shape[0]
     new_testset = []
     for i in range(0, cant_patterns):
         # alter the pattern
         new_testset.append([alterPattern(noiseRate, testset[i,0]), testset[i,1]])
-    return np.asarray(new_testset)
+        #print "original \n %s" % testset[i]
+        #print "with noise \n %s" % new_testset[i]
+
+        if(plot):
+            new_letter = new_testset[i][0]
+            new_letter = new_letter.reshape(5,5)
+            print "letter reshaped \n %s" % new_letter
+            plt.imshow(new_letter, interpolation='none')
+            plt.title("letter %d" % i)
+            plt.show()
+    #raw_input()
+    return np.array(new_testset)
 
 def alterPattern(noiseRate, pattern):
-    cant_values = np.size(pattern)
-    new_pattern = np.zeros(pattern.shape)
+    return pattern + np.random.uniform(-noiseRate/2,noiseRate/2, size=pattern.shape)
 
-    for i in range(0,cant_values):
-        s = np.random.uniform(0,1)
+def getTestSetWithSwitchedUnits(testset, noiseRate, plot=False):
+    cant_patterns = testset.shape[0]
+    new_testset = []
+    for i in range(0, cant_patterns):
+        # alter the pattern
+        A = np.random.uniform(0, 1, testset[i,0].shape)
+        B = np.where(A<noiseRate, -1, 1)
+        new_testset.append(np.array([np.array(testset[i,0] * B), testset[i,1]]))
+        #print "original \n %s" % testset[i]
+        #print "with switched units \n %s" % new_testset[i]
 
-        if(s<noiseRate):
-            # alter the value
-            if(pattern[i]==0):
-                new_pattern[i] = 1
-            else:
-                new_pattern[i] = 0
-        else:
-            # copy the same value
-            new_pattern[i] = pattern[i]
-
-    return new_pattern
+        if(plot):
+            new_letter = new_testset[i][0]
+            new_letter = new_letter.reshape(5,5)
+            print "letter reshaped \n %s" % new_letter
+            plt.imshow(new_letter, interpolation='none')
+            plt.title("letter %d" % i)
+            plt.show()
+    #raw_input()
+    return np.array(new_testset)
 
 def rangef(min, max, step):
     while min<max:

@@ -15,6 +15,7 @@ class PerceptronSimple():
     def train_network(self, dataset, batch=False, stochastic=True):
         # how many training patterns do we have ?
         cant_patterns = dataset.shape[0]
+        trainingset = np.copy(dataset)
 
         # create the Weight matrix (nInput+1 for the threshold)
         W = np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nOutput))
@@ -36,15 +37,16 @@ class PerceptronSimple():
 
             # stochastic learning
             if(stochastic):
-                np.random.shuffle(dataset)
+                trainingset = np.copy(dataset)
+                np.random.shuffle(trainingset)
 
             if(batch):
                 D = np.zeros((self.nInput+1, self.nOutput))
 
             for i in xrange(cant_patterns):
-                X = self.getInputWithThreshold(dataset[i,0])
+                X = self.getInputWithThreshold(trainingset[i,0])
                 Y = np.tanh(np.dot(X,W))
-                Z = dataset[i,1]
+                Z = trainingset[i,1]
 
                 # calculate the error
                 E = Z - Y
