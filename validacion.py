@@ -50,23 +50,54 @@ def validateMultiOCR(plot = False):
     raw_input()
 
 def validateMultiSin(plot = False):
-    net = pm(2, [20], 1, 0.01, 0.1)
-    net.train_network(data.Sin.trainingset, momentum=False, stochastic=True)
-    net.plotErrorThroughLearning()
+    # split the training set into 10 arrays
+    nChunks = 4
+    chunks = np.array_split(data.Sin.trainingset, nChunks)
 
-    validationset1 = util.getTestSetWithNoise(data.Sin.testset, 0.02)
-    validationset2 = util.getTestSetWithNoise(data.Sin.testset, 0.05)
-    validationset3 = util.getTestSetWithNoise(data.Sin.testset, 0.1)
-    validationset4 = util.getTestSetWithNoise(data.Sin.testset, 0.3)
+    validationSetLen = []
+    errorsNet1 = []
+    errorsNet2 = []
+    errorsNet3 = []
+    errorsNet4 = []
 
-    print "Errors with 2%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset1, 0.1)
-    raw_input()
-    print "Errors with 5%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset2, 0.1)
-    raw_input()
-    print "Errors with 10%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset3, 0.1)
-    raw_input()
-    print "Errors with 30%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset4, 0.1)
-    raw_input()
+    for i in xrange(nChunks):
+        # the i-th chunk is going to be the validation set
+        validationset = np.array(chunks[i])
+        trainingset = []
+        # add al the other chunks to the trainingset
+        for j in xrange(nChunks):
+            if j != i:
+                for k in xrange(len(chunks[j])):
+                    trainingset.append(np.array(chunks[j][k]))
+
+        trainingset = np.array(trainingset)
+
+        net1 = pm(2, [20], 1, 0.2, 0.01)
+        net2 = pm(2, [20], 1, 0.2, 0.01)
+        #net3 = pm(2, [20], 1, 0.2, 0.01)
+        #net4 = pm(2, [20], 1, 0.2, 0.01)
+
+        net1.train_network(trainingset, stochastic=True)
+        net2.train_network(trainingset, momentum=True, stochastic=True)
+        #net3.train_network(trainingset, dlr=True, stochastic=True)
+        #net4.train_network(trainingset, momentum=True, dlr=True, stochastic=True)
+
+        if plot:
+            net1.plotErrorThroughLearning()
+            net2.plotErrorThroughLearning()
+            #net3.plotErrorThroughLearning()
+            #net4.plotErrorThroughLearning()
+
+        validationSetLen.append(len(validationset))
+        errorsNet1.append(net1.testNetwork(validationset, 0.1))
+        errorsNet2.append(net2.testNetwork(validationset, 0.1))
+        print "\nErrors for %d validationset. Net: not mods. Errors: %d/%d" % (i, errorsNet1[-1], len(validationset))
+        print "Errors for %d validationset. Net: momentum. Errors: %d/%d" % (i, errorsNet2[-1], len(validationset))
+        #raw_input()
+
+    print "Validation sets len: %s" % validationSetLen
+    print "Total errors net: not mods: %s" % errorsNet1
+    print "total errors net: momentum: %s" % errorsNet2
 
 def validateMultiOCRALL(plot = False):
     # split the training set into 10 arrays

@@ -87,18 +87,54 @@ class BipolarOCR(OCR):
 
 class Sin():
     trainingset = []
-    append = trainingset.append
+    interpolationset = []
+    extrapolationset = []
+
     flag = True
+    flag2 = 0
     x = 0
     y = 0
-    for output in du.rangef(0,2*np.pi,0.05):
+    for val in du.rangef(0,2*np.pi,0.05):
         if(flag):
             x = np.random.uniform(-10,10)
-            y = 2*(output - x)
+            y = 2*(val - x)
             flag = False
         else:
             y = np.random.uniform(-10,10)
-            x = output - y/2
+            x = val - y/2
             flag = True
-        append([[x,y],[output]])
+
+        if flag2 < 2:
+            trainingset.append([[x,y],[np.sin(val)]])
+            flag2 = flag2 + 1
+        else:
+            interpolationset.append([[x,y],[np.sin(val)]])
+            flag2 = 0
+
     trainingset = np.asarray(trainingset)
+    interpolationset = np.asarray(interpolationset)
+
+    #extrapolation set: [-2pi,0] U [2pi,4pi]
+    for val in du.rangef(-2*np.pi,0,0.1):
+        if(flag):
+            x = np.random.uniform(-10,10)
+            y = 2*(val - x)
+            flag = False
+        else:
+            y = np.random.uniform(-10,10)
+            x = val - y/2
+            flag = True
+        extrapolationset.append([[x,y],[np.sin(val)]])
+
+    for val in du.rangef(2*np.pi,4*pi,0.1):
+        if(flag):
+            x = np.random.uniform(-10,10)
+            y = 2*(val - x)
+            flag = False
+        else:
+            y = np.random.uniform(-10,10)
+            x = val - y/2
+            flag = True
+        extrapolationset.append([[x,y],[np.sin(val)]])
+
+    extrapolationset = np.asarray(extrapolationset)

@@ -147,7 +147,7 @@ def main(argv):
             if(main.validacion):
                 val.validateMultiSin()
             else:
-                multiSin(0.1,0.01,0.1)
+                multiSin(0.2,0.01,0.1)
 
 # numpy print options
 np.set_printoptions(suppress=True)
