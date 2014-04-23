@@ -123,9 +123,10 @@ class PerceptronSimple():
             E = Z - Y
             print "Error is: %s" % E
 
-            absolute_errors = np.absolute(E)
-            if(np.size(absolute_errors[absolute_errors>testepsilon]) != 0):
-                print "-----> WRONG OUTPUT"
+            absolute_error = np.absolute(E)/2
+            sum_error = np.sum(absolute_error)
+            if(sum_error>testepsilon):
+                print "-----> WRONG OUTPUT. The sum error for this pattern is: %.5f" % sum_error
                 patterns_with_error = patterns_with_error + 1
 
         print "\nThere were %d errors over %d patterns" % (patterns_with_error, cant_patterns)
