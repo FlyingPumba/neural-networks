@@ -12,12 +12,7 @@ class PerceptronMulti():
         self.lRate = learning_rate
         self.epsilon = epsilon
         #momentum parameter
-        # self.alpha = self.lRate * 0.1
-        # print "alpha: %.8f" % self.alpha
-        # raw_input()
-        # self.alpha = 0.001
-        # self.alpha = 0.0001
-        self.alpha = 0.00001
+        self.alpha = self.lRate * 0.1
         #dlr parameters
         self.a = 0.1
         self.b = 0.1
@@ -214,6 +209,7 @@ class PerceptronMulti():
     def addMomentum(self, W, Gm, alpha):
         #remember that Gm is backwards
         for i in xrange(0, self.nHiddenLayers+1, 1):
+            #print "Adding momentum to W[%d]" % i
             W[i] = W[i] + alpha*Gm[self.nHiddenLayers-i]
         return W
 

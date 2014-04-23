@@ -126,7 +126,7 @@ class Sin():
             flag = True
         extrapolationset.append([[x,y],[np.sin(val)]])
 
-    for val in du.rangef(2*np.pi,4*pi,0.1):
+    for val in du.rangef(2*np.pi,4*np.pi,0.1):
         if(flag):
             x = np.random.uniform(-10,10)
             y = 2*(val - x)
