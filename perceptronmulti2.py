@@ -15,7 +15,8 @@ class PerceptronMulti():
         #dlr parameters
         self.a = 0.1
         self.b = 0.1
-        self.gapOfErrorsToCorrect = 3
+        self.epochsToCorrect = 10
+        self.currentStrikeOfBadEpochs = 0
 
     def train_network(self, dataset, stochastic=True, momentum=False, dlr=False):
         print "Data set size is:"
@@ -60,24 +61,6 @@ class PerceptronMulti():
             if(momentum):
                 Gm = []
 
-            if(dlr and cant_epochs % self.gapOfErrorsToCorrect == 0):
-                #update the learning rate
-                if(len(self.errors_in_each_epoch) > self.gapOfErrorsToCorrect):
-                    gap = self.errors_in_each_epoch[-1] - self.errors_in_each_epoch[-(self.gapOfErrorsToCorrect+1)]
-                    #print "gap: %.10f" % gap
-                    if(gap < 0) :
-                        #speed up !
-                        self.lRate = self.lRate + self.a
-                        #print "new lRate: %.5f" % self.lRate
-                    elif(gap > 0):
-                        #slow down
-                        self.lRate = self.lRate - (self.lRate * self.b)
-                        #print "new lRate: %.5f" % self.lRate
-                        #erase last epochs
-                        W = Wdlr
-
-                    #raw_input()
-
             for i in xrange(cant_patterns):
                 X = trainingset[i,0]
                 print "Training pattern %d: %s" % (i,X)
@@ -103,10 +86,25 @@ class PerceptronMulti():
                         W = self.addMomentum(W, Gm, self.alpha)
                     Gm = G
 
-            if(dlr and cant_epochs % self.gapOfErrorsToCorrect == 0):
-                #print "saving W on epoch: %d" % cant_epochs
-                #raw_input()
-                Wdlr = W
+                if(dlr and len(self.errors_in_each_epoch) > self.epochsToCorrect):
+                    gap = self.errors_in_each_epoch[-1] - self.errors_in_each_epoch[-(self.epochsToCorrect+1)]
+                    #print "gap: %.10f" % gap
+                    if(gap < 0) :
+                        #speed up !
+                        self.lRate = self.lRate + self.a
+                        self.currentStrikeOfBadEpochs = 0
+                        #print "new lRate: %.5f" % self.lRate
+                    elif(gap > 0):
+                        if(self.currentStrikeOfBadEpochs == 0):
+                            Wdlr = W
+                            self.currentStrikeOfBadEpochs = self.currentStrikeOfBadEpochs + 1
+                        elif(self.currentStrikeOfBadEpochs == self.epochsToCorrect):
+                            #slow down and rollback
+                            self.lRate = self.lRate - (self.lRate * self.b)
+                            W = Wdlr
+                            self.currentStrikeOfBadEpochs = 0
+                        else:
+                            self.currentStrikeOfBadEpochs = self.currentStrikeOfBadEpochs + 1
 
             cant_epochs = cant_epochs + 1
             self.appendEpochError(np.max(errors_in_each_pattern))
