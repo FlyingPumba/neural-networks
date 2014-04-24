@@ -2,7 +2,7 @@ import data as data
 import datautil as util
 import numpy as np
 from perceptronsimple import PerceptronSimple as ps
-from perceptronmulti import PerceptronMulti as pm
+from perceptronmulti2 import PerceptronMulti as pm
 import validacion as val
 import sys
 
@@ -53,8 +53,8 @@ def simpleOCR(lRate, epsilon, testepsilon):
 def multiANDOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [10], 2, lRate, epsilon)
-    a.train_network(data.ANDOR.trainingset, batch=False, stochastic=True, momentum=False, dlr=False)
+    a = pm(2, 10, 2, lRate, epsilon)
+    a.train_network(data.ANDOR.trainingset, stochastic=True, momentum=False, dlr=False)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning()
     a.testNetwork(data.ANDOR.testset, testepsilon)
@@ -62,8 +62,8 @@ def multiANDOR(lRate, epsilon, testepsilon):
 def multiAND(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [10], 1, lRate, epsilon)
-    a.train_network(data.AND.trainingset, batch=False, stochastic=True, momentum=False, dlr=False)
+    a = pm(2, 10, 1, lRate, epsilon)
+    a.train_network(data.AND.trainingset, stochastic=True, momentum=False, dlr=False)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning()
     a.testNetwork(data.AND.testset, testepsilon)
@@ -71,8 +71,8 @@ def multiAND(lRate, epsilon, testepsilon):
 def multiOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [10], 1, lRate, epsilon)
-    a.train_network(data.OR.trainingset, batch=False, stochastic=True, momentum=False, dlr=False)
+    a = pm(2, 10, 1, lRate, epsilon)
+    a.train_network(data.OR.trainingset, stochastic=True, momentum=False, dlr=False)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning()
     a.testNetwork(data.OR.testset, testepsilon)
@@ -80,8 +80,8 @@ def multiOR(lRate, epsilon, testepsilon):
 def multiXOR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [3], 1, lRate, epsilon)
-    a.train_network(data.XOR.trainingset, batch=False, stochastic=True, momentum=False, dlr=False)
+    a = pm(2, 10, 1, lRate, epsilon)
+    a.train_network(data.XOR.trainingset, stochastic=False, momentum=True, dlr=False)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning()
     a.testNetwork(data.XOR.testset, testepsilon)
@@ -89,8 +89,8 @@ def multiXOR(lRate, epsilon, testepsilon):
 def multiOCR(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(25, [10], 5, lRate, epsilon)
-    a.train_network(data.BipolarOCR.trainingset, batch=False, stochastic=True, momentum=False, dlr=False)
+    a = pm(25, 10, 5, lRate, epsilon)
+    a.train_network(data.BipolarOCR.trainingset, stochastic=True)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning()
     a.testNetwork(data.BipolarOCR.testset, testepsilon)
@@ -98,8 +98,8 @@ def multiOCR(lRate, epsilon, testepsilon):
 def multiSin(lRate, epsilon, testepsilon):
     if(main.silent):
         sys.stdout = NullDevice()
-    a = pm(2, [10], 1, lRate, epsilon)
-    a.train_network(data.Sin.trainingset, batch=False, stochastic=True, momentum=False, dlr=False)
+    a = pm(2, 10, 1, lRate, epsilon)
+    a.train_network(data.Sin.trainingset, stochastic=True, momentum=False, dlr=False)
     sys.stdout = main.original_stdout
     a.plotErrorThroughLearning()
     a.testNetwork(data.Sin.trainingset, testepsilon)

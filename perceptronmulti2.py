@@ -4,11 +4,10 @@ import data as data
 
 class PerceptronMulti():
     """Perceptron Multicapa"""
-    def __init__(self, cant_input_nodes, array_cant_hidden_nodes, cant_output_nodes, learning_rate, epsilon):
+    def __init__(self, cant_input_nodes, cant_hidden_nodes, cant_output_nodes, learning_rate, epsilon):
         self.nInput = cant_input_nodes
         self.nOutput = cant_output_nodes
-        self.nHiddenNodes = array_cant_hidden_nodes
-        self.nHiddenLayers = len(array_cant_hidden_nodes)
+        self.nHiddenNodes = cant_hidden_nodes
         self.lRate = learning_rate
         self.epsilon = epsilon
         #momentum parameter
@@ -18,7 +17,7 @@ class PerceptronMulti():
         self.b = 0.1
         self.gapOfErrorsToCorrect = 3
 
-    def train_network(self, dataset, batch=False, stochastic=True, momentum=False, dlr=False):
+    def train_network(self, dataset, stochastic=True, momentum=False, dlr=False):
         print "Data set size is:"
         print "%s \n" % (dataset.shape,)
 
@@ -28,10 +27,8 @@ class PerceptronMulti():
 
         # create the Weight matrix (nInput+1 for the threshold)
         W = []
-        W.append(np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nHiddenNodes[0])))
-        for i in xrange(1, self.nHiddenLayers, 1):
-            W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[i-1]+1, self.nHiddenNodes[i])))
-        W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes[self.nHiddenLayers-1]+1, self.nOutput)))
+        W.append(np.random.uniform(-0.1,0.1,size=(self.nInput+1, self.nHiddenNodes)))
+        W.append(np.random.uniform(-0.1,0.1,size=(self.nHiddenNodes+1, self.nOutput)))
 
         print "W: %s" % W 
 
@@ -60,13 +57,6 @@ class PerceptronMulti():
                 trainingset = np.copy(dataset)
                 np.random.shuffle(trainingset)
 
-            if(batch):
-                D = []
-                D.append(np.zeros((self.nInput+1, self.nHiddenNodes[0])))
-                for i in xrange(1, self.nHiddenLayers, 1):
-                    D.append(np.zeros((self.nHiddenNodes[i-1]+1, self.nHiddenNodes[i])))
-                D.append(np.zeros((self.nHiddenNodes[self.nHiddenLayers-1]+1, self.nOutput)))
-
             if(momentum):
                 Gm = []
 
@@ -92,12 +82,12 @@ class PerceptronMulti():
                 X = trainingset[i,0]
                 print "Training pattern %d: %s" % (i,X)
                 Y = self.evaluate(X, W)
-                print "Output is: %s" % Y[-1]
+                print "Output is: %s" % Y[1]
 
                 print "Expected output is: %s" % dataset[i,1]
                 Z = trainingset[i,1]
 
-                E = Z-Y[-1]
+                E = Z-Y[1]
                 pattern_error = np.dot(E, E)
                 appendPatternError(pattern_error)
                 appendPatternErrorAbs(np.sum(np.absolute(E)/2))
@@ -105,21 +95,13 @@ class PerceptronMulti():
                 G = self.backPropagation(X,Y,Z,W)
 
                 #learn !
-                if(batch):
-                    D = self.updateWeights(D,G,self.lRate)
-                else:
-                    W = self.updateWeights(W,G,self.lRate)
-
+                W = self.updateWeights(W,G,self.lRate)
                 #print "W: %s" % W
 
                 if(momentum):
                     if(len(Gm) > 0):
                         W = self.addMomentum(W, Gm, self.alpha)
                     Gm = G
-            
-            if(batch):
-                for i in xrange(0, self.nHiddenLayers+1, 1):
-                    W[i] = W[i] + D[i]
 
             if(dlr and cant_epochs % self.gapOfErrorsToCorrect == 0):
                 #print "saving W on epoch: %d" % cant_epochs
@@ -162,75 +144,40 @@ class PerceptronMulti():
     def evaluate(self, input, weights):
         #print "W to evaluate: %s" % weights
         Y = []
-        append = Y.append
-        append(np.tanh(np.dot(self.addBias(input),weights[0])))
-        #print "Y[-1]: %s" % self.addBias(Y[-1])
-
-        for i in xrange(1, self.nHiddenLayers, 1):
-            append(np.tanh(self.addBias(np.dot(Y[i-1]),weights[i])))
-            #print "Y[-1]: %s" % self.addBias(Y[-1])
-
-        #print "W[%d]: %s" % (self.nHiddenLayers, weights[self.nHiddenLayers])
-        append(np.tanh(np.dot(self.addBias(Y[-1]),weights[-1])))
-
+        Y.append(np.tanh(np.dot(self.addBias(input),weights[0])))
+        Y.append(np.tanh(np.dot(self.addBias(Y[0]),weights[1])))
         #print "Y: %s" % Y
         return Y
 
     def backPropagation(self,X, Y, Z, weights):
-        # calculate the error
-        #print "Y[-1]: %s" % Y[-1]
-        E = Z-Y[-1]
-        #print "E: %s" % E
-
-        L = self.nHiddenLayers
         G = []
-        append = G.append
 
-        for i in xrange(L, 0, -1):
-            derivative = 1 - Y[i]**2
-            D = E * derivative
-            #delta = transposedInput * D
-            delta = np.outer(self.addBias(Y[i-1]), D)
-            #print "delta: %s" % delta
-            append(delta)
-            E = self.removeBias(np.dot(D,weights[i].T))
-            #print "E: %s" % E
+        E1 = Z-Y[1]
+        D1 = E1 * (1 - Y[1]**2)
+        delta1 = np.outer(self.addBias(Y[0]), D1)
 
-        derivative = 1 - Y[0]**2
-        D = E * derivative
-        #delta = transposedInput * D
-        delta = np.outer(self.addBias(X), D)
-        #print "\nE: %s" % E
-        #print "derivative: %s" % derivative
-        #print "\nD: %s" % D
-        #print "transposedInput: %s" % transposedInput
-        #print "delta: %s" % delta
-        append(delta)
+        E0 = self.removeBias(np.dot(D1,weights[1].T))
+        D0 = E0 * (1 - Y[0]**2)
+        delta0 = np.outer(self.addBias(X), D0)
 
-        #raw_input()
+        G.append(delta0)
+        G.append(delta1)
 
         return G
 
     def updateWeights(self, W, G, eta):
-        #remember that G is backwards
-        for i in xrange(0, self.nHiddenLayers+1, 1):
-            #print "Updating W[%d]: %s" % (i,W[i])
-            #print "With G[%d]: %s" % (self.nHiddenLayers-i, G[self.nHiddenLayers-i])
-            W[i] = W[i] + eta*G[self.nHiddenLayers-i]
-
-        #raw_input()
+        W[0] = W[0] + eta*G[0]
+        W[1] = W[1] + eta*G[1]
         return W
 
     def addMomentum(self, W, Gm, alpha):
-        #remember that Gm is backwards
-        for i in xrange(0, self.nHiddenLayers+1, 1):
-            #print "Adding momentum to W[%d]" % i
-            W[i] = W[i] + alpha*Gm[self.nHiddenLayers-i]
+        W[0] = W[0] + alpha*Gm[0]
+        W[1] = W[1] + alpha*Gm[1]
         return W
 
     def addBias(self, input):
         X = np.resize(input, np.size(input)+1)
-        X[-1] = -1
+        X[-1] = 1
 
         return X
 
@@ -246,13 +193,13 @@ class PerceptronMulti():
             X = testset[i,0]
             print "\nTesting pattern %d: %s" % ((i+1), X)
             Y = self.evaluate(X, self.W)
-            print "Output is: %s" % Y[-1]
+            print "Output is: %s" % Y[1]
             
             print "Expected output is: %s" % testset[i,1]
             Z = testset[i,1]
 
             # calculate the error
-            E = Z - Y[-1]
+            E = Z - Y[1]
             print "Error is: %s" % E
 
             absolute_error = np.absolute(E)/2
