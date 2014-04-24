@@ -4,13 +4,11 @@ import data as data
 
 class PerceptronSimple():
     """Perceptron Simple"""
-    def __init__(self, cant_input_nodes, cant_output_nodes, learning_rate, epsilon, trainingset):
+    def __init__(self, cant_input_nodes, cant_output_nodes, learning_rate, epsilon):
         self.nInput = cant_input_nodes
         self.nOutput = cant_output_nodes
         self.lRate = learning_rate
         self.epsilon = epsilon
-
-        self.train_network(trainingset, batch=False, stochastic=False)
 
     def train_network(self, dataset, batch=False, stochastic=True):
         # how many training patterns do we have ?

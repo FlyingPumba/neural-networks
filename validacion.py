@@ -2,10 +2,55 @@ import data as data
 import datautil as util
 import numpy as np
 from perceptronmulti import PerceptronMulti as pm
+from perceptronsimple import PerceptronSimple as ps
 
 # numpy print options
 np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
+
+def validateOCR(plot = False):
+    net = ps(25, 5, 0.2, 0.01)
+    net.train_network(data.BipolarOCR.trainingset, stochastic=True)
+    net.testNetwork(data.BipolarOCR.trainingset, 0.1)
+    raw_input()
+    net.plotErrorThroughLearning()
+
+    validationset1 = util.getTestSetWithNoise(data.BipolarOCR.testset, 0.02)
+    validationset2 = util.getTestSetWithNoise(data.BipolarOCR.testset, 0.05)
+    validationset3 = util.getTestSetWithNoise(data.BipolarOCR.testset, 0.1)
+    validationset4 = util.getTestSetWithNoise(data.BipolarOCR.testset, 0.3)
+    validationset5 = util.getTestSetWithNoise(data.BipolarOCR.testset, 0.5)
+    validationset6 = util.getTestSetWithNoise(data.BipolarOCR.testset, 0.8)
+    validationset7 = util.getTestSetWithNoise(data.BipolarOCR.testset, 1.5)
+
+    print "Errors with 2%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset1, 0.1)
+    raw_input()
+    print "Errors with 5%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset2, 0.1)
+    raw_input()
+    print "Errors with 10%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset3, 0.1)
+    raw_input()
+    print "Errors with 30%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset4, 0.1)
+    raw_input()
+    print "Errors with 50%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset5, 0.1)
+    raw_input()
+    print "Errors with 80%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset6, 0.1)
+    raw_input()
+    print "Errors with 150%% of noise (testepsilon: 0.1): %s" % net.testNetwork(validationset7, 0.1)
+    raw_input()
+
+    validationset5 = util.getTestSetWithSwitchedUnits(data.BipolarOCR.testset, 0.02)
+    validationset6 = util.getTestSetWithSwitchedUnits(data.BipolarOCR.testset, 0.05)
+    validationset7 = util.getTestSetWithSwitchedUnits(data.BipolarOCR.testset, 0.1)
+    validationset8 = util.getTestSetWithSwitchedUnits(data.BipolarOCR.testset, 0.3)
+
+    print "Errors with 2%% of swithced units (testepsilon: 0.1): %s" % net.testNetwork(validationset5, 0.1)
+    raw_input()
+    print "Errors with 5%% of swithced units (testepsilon: 0.1): %s" % net.testNetwork(validationset6, 0.1)
+    raw_input()
+    print "Errors with 10%% of swithced units (testepsilon: 0.1): %s" % net.testNetwork(validationset7, 0.1)
+    raw_input()
+    print "Errors with 30%% of swithced units (testepsilon: 0.1): %s" % net.testNetwork(validationset8, 0.1)
+    raw_input()
 
 def validateMultiOCR(plot = False):
     net = pm(25, [10], 5, 0.05, 0.01)

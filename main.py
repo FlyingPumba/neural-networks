@@ -128,8 +128,10 @@ def main(argv):
         elif("xor" in argv):
             simpleXOR(0.05,0.01,0.1)
         elif("ocr" in argv):
-            simpleOCR(0.05,0.01,0.1)
-            #a.testNetwork(util.getTestSetWithNoise(data.BipolarOCR.testset, 0.02), 0.1)
+            if(main.validacion):
+                val.validateOCR(plot = True)
+            else:
+                simpleOCR(0.05,0.01,0.1)
         elif("multiand" in argv):
             multiAND(0.05,0.01,0.1)
         elif("multior" in argv):
