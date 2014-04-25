@@ -11,7 +11,7 @@ class PerceptronMulti():
         self.lRate = learning_rate
         self.epsilon = epsilon
         #momentum parameter
-        self.alpha = self.lRate * 0.1
+        self.alpha = 0.5
         #dlr parameters
         self.a = 0.1
         self.b = 0.1
@@ -37,7 +37,7 @@ class PerceptronMulti():
             Wdlr = []
 
         cant_epochs = 0
-        max_epochs = 1000
+        max_epochs = 5000
 
         self.errors_in_each_epoch = []
         self.appendEpochError = self.errors_in_each_epoch.append
@@ -75,10 +75,10 @@ class PerceptronMulti():
                 appendPatternError(pattern_error)
                 appendPatternErrorAbs(np.sum(np.absolute(E)/2))
 
-                G = self.backPropagation(X,Y,Z,W)
+                G = self.backPropagation(X,Y,Z,W, self.lRate)
 
                 #learn !
-                W = self.updateWeights(W,G,self.lRate)
+                W = self.updateWeights(W,G)
                 #print "W: %s" % W
 
                 if(momentum):
@@ -147,25 +147,25 @@ class PerceptronMulti():
         #print "Y: %s" % Y
         return Y
 
-    def backPropagation(self,X, Y, Z, weights):
+    def backPropagation(self,X, Y, Z, weights, eta):
         G = []
 
         E1 = Z-Y[1]
         D1 = E1 * (1 - Y[1]**2)
-        delta1 = np.outer(self.addBias(Y[0]), D1)
+        delta1 = eta * np.outer(self.addBias(Y[0]), D1)
 
         E0 = self.removeBias(np.dot(D1,weights[1].T))
         D0 = E0 * (1 - Y[0]**2)
-        delta0 = np.outer(self.addBias(X), D0)
+        delta0 = eta * np.outer(self.addBias(X), D0)
 
         G.append(delta0)
         G.append(delta1)
 
         return G
 
-    def updateWeights(self, W, G, eta):
-        W[0] = W[0] + eta*G[0]
-        W[1] = W[1] + eta*G[1]
+    def updateWeights(self, W, G):
+        W[0] = W[0] + G[0]
+        W[1] = W[1] + G[1]
         return W
 
     def addMomentum(self, W, Gm, alpha):

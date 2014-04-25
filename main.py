@@ -137,7 +137,7 @@ def main(argv):
         elif("multior" in argv):
             multiOR(0.05,0.01,0.1)
         elif("multixor" in argv):
-            multiXOR(0.2,0.01,0.1)
+            multiXOR(0.1,0.01,0.1)
         elif("multiandor" in argv):
             multiANDOR(0.05,0.01,0.1)
         elif("multiocr" in argv):
