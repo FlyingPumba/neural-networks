@@ -28,10 +28,11 @@ class PerceptronSimple():
         self.appendEpochErrorSum = self.errors_in_each_epoch_sum.append
 
         while True:
-            # begin epoch
-            print "The %d epoch has begun \n" % cant_epochs
+            # begin a new epoch
+            # to store the square error
             errors_in_each_pattern = []
             appendPatternError = errors_in_each_pattern.append
+
             errors_in_each_pattern_abs = []
             appendPatternErrorAbs = errors_in_each_pattern_abs.append
 
