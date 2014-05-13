@@ -59,9 +59,9 @@ class NoSupervisedNetwork():
         plt.xlabel("Final weights")
         plt.show()
 
-    def plotDataset(self):
+    def plotDatasetWithWeights(self, dataset):
         # unpacking argument lists
-        plt.plot(*zip(*self.dataset), marker='o', color='r', ls='')
+        plt.plot(*zip(*dataset), marker='o', color='r', ls='')
 
         aux = np.copy(self.W)
         for i in xrange(self.cantDimens):
@@ -112,7 +112,9 @@ if __name__ == "__main__":
     print "Final weights sanger2: %s" % netSanger2.W
     #net.plotWeights()
 
-    #net.plotDataset()
+    netOja.plotDatasetWithWeights(dataset)
+    netSanger.plotDatasetWithWeights(dataset)
+    netSanger2.plotDatasetWithWeights(dataset)
 
     #print "Producto de los pesos: %s" % (net.W[0]*net.W[1])
 
