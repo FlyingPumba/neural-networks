@@ -46,7 +46,7 @@ class NoSupervisedNetwork():
 
                         for k in xrange(Q):
                             Xaux = Xaux + Y[k]*W[i,k]
-                        dW = self.lRate * (X[i] - Xaux)
+                        dW[i,j] = self.lRate * Y[j] * (X[i] - Xaux)
                 W = W + dW
 
             cant_epochs = cant_epochs + 1
@@ -84,44 +84,18 @@ class NoSupervisedNetwork():
 
         return X
 
-    def testNetwork(self, testset, testepsilon):
-        print "\nTesting the network"
-        cant_patterns = testset.shape[0]
-        patterns_with_error = 0
-
-        for i in xrange(cant_patterns):
-            print "\nTesting pattern %d" % (i+1)
-            X = self.getInputWithThreshold(testset[i,0])
-            Y = np.tanh(np.dot(X,self.W))
-            print "Output is: %s" % Y
-
-            print "Expected output is: %s" % testset[i,1]
-            Z = testset[i,1]
-
-            # calculate the error
-            E = Z - Y
-            print "Error is: %s" % E
-
-            absolute_error = np.absolute(E)/2
-            sum_error = np.sum(absolute_error)
-            if(sum_error>testepsilon):
-                print "-----> WRONG OUTPUT. The sum error for this pattern is: %.5f" % sum_error
-                patterns_with_error = patterns_with_error + 1
-
-        print "\nThere were %d errors over %d patterns" % (patterns_with_error, cant_patterns)
-
 # ========== MAIN ==========
 # numpy print options
 np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
 
 if __name__ == "__main__":
-    netOja = NoSupervisedNetwork(0.2)
-    netSanger = NoSupervisedNetwork(0.2, netOja.dimens)
-    netSanger2 = NoSupervisedNetwork(0.2, netOja.dimens)
+    netOja = NoSupervisedNetwork(0.05)
+    netSanger = NoSupervisedNetwork(0.05, netOja.dimens)
+    netSanger2 = NoSupervisedNetwork(0.05, netOja.dimens)
 
     # generate the dataset
-    cant_patterns = 200
+    cant_patterns = 50
     dataset = []
     for i in xrange(cant_patterns):
         dataset.append(netOja.getInputArray())
