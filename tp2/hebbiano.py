@@ -4,29 +4,26 @@ import random as rnd
 
 class NoSupervisedNetwork():
     """Aprendizaje Hebbiano"""
-    def __init__(self, learning_rate):
+    def __init__(self, learning_rate, dimens = []):
         self.nInput = 2
         self.nOutput = 2
         self.lRate = learning_rate
 
         # problem parameters
-        self.cantDimens = self.nInput
-        self.dimens = rnd.sample(range(1,100), self.cantDimens)
-        # the learning rule: if Sanger == false, we'll use OjaM
-        self.Sanger = True
+        if dimens == []:
+            self.cantDimens = self.nInput
+            self.dimens = rnd.sample(range(1,100), self.cantDimens)
+        else:
+            self.cantDimens = len(dimens)
+            self.dimens = dimens
 
-    def trainNetwork(self, stochastic=True):
+    # the learning rule: if Sanger == false, we'll use OjaM
+    def trainNetwork(self, dataset, stochastic=True, sanger = True):
         # create the Weight matrix (nInput+1 for the threshold)
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
-        cant_patterns = 200
         cant_epochs = 0
         max_epochs = 10000
-
-        # generate the dataset
-        self.dataset = []
-        for i in xrange(cant_patterns):
-            self.dataset.append(self.getInputArray())
 
         while cant_epochs >= max_epochs:
             # begin a new epoch
@@ -43,7 +40,7 @@ class NoSupervisedNetwork():
                 for j in xrange(self.nOutput):
                     for i in xrange(self.nInput):
                         Xaux = 0
-                        if self.Sanger:
+                        if sanger:
                             Q = j
                         else:
                             Q = self.nOutput
@@ -120,15 +117,31 @@ np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
 
 if __name__ == "__main__":
-    net = NoSupervisedNetwork(0.2)
-    print "Dimens: %s" % net.dimens
-    net.trainNetwork()
-    print "Final weights: %s" % net.W
+    netOja = NoSupervisedNetwork(0.2)
+    netSanger = NoSupervisedNetwork(0.2, netOja.dimens)
+    netSanger2 = NoSupervisedNetwork(0.2, netOja.dimens)
+
+    # generate the dataset
+    cant_patterns = 200
+    dataset = []
+    for i in xrange(cant_patterns):
+        dataset.append(netOja.getInputArray())
+
+    print "Dimens: %s" % netOja.dimens
+
+    netOja.trainNetwork(dataset, sanger=False)
+    print "Final weights oja: %s" % netOja.W
+
+    netSanger.trainNetwork(dataset)
+    print "Final weights sanger: %s" % netSanger.W
+
+    netSanger2.trainNetwork(dataset)
+    print "Final weights sanger2: %s" % netSanger2.W
     #net.plotWeights()
 
-    net.plotDataset()
+    #net.plotDataset()
 
-    print "Producto de los pesos: %s" % (net.W[0]*net.W[1])
+    #print "Producto de los pesos: %s" % (net.W[0]*net.W[1])
 
-    var = [net.cantDimens]
-    mean = [net.cantDimens]
+    #var = [net.cantDimens]
+    #mean = [net.cantDimens]
