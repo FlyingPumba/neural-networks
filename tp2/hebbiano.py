@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 import random as rnd
 
 class NoSupervisedNetwork():
     """Aprendizaje Hebbiano"""
     def __init__(self, learning_rate, dimens = []):
-        self.nInput = 2
-        self.nOutput = 2
+        self.nInput = 6
+        self.nOutput = 4
         self.lRate = learning_rate
 
         # problem parameters
@@ -22,14 +23,14 @@ class NoSupervisedNetwork():
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 0
-        max_epochs = 10000
+        max_epochs = 100
 
-        while cant_epochs >= max_epochs:
+        while cant_epochs <= max_epochs:
             # begin a new epoch
 
             # stochastic learning
             if(stochastic):
-                trainingset = np.copy(self.dataset)
+                trainingset = np.copy(dataset)
                 np.random.shuffle(trainingset)
 
             for X in trainingset:
@@ -40,7 +41,7 @@ class NoSupervisedNetwork():
                     for i in xrange(self.nInput):
                         Xaux = 0
                         if sanger:
-                            Q = j
+                            Q = j+1
                         else:
                             Q = self.nOutput
 
@@ -61,19 +62,20 @@ class NoSupervisedNetwork():
 
     def plotDatasetWithWeights(self, dataset):
         # unpacking argument lists
-        plt.plot(*zip(*dataset), marker='o', color='r', ls='')
+        #plt.plot(*zip(*dataset), marker='o', color='r', ls='')
 
         aux = np.copy(self.W)
         for i in xrange(self.cantDimens):
             aux[i] = aux[i] * self.dimens[i]
 
         print "Aux: %s" % aux
-        plt.plot(*zip(*aux), label="Weights", marker='x', color='g', ls='')
+        #plt.plot(*zip(*aux), label="Weights", marker='x', color='g', ls='')
 
         #plot (0,0)
-        plt.plot([[0,0]], marker='+', color='b', ls='')
+        #plt.plot([[0,0]], marker='+', color='b', ls='')
         
         plt.xlabel("Final weights")
+        plt.imshow(self.W,interpolation='none', cmap=cm.gray)
         plt.show()
 
     def getInputArray(self):
@@ -90,12 +92,13 @@ np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
 
 if __name__ == "__main__":
-    netOja = NoSupervisedNetwork(0.05)
-    netSanger = NoSupervisedNetwork(0.05, netOja.dimens)
-    netSanger2 = NoSupervisedNetwork(0.05, netOja.dimens)
+    dimens = [1,2,3,4,5,6]
+    netOja = NoSupervisedNetwork(0.01, dimens)
+    netSanger = NoSupervisedNetwork(0.01, dimens)
+    netSanger2 = NoSupervisedNetwork(0.01, dimens)
 
     # generate the dataset
-    cant_patterns = 50
+    cant_patterns = 500
     dataset = []
     for i in xrange(cant_patterns):
         dataset.append(netOja.getInputArray())
