@@ -19,7 +19,6 @@ class NoSupervisedNetwork():
 
     # the learning rule: if Sanger == false, we'll use OjaM
     def trainNetwork(self, dataset, stochastic=True, sanger = True):
-        # create the Weight matrix (nInput+1 for the threshold)
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 0
