@@ -79,13 +79,13 @@ np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
 
 if __name__ == "__main__":
-    dimens = [1,2,3,4,5,6]
-    netOja = NoSupervisedNetwork(0.01, dimens)
-    netSanger = NoSupervisedNetwork(0.01, dimens)
-    netSanger2 = NoSupervisedNetwork(0.01, dimens)
+    dimens = [2,4,8,10,12,14]
+    netOja = NoSupervisedNetwork(0.001, dimens)
+    netSanger = NoSupervisedNetwork(0.001, dimens)
+    netSanger2 = NoSupervisedNetwork(0.001, dimens)
 
     # generate the dataset
-    cant_patterns = 500
+    cant_patterns = 200
     dataset = []
     for i in xrange(cant_patterns):
         dataset.append(netOja.getInputArray())
