@@ -28,7 +28,7 @@ class NoSupervisedNetwork():
             for X in trainingset:
                 Y = self.activation(X,W)
                 P = self.winner(Y)
-                D = self.proxy(p, self.sigma(cant_epochs))
+                D = self.proxy(P, self.sigma(cant_epochs))
                 dW = self.eta(cant_epochs) * (X.T - W) * D
                 W = W + dW
 
@@ -39,19 +39,17 @@ class NoSupervisedNetwork():
     def activation(self, X, W):
         Y = (W - X.T)**2
         Y = np.array(Y)
-        return [True if x == min(Y) else False for x in Y]
+        return [True if x == min(Y[0]) else False for x in Y[0]]
 
     def eta(self, t):
         return t**(-self.etaAlpha )
 
-    def sigme(self, t):
+    def sigma(self, t):
         return t**(-self.sigmaAlpha )
 
     def winner(self, y):
         p = -1
-        print "y: %s" % y
         for i in xrange(len(y)):
-            print "%d" % i
             if y[i]:
                 p = i
                 break
@@ -59,7 +57,7 @@ class NoSupervisedNetwork():
 
     def proxy(self, p, sigma):
         d = []
-        for i in xrange(self.nOuput):
+        for i in xrange(self.nOutput):
             aux = np.exp( (-(i-p)**2)/ 2*sigma**2)
             d.append(aux)
         return d
