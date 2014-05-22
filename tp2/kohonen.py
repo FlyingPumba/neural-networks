@@ -15,7 +15,7 @@ class NoSupervisedNetwork():
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 1
-        max_epochs = 100
+        max_epochs = 200
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
@@ -37,15 +37,15 @@ class NoSupervisedNetwork():
         self.W = W
 
     def activation(self, X, W):
-        Y = (W - X.T)**2
+        Y = (W - X)**2
         Y = np.array(Y)
         return [True if x == min(Y[0]) else False for x in Y[0]]
 
     def eta(self, t):
-        return t**(-self.etaAlpha )
+        return t**(-self.etaAlpha)
 
     def sigma(self, t):
-        return t**(-self.sigmaAlpha )
+        return t**(-self.sigmaAlpha)
 
     def winner(self, y):
         p = -1
@@ -63,14 +63,28 @@ class NoSupervisedNetwork():
         return d
 
     def plotWeights(self):
-        plt.plot(self.W, label="Weights")
-        #plt.ylabel("network error")
-        plt.xlabel("Final weights")
-        plt.show()
-
-    def plotDatasetWithWeights(self, dataset):
         plt.xlabel("Final weights")
         plt.imshow(self.W,interpolation='none', cmap=cm.gray)
+        plt.show()
+
+    def validateNetwork(self, validationset):
+        frecuencias = [0]*self.nOutput
+        for X in validationset:
+            Y = self.activation(X,self.W)
+            indice = Y.index(True)
+            frecuencias[indice] += 1
+
+        pos = np.arange(self.nOutput)
+        width = 1.0     # gives histogram aspect to the bar diagram
+        # show label for all bins
+        ax = plt.axes()
+        ax.set_xticks(pos + (width / 2))
+        ax.set_xticklabels(pos)
+
+        plt.bar(pos, frecuencias, width, color='r')
+        plt.title("Frecuencias de Activacion")
+        plt.xlabel("Neurona")
+        plt.ylabel("Frecuencia")
         plt.show()
 
 # ========== MAIN ==========
@@ -84,11 +98,20 @@ if __name__ == "__main__":
     # generate the dataset
     cant_patterns = 200
     cota = 50
+    # uniform training set
     dataset = []
     for i in xrange(cant_patterns):
         dataset.append(np.random.uniform(-cota,cota))
 
+    # normal training set
+    validationset = []
+    var = (2*cota)/4
+    mean = cota
+    for i in xrange(cant_patterns):
+        validationset.append(np.random.normal(mean,var))
+
     net.trainNetwork(dataset)
     print "Final weights: %s" % net.W
 
-    #netOja.plotDatasetWithWeights(dataset)
+    net.validateNetwork(validationset)
+    #net.plotWeights()
