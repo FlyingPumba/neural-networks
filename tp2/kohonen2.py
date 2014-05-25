@@ -107,6 +107,8 @@ class NoSupervisedNetwork():
                 if not(np.all(act[i,j] == 0)):
                     reg[i,j] += 1
 
+        self.regiones = reg
+
         colormap = np.array(['black','r', 'g', 'b', 'y'])
         points = []
         for i in xrange(self.nOutput[0]):
@@ -135,24 +137,23 @@ class NoSupervisedNetwork():
 
         plt.show()
 
-    def validateNetwork(self, validationset):
-        frecuencias = [0]*self.nOutput
-        for X in validationset:
+    def validateNetwork(self, validationset, regiones):
+        correcto = [0]*len(validationset)
+        for i in xrange(len(validationset)):
+            X = validationset[i]
             Y = self.activation(X,self.W)
-            indice = Y.index(True)
-            frecuencias[indice] += 1
+            p = self.winner(Y)
+            regionActivada = self.regiones[p[0],p[1]]
 
-        pos = np.arange(self.nOutput)
-        width = 1.0     # gives histogram aspect to the bar diagram
-        # show label for all bins
-        ax = plt.axes()
-        ax.set_xticks(pos + (width / 2))
-        ax.set_xticklabels(pos)
+            # veo de que region es el punto
+            for j in xrange(len(regiones)):
+                if regiones[j].pertenece(X[0],X[1]) and j+1==regionActivada:
+                    correcto[i] = 1
 
-        plt.bar(pos, frecuencias, width, color='r')
-        plt.title("Frecuencias de Activacion")
-        plt.xlabel("Neurona")
-        plt.ylabel("Frecuencia")
+        plt.title("Validacion")
+        colormap = np.array(['r', 'g'])
+        datazipped = zip(*validationset)
+        plt.scatter(datazipped[0], datazipped[1], s=50, c=colormap[correcto])
         plt.show()
 
 # ========== DATASET ==========
@@ -209,10 +210,14 @@ if __name__ == "__main__":
 
     data = generateDataset(cant_patterns_training)
 
+    validation = generateDataset(cant_patterns_training)
+
     net.trainNetwork(data)
     print "Final weights: %s" % net.W
 
     net.rotular(data, [r1,r2,r3,r4])
+
+    net.validateNetwork(validation, [r1,r2,r3,r4])
 
     #net.validateNetwork(normal_valset)
     #net.plotWeights()
