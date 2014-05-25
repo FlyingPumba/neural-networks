@@ -95,25 +95,36 @@ np.set_printoptions(precision=5)
 if __name__ == "__main__":
     net = NoSupervisedNetwork()
 
-    # generate the dataset
-    cant_patterns = 800
+    # generate the data and validation sets
+    cant_patterns_training = 800
+    cant_patterns_validation = 400
     cota = 50
     # var and mean for the normal distribution
     var = (2*cota)/8
     mean = 0
 
-    # uniform dataset
+    # uniform training set
     uniform_set = []
-    for i in xrange(cant_patterns):
+    for i in xrange(cant_patterns_training):
         uniform_set.append(np.random.uniform(-cota,cota))
 
-    # normal dataset
+    # normal training set
     normal_set = []
-    for i in xrange(cant_patterns):
+    for i in xrange(cant_patterns_training):
         normal_set.append(np.random.normal(mean,var))
+
+    # uniform validation set
+    uniform_valset = []
+    for i in xrange(cant_patterns_validation):
+        uniform_valset.append(np.random.uniform(-cota,cota))
+
+    # normal validation set
+    normal_valset = []
+    for i in xrange(cant_patterns_validation):
+        normal_valset.append(np.random.normal(mean,var))
 
     net.trainNetwork(uniform_set)
     print "Final weights: %s" % net.W
 
-    net.validateNetwork(normal_set)
+    net.validateNetwork(normal_valset)
     #net.plotWeights()
