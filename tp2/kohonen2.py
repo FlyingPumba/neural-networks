@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import matplotlib.patches as patch
 import random as rnd
 
 class Region():
@@ -20,17 +21,17 @@ class NoSupervisedNetwork():
         self.nInput = 2
         self.nOutput = [10,10]
         self.etaAlpha = 0.1
-        self.sigmaAlpha  = 0.01
+        self.sigmaAlpha  = 0.2
 
     def trainNetwork(self, dataset, stochastic=True):
         W = np.random.uniform(-0.1,0.1,size=(self.nOutput[0], self.nInput, self.nOutput[1]))
 
         cant_epochs = 1
-        max_epochs = 50
+        max_epochs = 26
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
-            print cant_epochs
+            print "Epoch: %d, eta: %.8f, sigma: %.8f" % (cant_epochs, self.eta(cant_epochs), self.sigma(cant_epochs))
 
             # stochastic learning
             if(stochastic):
@@ -79,8 +80,8 @@ class NoSupervisedNetwork():
         for i in xrange(self.nOutput[0]):
             for j in xrange(self.nOutput[1]):
                 normaAlCuadrado = (p[0] - i)**2 + (p[1] - j)**2
-                d[i,j] = np.exp( (-normaAlCuadrado/ 2*sigma**2) )
-            
+                d[i,j] = np.exp(-normaAlCuadrado/(2*sigma**2))
+
         return d
 
     def plotWeights(self):
@@ -113,8 +114,25 @@ class NoSupervisedNetwork():
                 points.append([i,j])
 
         aux = zip(*points)
-        plt.title("Mapa de Regiones")
+
+        # regiones en las neuronas
+        plt.subplot(121)
+        plt.xlabel("Mapa de Regiones")
         plt.scatter(aux[0], aux[1], s=100, c=colormap[reg.flatten().astype(np.int64)])
+
+        # dataset
+        sp = plt.subplot(122)
+        plt.xlabel("Dataset")
+        datazipped = zip(*dataset)
+
+        # regiones en el dataset
+        sp.add_patch(patch.Rectangle((10,10),20,20, fill=False, color='r'))
+        sp.add_patch(patch.Rectangle((40,10),20,20, fill=False, color='g'))
+        sp.add_patch(patch.Rectangle((10,40),20,20, fill=False, color='b'))
+        sp.add_patch(patch.Rectangle((40,40),20,20, fill=False, color='y'))
+
+        plt.scatter(datazipped[0], datazipped[1], s=10)
+
         plt.show()
 
     def validateNetwork(self, validationset):
@@ -141,11 +159,6 @@ class NoSupervisedNetwork():
 
 def generateDataset(cant):
     dataset = []
-    # create the regions
-    r1 = Region(10,30,10,30)
-    r2 = Region(40,60,10,30)
-    r3 = Region(10,30,40,60)
-    r4 = Region(40,60,40,60)
 
     for i in xrange(cant):
         # choose a region
@@ -175,22 +188,30 @@ def generateDataset(cant):
 np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
 
-if __name__ == "__main__":
-    net = NoSupervisedNetwork()
-
-    # generate the data and validation sets
-    cant_patterns_training = 200
-    #cant_patterns_validation = 400
-
-    data = generateDataset(cant_patterns_training)
-    
-    net.trainNetwork(data)
-    print "Final weights: %s" % net.W
-
+separados = True
+if separados:
     r1 = Region(10,30,10,30)
     r2 = Region(40,60,10,30)
     r3 = Region(10,30,40,60)
     r4 = Region(40,60,40,60)
+else:
+    r1 = Region(10,30,10,30)
+    r2 = Region(30,50,10,30)
+    r3 = Region(10,30,30,50)
+    r4 = Region(30,50,30,50)
+
+if __name__ == "__main__":
+    net = NoSupervisedNetwork()
+
+    # generate the data and validation sets
+    cant_patterns_training = 400
+    #cant_patterns_validation = 400
+
+    data = generateDataset(cant_patterns_training)
+
+    net.trainNetwork(data)
+    print "Final weights: %s" % net.W
+
     net.rotular(data, [r1,r2,r3,r4])
 
     #net.validateNetwork(normal_valset)
