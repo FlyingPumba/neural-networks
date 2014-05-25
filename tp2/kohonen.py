@@ -72,6 +72,7 @@ class NoSupervisedNetwork():
         for X in validationset:
             Y = self.activation(X,self.W)
             indice = Y.index(True)
+            #print "X: %d -> Neurona: %d" % (X, indice)
             frecuencias[indice] += 1
 
         pos = np.arange(self.nOutput)
@@ -97,7 +98,7 @@ if __name__ == "__main__":
 
     # generate the data and validation sets
     cant_patterns_training = 800
-    cant_patterns_validation = 400
+    cant_patterns_validation = 800
     cota = 50
     # var and mean for the normal distribution
     var = (2*cota)/8
