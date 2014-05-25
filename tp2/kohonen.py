@@ -7,7 +7,7 @@ class NoSupervisedNetwork():
     """Mapas auto-organizados de Kohonen - Parte 1"""
     def __init__(self):
         self.nInput = 1
-        self.nOutput = 15
+        self.nOutput = 20
         self.etaAlpha = 0.1
         self.sigmaAlpha  = 0.01
 
@@ -15,7 +15,7 @@ class NoSupervisedNetwork():
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 1
-        max_epochs = 200
+        max_epochs = 400
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
@@ -96,22 +96,24 @@ if __name__ == "__main__":
     net = NoSupervisedNetwork()
 
     # generate the dataset
-    cant_patterns = 200
+    cant_patterns = 800
     cota = 50
-    # uniform training set
-    dataset = []
-    for i in xrange(cant_patterns):
-        dataset.append(np.random.uniform(-cota,cota))
+    # var and mean for the normal distribution
+    var = (2*cota)/8
+    mean = 0
 
-    # normal training set
-    validationset = []
-    var = (2*cota)/4
-    mean = cota
+    # uniform dataset
+    uniform_set = []
     for i in xrange(cant_patterns):
-        validationset.append(np.random.normal(mean,var))
+        uniform_set.append(np.random.uniform(-cota,cota))
 
-    net.trainNetwork(dataset)
+    # normal dataset
+    normal_set = []
+    for i in xrange(cant_patterns):
+        normal_set.append(np.random.normal(mean,var))
+
+    net.trainNetwork(uniform_set)
     print "Final weights: %s" % net.W
 
-    net.validateNetwork(validationset)
+    net.validateNetwork(normal_set)
     #net.plotWeights()
