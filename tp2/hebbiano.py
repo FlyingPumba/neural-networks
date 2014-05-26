@@ -55,12 +55,6 @@ class NoSupervisedNetwork():
         self.W = W
 
     def plotWeights(self):
-        plt.plot(self.W, label="Weights")
-        #plt.ylabel("network error")
-        plt.xlabel("Final weights")
-        plt.show()
-
-    def plotDatasetWithWeights(self, dataset):
         plt.xlabel("Final weights")
         plt.imshow(self.W,interpolation='none', cmap=cm.gray)
         plt.show()
@@ -102,6 +96,6 @@ if __name__ == "__main__":
     print "Final weights sanger2: %s" % netSanger2.W
     #net.plotWeights()
 
-    netOja.plotDatasetWithWeights(dataset)
-    netSanger.plotDatasetWithWeights(dataset)
-    netSanger2.plotDatasetWithWeights(dataset)
+    netOja.plotWeights(dataset)
+    netSanger.plotWeights(dataset)
+    netSanger2.plotWeights(dataset)
