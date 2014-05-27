@@ -11,6 +11,9 @@ class NoSupervisedNetwork():
         self.etaAlpha = 0.1
         self.sigmaAlpha  = 0.01
 
+        self.etaHistory = []
+        self.sigmaHistory = []
+
     def trainNetwork(self, dataset, stochastic=True):
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
@@ -19,6 +22,9 @@ class NoSupervisedNetwork():
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
+
+            self.etaHistory.append(self.eta(cant_epochs))
+            self.sigmaHistory.append(self.sigma(cant_epochs))
 
             # stochastic learning
             if(stochastic):
@@ -78,14 +84,29 @@ class NoSupervisedNetwork():
         pos = np.arange(self.nOutput)
         width = 1.0     # gives histogram aspect to the bar diagram
         # show label for all bins
-        ax = plt.axes()
-        ax.set_xticks(pos + (width / 2))
-        ax.set_xticklabels(pos)
+        sp1 = plt.subplot(211)
+        #ax = sp1.axes()
+        #ax.set_xticks(pos + (width / 2))
+        #ax.set_xticklabels(pos)
 
-        plt.bar(pos, frecuencias, width, color='r')
-        plt.title("Frecuencias de Activacion")
-        plt.xlabel("Neurona")
-        plt.ylabel("Frecuencia")
+        # show histogram
+        sp1.bar(pos, frecuencias, width, color='r')
+        sp1.set_title("Frecuencias de Activacion")
+        #sp1.xlabel("Neurona")
+        #sp1.ylabel("Frecuencia")
+        sp1.set_xlabel('Neurona')
+        sp1.set_ylabel('Frecuencia')
+
+        # show eta and sigma history
+        sp2 = plt.subplot(212)
+        labelEta = 'eta (alpha: %.2f)' % self.etaAlpha
+        sp2.plot(self.etaHistory, label=labelEta)
+        labelSigma = 'sigma (alpha: %.2f)' % self.sigmaAlpha
+        sp2.plot(self.sigmaHistory, label=labelSigma)
+        sp2.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), ncol=3, fancybox=True)
+
+        fileName = 'kohonen1-%d.png' % np.random.randint(1000)
+        plt.savefig(fileName, bbox_inches='tight')
         plt.show()
 
 # ========== MAIN ==========
@@ -124,7 +145,7 @@ if __name__ == "__main__":
     for i in xrange(cant_patterns_validation):
         normal_valset.append(np.random.normal(mean,var))
 
-    net.trainNetwork(uniform_set)
+    net.trainNetwork(normal_set)
     print "Final weights: %s" % net.W
 
     net.validateNetwork(normal_valset)
