@@ -8,8 +8,8 @@ class NoSupervisedNetwork():
     def __init__(self):
         self.nInput = 1
         self.nOutput = 20
-        self.etaAlpha = 0.1
-        self.sigmaAlpha  = 0.01
+        self.etaAlpha = 0.2
+        self.sigmaAlpha  = 0.3
 
         self.etaHistory = []
         self.sigmaHistory = []
@@ -18,7 +18,7 @@ class NoSupervisedNetwork():
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 1
-        max_epochs = 400
+        max_epochs = 1000
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
@@ -145,7 +145,7 @@ if __name__ == "__main__":
     for i in xrange(cant_patterns_validation):
         normal_valset.append(np.random.normal(mean,var))
 
-    net.trainNetwork(normal_set)
+    net.trainNetwork(uniform_set)
     print "Final weights: %s" % net.W
 
     net.validateNetwork(normal_valset)
