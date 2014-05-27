@@ -23,6 +23,9 @@ class NoSupervisedNetwork():
         self.etaAlpha = 0.1
         self.sigmaAlpha  = 0.2
 
+        self.etaHistory = []
+        self.sigmaHistory = []
+
     def trainNetwork(self, dataset, stochastic=True):
         W = np.random.uniform(-0.1,0.1,size=(self.nOutput[0], self.nInput, self.nOutput[1]))
 
@@ -32,6 +35,9 @@ class NoSupervisedNetwork():
         while cant_epochs <= max_epochs:
             # begin a new epoch
             print "Epoch: %d, eta: %.8f, sigma: %.8f" % (cant_epochs, self.eta(cant_epochs), self.sigma(cant_epochs))
+
+            self.etaHistory.append(self.eta(cant_epochs))
+            self.sigmaHistory.append(self.sigma(cant_epochs))
 
             # stochastic learning
             if(stochastic):
@@ -118,22 +124,36 @@ class NoSupervisedNetwork():
         aux = zip(*points)
 
         # regiones en las neuronas
-        plt.subplot(121)
+        plt.subplot2grid((2,2), (0,0))
         plt.xlabel("Mapa de Regiones")
         plt.scatter(aux[0], aux[1], s=100, c=colormap[reg.flatten().astype(np.int64)])
 
         # dataset
-        sp = plt.subplot(122)
+        sp = plt.subplot2grid((2,2), (0,1))
         plt.xlabel("Dataset")
         datazipped = zip(*dataset)
 
         # regiones en el dataset
-        sp.add_patch(patch.Rectangle((10,10),20,20, fill=False, color='r'))
-        sp.add_patch(patch.Rectangle((40,10),20,20, fill=False, color='g'))
-        sp.add_patch(patch.Rectangle((10,40),20,20, fill=False, color='b'))
-        sp.add_patch(patch.Rectangle((40,40),20,20, fill=False, color='y'))
+        if separados:
+            sp.add_patch(patch.Rectangle((10,10),20,20, fill=False, color='r'))
+            sp.add_patch(patch.Rectangle((40,10),20,20, fill=False, color='g'))
+            sp.add_patch(patch.Rectangle((10,40),20,20, fill=False, color='b'))
+            sp.add_patch(patch.Rectangle((40,40),20,20, fill=False, color='y'))
+        else:
+            sp.add_patch(patch.Rectangle((10,10),20,20, fill=False, color='r'))
+            sp.add_patch(patch.Rectangle((30,10),20,20, fill=False, color='g'))
+            sp.add_patch(patch.Rectangle((10,30),20,20, fill=False, color='b'))
+            sp.add_patch(patch.Rectangle((30,30),20,20, fill=False, color='y'))        
 
         plt.scatter(datazipped[0], datazipped[1], s=10)
+
+        # show eta and sigma history
+        #sp2 = plt.subplot2grid((2,2), (1,0), colspan=2)
+        #labelEta = 'eta (alpha: %.2f)' % self.etaAlpha
+        #sp2.plot(self.etaHistory, label=labelEta)
+        #labelSigma = 'sigma (alpha: %.2f)' % self.sigmaAlpha
+        #sp2.plot(self.sigmaHistory, label=labelSigma)
+        #sp2.legend(loc='upper right', bbox_to_anchor=(0.5, 1.05), fancybox=True, ncol=3)
 
         plt.show()
 
@@ -154,6 +174,13 @@ class NoSupervisedNetwork():
         colormap = np.array(['r', 'g'])
         datazipped = zip(*validationset)
         plt.scatter(datazipped[0], datazipped[1], s=50, c=colormap[correcto])
+
+        p1 = patch.Rectangle((0, 0), 1, 1, fc="r")
+        p2 = patch.Rectangle((0, 0), 1, 1, fc="g")
+        labelWrong = 'Wrong points: %d' % correcto.count(0)
+        labelRight = 'Right points: %d' % correcto.count(1)
+        plt.legend((p1, p2), (labelWrong,labelRight), loc='upper center', ncol=3)
+
         plt.show()
 
 # ========== DATASET ==========
