@@ -23,7 +23,10 @@ class NoSupervisedNetwork():
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 0
-        max_epochs = 100
+        if sanger:
+            max_epochs = 300
+        else:
+            max_epochs = 600
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
@@ -57,6 +60,7 @@ class NoSupervisedNetwork():
     def plotWeights(self):
         plt.xlabel("Final weights")
         plt.imshow(self.W,interpolation='none', cmap=cm.gray)
+        plt.colorbar()
         plt.show()
 
     def getInputArray(self):
@@ -73,10 +77,9 @@ np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
 
 if __name__ == "__main__":
-    dimens = [2,4,8,10,12,14]
-    netOja = NoSupervisedNetwork(0.001, dimens)
-    netSanger = NoSupervisedNetwork(0.001, dimens)
-    netSanger2 = NoSupervisedNetwork(0.001, dimens)
+    dimens = [4,8,12,16,20,24]
+    netOja = NoSupervisedNetwork(0.00001, dimens)
+    netSanger = NoSupervisedNetwork(0.00001, dimens)
 
     # generate the dataset
     cant_patterns = 200
@@ -92,10 +95,5 @@ if __name__ == "__main__":
     netSanger.trainNetwork(dataset)
     print "Final weights sanger: %s" % netSanger.W
 
-    netSanger2.trainNetwork(dataset)
-    print "Final weights sanger2: %s" % netSanger2.W
-    #net.plotWeights()
-
-    netOja.plotWeights(dataset)
-    netSanger.plotWeights(dataset)
-    netSanger2.plotWeights(dataset)
+    netOja.plotWeights()
+    netSanger.plotWeights()
