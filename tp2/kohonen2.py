@@ -124,12 +124,14 @@ class NoSupervisedNetwork():
         aux = zip(*points)
 
         # regiones en las neuronas
-        plt.subplot2grid((2,2), (0,0))
+        #plt.subplot2grid((2,2), (0,0))
+        plt.subplot(121)
         plt.xlabel("Mapa de Regiones")
         plt.scatter(aux[0], aux[1], s=100, c=colormap[reg.flatten().astype(np.int64)])
 
         # dataset
-        sp = plt.subplot2grid((2,2), (0,1))
+        #sp = plt.subplot2grid((2,2), (0,1))
+        sp = plt.subplot(122)
         plt.xlabel("Dataset")
         datazipped = zip(*dataset)
 
