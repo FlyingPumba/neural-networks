@@ -5,7 +5,7 @@ import matplotlib.patches as patch
 import random as rnd
 
 class Region():
-    """Clase que representa una region de puntos"""
+    """Region de puntos"""
     def __init__(self, minX, maxX, minY, maxY):
         self.minX = minX
         self.maxX = maxX
@@ -248,5 +248,4 @@ if __name__ == "__main__":
 
     net.validateNetwork(validation, [r1,r2,r3,r4])
 
-    #net.validateNetwork(normal_valset)
     #net.plotWeights()
