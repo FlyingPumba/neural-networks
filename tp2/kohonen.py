@@ -8,17 +8,17 @@ class NoSupervisedNetwork():
     def __init__(self):
         self.nInput = 1
         self.nOutput = 20
-        self.etaAlpha = 0.2
-        self.sigmaAlpha  = 0.3
+        self.etaAlpha = 0.1
+        self.sigmaAlpha  = 0.2
 
         self.etaHistory = []
         self.sigmaHistory = []
 
-    def trainNetwork(self, dataset, stochastic=True):
-        W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
+    def trainNetwork(self, dataset, valset, stochastic=True):
+        self.W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 1
-        max_epochs = 1000
+        max_epochs = 400
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
@@ -32,15 +32,15 @@ class NoSupervisedNetwork():
                 np.random.shuffle(trainingset)
 
             for X in trainingset:
-                Y = self.activation(X,W)
+                Y = self.activation(X,self.W)
                 P = self.winner(Y)
                 D = self.proxy(P, self.sigma(cant_epochs))
-                dW = self.eta(cant_epochs) * (X.T - W) * D
-                W = W + dW
+                dW = self.eta(cant_epochs) * (X.T - self.W) * D
+                self.W = self.W + dW
 
+            if cant_epochs % 5 == 0:
+                self.validateNetwork(valset)
             cant_epochs = cant_epochs + 1
-
-        self.W = W
 
     def activation(self, X, W):
         Y = (W - X)**2
@@ -73,7 +73,7 @@ class NoSupervisedNetwork():
         plt.imshow(self.W,interpolation='none', cmap=cm.gray)
         plt.show()
 
-    def validateNetwork(self, validationset):
+    def validateNetwork(self, validationset, keepDrawing=True):
         frecuencias = [0]*self.nOutput
         for X in validationset:
             Y = self.activation(X,self.W)
@@ -92,8 +92,6 @@ class NoSupervisedNetwork():
         # show histogram
         sp1.bar(pos, frecuencias, width, color='r')
         sp1.set_title("Frecuencias de Activacion")
-        #sp1.xlabel("Neurona")
-        #sp1.ylabel("Frecuencia")
         sp1.set_xlabel('Neurona')
         sp1.set_ylabel('Frecuencia')
 
@@ -105,9 +103,13 @@ class NoSupervisedNetwork():
         sp2.plot(self.sigmaHistory, label=labelSigma)
         sp2.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), ncol=3, fancybox=True)
 
-        fileName = 'kohonen1-%d.png' % np.random.randint(1000)
-        plt.savefig(fileName, bbox_inches='tight')
-        plt.show()
+        if keepDrawing:
+            plt.draw()
+            plt.clf()
+        else:
+            fileName = 'kohonen1-%d.png' % np.random.randint(1000)
+            plt.savefig(fileName, bbox_inches='tight')
+            plt.show()
 
 # ========== MAIN ==========
 # numpy print options
@@ -115,6 +117,7 @@ np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
 
 if __name__ == "__main__":
+    plt.ion()
     net = NoSupervisedNetwork()
 
     # generate the data and validation sets
@@ -122,7 +125,8 @@ if __name__ == "__main__":
     cant_patterns_validation = 800
     cota = 50
     # var and mean for the normal distribution
-    var = (2*cota)/8
+    var = (2*cota)/4
+    std = var**(1/2)
     mean = 0
 
     # uniform training set
@@ -133,7 +137,7 @@ if __name__ == "__main__":
     # normal training set
     normal_set = []
     for i in xrange(cant_patterns_training):
-        normal_set.append(np.random.normal(mean,var))
+        normal_set.append(np.random.normal(mean,std))
 
     # uniform validation set
     uniform_valset = []
@@ -143,10 +147,9 @@ if __name__ == "__main__":
     # normal validation set
     normal_valset = []
     for i in xrange(cant_patterns_validation):
-        normal_valset.append(np.random.normal(mean,var))
+        normal_valset.append(np.random.normal(mean,std))
 
-    net.trainNetwork(uniform_set)
+    net.trainNetwork(uniform_set, normal_valset)
     print "Final weights: %s" % net.W
 
-    net.validateNetwork(normal_valset)
-    #net.plotWeights()
+    net.validateNetwork(normal_valset, keepDrawing=False)
