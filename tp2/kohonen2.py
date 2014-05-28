@@ -21,7 +21,7 @@ class NoSupervisedNetwork():
         self.nInput = 2
         self.nOutput = [10,10]
         self.etaAlpha = 0.1
-        self.sigmaAlpha  = 0.2
+        self.sigmaAlpha  = 0.4
 
         self.etaHistory = []
         self.sigmaHistory = []
@@ -30,7 +30,7 @@ class NoSupervisedNetwork():
         W = np.random.uniform(-0.1,0.1,size=(self.nOutput[0], self.nInput, self.nOutput[1]))
 
         cant_epochs = 1
-        max_epochs = 26
+        max_epochs = 50
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
@@ -48,6 +48,7 @@ class NoSupervisedNetwork():
                 Y = self.activation(X,W)
                 P = self.winner(Y)
                 D = self.proxy(P, self.sigma(cant_epochs))
+                #print D
                 dW = []
                 for i in xrange(len(W)):
                     aux = self.eta(cant_epochs) * (np.array([X]).T - W[i]) * D[i]
@@ -55,6 +56,8 @@ class NoSupervisedNetwork():
                 W = W + dW
 
             cant_epochs = cant_epochs + 1
+            #print "Epoch: %d, eta: %.8f, sigma: %.8f" % (cant_epochs, self.eta(cant_epochs), self.sigma(cant_epochs))
+            #raw_input()
 
         self.W = W
 
@@ -126,8 +129,9 @@ class NoSupervisedNetwork():
         # regiones en las neuronas
         #plt.subplot2grid((2,2), (0,0))
         plt.subplot(121)
-        plt.xlabel("Mapa de Regiones")
+        plt.title("Mapa de Regiones")
         plt.scatter(aux[0], aux[1], s=100, c=colormap[reg.flatten().astype(np.int64)])
+        #plt.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), ncol=3, fancybox=True)
 
         # dataset
         #sp = plt.subplot2grid((2,2), (0,1))
@@ -145,6 +149,18 @@ class NoSupervisedNetwork():
                     correcto[i] = 1
 
         plt.title("Validacion")
+        # regiones en el dataset
+        if separados:
+            sp.add_patch(patch.Rectangle((10,10),20,20, fill=False, color='r'))
+            sp.add_patch(patch.Rectangle((40,10),20,20, fill=False, color='g'))
+            sp.add_patch(patch.Rectangle((10,40),20,20, fill=False, color='b'))
+            sp.add_patch(patch.Rectangle((40,40),20,20, fill=False, color='y'))
+        else:
+            sp.add_patch(patch.Rectangle((10,10),20,20, fill=False, color='r'))
+            sp.add_patch(patch.Rectangle((30,10),20,20, fill=False, color='g'))
+            sp.add_patch(patch.Rectangle((10,30),20,20, fill=False, color='b'))
+            sp.add_patch(patch.Rectangle((30,30),20,20, fill=False, color='y'))
+
         colormap = np.array(['r', 'g'])
         datazipped = zip(*validationset)
         plt.scatter(datazipped[0], datazipped[1], s=50, c=colormap[correcto])
@@ -155,6 +171,9 @@ class NoSupervisedNetwork():
         labelRight = 'Right points: %d' % correcto.count(1)
         plt.legend((p1, p2), (labelWrong,labelRight), loc='upper center', ncol=3)
 
+        fileName = 'kohonen2-%d.png' % np.random.randint(1000)
+        print fileName
+        plt.savefig(fileName, bbox_inches='tight')
         plt.show()
 
 # ========== DATASET ==========
@@ -253,7 +272,7 @@ if __name__ == "__main__":
     cant_patterns_training = 400
     #cant_patterns_validation = 400
 
-    data = generateDataset(cant_patterns_training, plot=True, mismaDensidad=True)
+    data = generateDataset(cant_patterns_training, plot=False, mismaDensidad=True)
 
     validation = generateDataset(cant_patterns_training)
 
