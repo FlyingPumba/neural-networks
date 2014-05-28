@@ -124,8 +124,9 @@ class NoSupervisedNetwork():
             plt.clf()
         else:
             fileName = 'kohonen1-%d.png' % np.random.randint(1000)
+            print fileName
             plt.savefig(fileName, bbox_inches='tight')
-            plt.show()
+            plt.close()
 
 # ========== MAIN ==========
 # numpy print options
