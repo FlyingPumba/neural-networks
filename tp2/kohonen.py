@@ -125,7 +125,10 @@ class NoSupervisedNetwork():
         else:
             fileName = 'kohonen1-%d.png' % np.random.randint(1000)
             print fileName
-            plt.savefig(fileName, bbox_inches='tight')
+            figure = plt.gcf() # get current figure
+            figure.set_size_inches(10, 8) #this will give us a 800x600 image
+            # when saving, specify the DPI
+            plt.savefig(fileName, bbox_inches='tight', dpi = 100)
             plt.close()
 
 # ========== MAIN ==========
