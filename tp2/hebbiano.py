@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import random as rnd
+from numpy import linalg as LA
 
 class NoSupervisedNetwork():
     """Aprendizaje Hebbiano"""
@@ -19,14 +20,14 @@ class NoSupervisedNetwork():
             self.dimens = dimens
 
     # the learning rule: if Sanger == false, we'll use OjaM
-    def trainNetwork(self, dataset, stochastic=True, sanger = True):
+    def trainNetwork(self, dataset, stochastic=False, sanger = True):
         W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 0
         if sanger:
-            max_epochs = 300
+            max_epochs = 150
         else:
-            max_epochs = 600
+            max_epochs = 300
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
@@ -35,6 +36,8 @@ class NoSupervisedNetwork():
             if(stochastic):
                 trainingset = np.copy(dataset)
                 np.random.shuffle(trainingset)
+
+            trainingset = np.copy(dataset)
 
             for X in trainingset:
                 Y = np.dot(X,W)
@@ -63,6 +66,14 @@ class NoSupervisedNetwork():
         plt.colorbar()
         plt.show()
 
+    def outputNetwork(self, dataset):
+        netOut = []
+        print np.dot(np.array([1,6,10,14,18,22]), np.array(self.W))
+        for x in dataset:
+            netOut.append(np.dot(np.array([x]), np.array(self.W)))
+
+        return netOut
+
     def getInputArray(self):
         # create input array
         X = np.zeros(self.cantDimens)
@@ -77,7 +88,7 @@ np.set_printoptions(suppress=True)
 np.set_printoptions(precision=5)
 
 if __name__ == "__main__":
-    dimens = [4,8,12,16,20,24]
+    dimens = [4,8,8,8,12,12]
     netOja = NoSupervisedNetwork(0.00001, dimens)
     netSanger = NoSupervisedNetwork(0.00001, dimens)
 
@@ -88,12 +99,44 @@ if __name__ == "__main__":
         dataset.append(netOja.getInputArray())
 
     print "Dimens: %s" % netOja.dimens
-
+         
+    eqResult = []
+    
+    for a in xrange(len(dimens)):
+        eqResult.append((dimens[a]**2)/3.0)
+        #print (dataset[a]**2).sum()/200
+    print np.mean(dataset, axis=0)
+    
+    print "Equation result:"
+    print eqResult
+    print "Dataset variance:"
+    print np.var(dataset, axis=0)
+    print "Covariance:"
+    print np.cov(np.array(dataset).T)
+    eVals, eVecs = LA.eigh(np.cov(np.array(dataset).T))
+    print "Eigenvalues: "
+    print eVals
+    print "Eigenvectors: "
+    print eVecs
+    
     netOja.trainNetwork(dataset, sanger=False)
     print "Final weights oja: %s" % netOja.W
 
     netSanger.trainNetwork(dataset)
-    print "Final weights sanger: %s" % netSanger.W
+    print "Final weights sanger:\n %s" % netSanger.W
+    
+    nOutOja = netOja.outputNetwork(dataset)
+    nOutSanger = netSanger.outputNetwork(dataset)
+    
+    print "Net out mean (Oja):"
+    print np.mean(nOutOja, axis=0)
+    print "Net out variance (Oja):"
+    print np.var(nOutOja, axis=0)
+
+    print "Net out mean (Sanger):"
+    print np.mean(nOutSanger, axis=0)
+    print "Net out variance (Sanger):"
+    print np.var(nOutSanger, axis=0)
 
     netOja.plotWeights()
     netSanger.plotWeights()
