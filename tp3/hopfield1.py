@@ -11,9 +11,9 @@ class HopfieldNetwork():
     def createWeights(self, memories):
         self.W = np.zeros((self.cantNeuronas, self.cantNeuronas))
         for X in memories:
-            self.W += X.T * X
+            self.W += np.outer(X, X)
         self.W = self.W / self.cantNeuronas
-        self.w = self.W - np.diag(np.diag(self.W))
+        self.W = self.W - np.diag(np.diag(self.W))
 
     def energy(self, S, W):
         return -0.5 * ((S * W) * S.T)
@@ -102,5 +102,6 @@ if __name__ == "__main__":
         mem = mem * 2 - 1
         memories.append(mem)
 
+    print "Memories: %s" % memories
     net.createWeights(memories)
     print "Weights: %s" % net.W
