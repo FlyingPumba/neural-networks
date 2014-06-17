@@ -18,19 +18,19 @@ class HopfieldNetwork():
     def energy(self, S, W):
         return -0.5 * ((S * W) * S.T)
 
-    def activate(self, X, W, synch=False):
+    def activate(self, X, synch=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
         # XXX; cambiar por algo como: mientras S no este lo suficientemente cerca de Saux
-        while(S != Saux):
+        while((S != Saux).any()):
             Saux = S
             if synch:
-                S = np.sign(S*W)
+                S = np.sign(S*self.W)
             else:
-                I = np.randperm(self.cantNeuronas)
+                I = np.random.permutation(self.cantNeuronas)
             for i in I:
-                S[i] = np.sign(S * W[:,i])
-            E = self.energy(S,W)
+                S[i] = np.sign(np.dot(S, self.W[:,i]))
+            E = self.energy(S,self.W)
             # show(E,S)
         return S
 
@@ -105,3 +105,26 @@ if __name__ == "__main__":
     print "Memories: %s" % memories
     net.createWeights(memories)
     print "Weights: %s" % net.W
+    
+    print "\nTesting memory 1 (with one bit changed). \nOriginal memory is: %s" % memories[0]
+    validation = np.copy(memories[0])
+    validation[3] *= -1;
+    print "\nNetwork output: %s" % net.activate(validation)
+    
+    print "\nTesting memory 1 (with 5 bit changed). \nOriginal memory is: %s" % memories[0]
+    validation = np.copy(memories[0])
+    validation[3] *= -1;
+    validation[6] *= -1;
+    validation[9] *= -1;
+    validation[12] *= -1;
+    validation[15] *= -1;
+    print "\nNetwork output: %s" % net.activate(validation)
+    
+    print "\nTesting memory 2 (with 5 bit changed). \nOriginal memory is: %s" % memories[1]
+    validation = np.copy(memories[1])
+    validation[3] *= -1;
+    validation[6] *= -1;
+    validation[9] *= -1;
+    validation[12] *= -1;
+    validation[15] *= -1;
+    print "\nNetwork output: %s" % net.activate(validation)
