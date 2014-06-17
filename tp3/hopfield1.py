@@ -9,32 +9,32 @@ class HopfieldNetwork():
         self.cantNeuronas = 20
 
     def createWeights(self, memories):
-	self.W = np.zeros((self.cantNeuronas, self.cantNeuronas))
-	for X in memories:
-	    self.W += X.T * X
-	self.W = self.W / self.cantNeuronas
-	self.w = self.W - np.diag(np.diag(self.W))
+        self.W = np.zeros((self.cantNeuronas, self.cantNeuronas))
+        for X in memories:
+            self.W += X.T * X
+        self.W = self.W / self.cantNeuronas
+        self.w = self.W - np.diag(np.diag(self.W))
 
     def energy(self, S, W):
-	return -0.5 * ((S * W) * S.T)
+        return -0.5 * ((S * W) * S.T)
 
     def activate(self, X, W, synch=False):
-	S = X
-	Saux = np.zeros(self.cantNeuronas)
-	# XXX; cambiar por algo como: mientras S no este lo suficientemente cerca de Saux
-	while(S != Saux):
-	    Saux = S
-	    if synch:
-		S = np.sign(S*W)
-	    else:
-		I = np.randperm(self.cantNeuronas)
-		for i in I:
-		    S[i] = np.sign(S * W[:,i])
-	    E = self.energy(S,W)
-	    # show(E,S)
-	return S
+        S = X
+        Saux = np.zeros(self.cantNeuronas)
+        # XXX; cambiar por algo como: mientras S no este lo suficientemente cerca de Saux
+        while(S != Saux):
+            Saux = S
+            if synch:
+                S = np.sign(S*W)
+            else:
+                I = np.randperm(self.cantNeuronas)
+            for i in I:
+                S[i] = np.sign(S * W[:,i])
+            E = self.energy(S,W)
+            # show(E,S)
+        return S
 
-   def plotWeights(self):
+    def plotWeights(self):
         plt.xlabel("Final weights")
         plt.imshow(self.W,interpolation='none', cmap=cm.gray)
         plt.show()
@@ -98,9 +98,9 @@ if __name__ == "__main__":
     memories = []
     cantMemorias = net.cantNeuronas / 10
     for i in xrange(cantMemorias):
-	mem = np.random.randint(2, size=net.cantNeuronas)
-	mem = mem * 2 - 1
-	memories.append(mem)
+        mem = np.random.randint(2, size=net.cantNeuronas)
+        mem = mem * 2 - 1
+        memories.append(mem)
 
     net.createWeights(memories)
     print "Weights: %s" % net.W
