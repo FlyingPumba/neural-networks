@@ -23,15 +23,16 @@ class HopfieldNetwork():
         Saux = np.zeros(self.cantNeuronas)
         Eh = []
         plt.ion()
-        # XXX; cambiar por algo como: mientras S no este lo suficientemente cerca de Saux
-        while((S != Saux).any()):
-            Saux = S
+
+        while(not np.array_equal(S,Saux)):
+            Saux = np.copy(S)
 
             if synch:
                 S = np.sign(S*self.W)
             else:
                 I = np.random.permutation(self.cantNeuronas)
                 for i in I:
+                    #print "I: %s" % S
                     S[i] = np.sign(np.dot(S, self.W[:,i]))
 
             E = self.energy(S,self.W)
