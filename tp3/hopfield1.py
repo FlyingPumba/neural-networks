@@ -16,21 +16,28 @@ class HopfieldNetwork():
         self.W = self.W - np.diag(np.diag(self.W))
 
     def energy(self, S, W):
-        return -0.5 * ((S * W) * S.T)
+        return -0.5 * np.dot(np.dot(S, W), S.T)
 
     def activate(self, X, synch=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
+        Eh = []
+        plt.ion()
         # XXX; cambiar por algo como: mientras S no este lo suficientemente cerca de Saux
         while((S != Saux).any()):
             Saux = S
+
             if synch:
                 S = np.sign(S*self.W)
             else:
                 I = np.random.permutation(self.cantNeuronas)
-            for i in I:
-                S[i] = np.sign(np.dot(S, self.W[:,i]))
+                for i in I:
+                    S[i] = np.sign(np.dot(S, self.W[:,i]))
+
             E = self.energy(S,self.W)
+            print "E: %s" % E
+            Eh.append(E)
+            # self.plotEnergy(Eh)
             # show(E,S)
         return S
 
@@ -38,6 +45,12 @@ class HopfieldNetwork():
         plt.xlabel("Final weights")
         plt.imshow(self.W,interpolation='none', cmap=cm.gray)
         plt.show()
+
+    def plotEnergy(self, energyHistory):
+        plt.xlabel('Iteracion')
+        plt.ylabel('Energia')
+        plt.plot(energyHistory)
+        plt.draw()
 
     def validateNetwork(self, validationset, keepDrawing=True):
         frecuencias = [0]*self.nOutput
@@ -109,7 +122,9 @@ if __name__ == "__main__":
     print "\nTesting memory 1 (with one bit changed). \nOriginal memory is: %s" % memories[0]
     validation = np.copy(memories[0])
     validation[3] *= -1;
-    print "\nNetwork output: %s" % net.activate(validation)
+    output = net.activate(validation)
+    print "\nNetwork output: %s" % output
+    print "Equals original memory: %s" % (output ==memories[0]).all()
     
     print "\nTesting memory 1 (with 5 bit changed). \nOriginal memory is: %s" % memories[0]
     validation = np.copy(memories[0])
@@ -118,7 +133,9 @@ if __name__ == "__main__":
     validation[9] *= -1;
     validation[12] *= -1;
     validation[15] *= -1;
-    print "\nNetwork output: %s" % net.activate(validation)
+    output = net.activate(validation)
+    print "\nNetwork output: %s" % output
+    print "Equals original memory: %s" % (output ==memories[0]).all()
     
     print "\nTesting memory 2 (with 5 bit changed). \nOriginal memory is: %s" % memories[1]
     validation = np.copy(memories[1])
@@ -127,4 +144,6 @@ if __name__ == "__main__":
     validation[9] *= -1;
     validation[12] *= -1;
     validation[15] *= -1;
-    print "\nNetwork output: %s" % net.activate(validation)
+    output = net.activate(validation)
+    print "\nNetwork output: %s" % output
+    print "Equals original memory: %s" % (output ==memories[1]).all()
