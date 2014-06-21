@@ -21,7 +21,7 @@ class HopfieldNetwork():
     def energy(self, S, W):
         return -0.5 * np.dot(np.dot(S, W), S.T)
 
-    def activate(self, X, synch=False):
+    def activate(self, X, synch=False, plot=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
         Eh = []
@@ -41,8 +41,10 @@ class HopfieldNetwork():
             E = self.energy(S,self.W)
             print "E: %s" % E
             Eh.append(E)
-            # self.plotEnergy(Eh)
-            # show(E,S)
+            if plot:
+                self.plotEnergy(Eh)
+        if plot:
+            raw_input()
         plt.ioff()
         return S
 
@@ -52,6 +54,7 @@ class HopfieldNetwork():
         plt.show()
 
     def plotEnergy(self, energyHistory):
+        plt.clf()
         plt.xlabel('Iteracion')
         plt.ylabel('Energia')
         plt.plot(energyHistory)
@@ -78,27 +81,29 @@ if __name__ == "__main__":
     # test that for all the memories, the ouput of the activation is the same
     print "\n VALIDATION with original letters\n"
     for X in memories:
-        output = net.activate(X)
+        output = net.activate(np.copy(X))
         if (output == X).all():
             print "RIGHT memory"
         else:
             print "WRONG memory"
+            du.plotLetters(X, output)
 
     # test some letters with noise
     print "\n VALIDATION with modified letters\n"
     # each letter has 196 bits so..
     Amod = []
-    Amod.append(du.getTestSetWithNoise(l.A, 0.05, plot=True)) #letter A with 10 bits switched
-    Amod.append(du.getTestSetWithNoise(l.A, 0.1, plot=True)) #letter A with 20 bits switched
-    Amod.append(du.getTestSetWithNoise(l.A, 0.15, plot=True)) #letter A with 29 bits switched
-    Amod.append(du.getTestSetWithNoise(l.A, 0.2, plot=True)) #letter A with 39 bits switched
+    Amod.append(du.getTestSetWithNoise(l.A, 0.05)) #letter A with 10 bits switched
+    Amod.append(du.getTestSetWithNoise(l.A, 0.1)) #letter A with 20 bits switched
+    Amod.append(du.getTestSetWithNoise(l.A, 0.15)) #letter A with 29 bits switched
+    Amod.append(du.getTestSetWithNoise(l.A, 0.2)) #letter A with 39 bits switched
 
     for X in Amod:
-        output = net.activate(X)
+        output = net.activate(np.copy(X))
         if (output == l.A).all():
             print "RIGHT letter A"
         else:
             print "WRONG letter A"
+            du.plotLetters(X, output)
 
     Gmod = []
     Gmod.append(du.getTestSetWithNoise(l.G, 0.05)) #letter G with 10 bits switched
@@ -107,7 +112,7 @@ if __name__ == "__main__":
     Gmod.append(du.getTestSetWithNoise(l.G, 0.2)) #letter G with 39 bits switched
 
     for X in Gmod:
-        output = net.activate(X)
+        output = net.activate(np.copy(X))
         if (output == l.G).all():
             print "RIGHT letter G"
         else:
@@ -120,7 +125,7 @@ if __name__ == "__main__":
     Mmod.append(du.getTestSetWithNoise(l.M, 0.2)) #letter M with 39 bits switched
 
     for X in Mmod:
-        output = net.activate(X)
+        output = net.activate(np.copy(X))
         if (output == l.M).all():
             print "RIGHT letter M"
         else:
@@ -133,7 +138,7 @@ if __name__ == "__main__":
     Wmod.append(du.getTestSetWithNoise(l.W, 0.20)) #letter W with 39 bits switched
 
     for X in Wmod:
-        output = net.activate(X)
+        output = net.activate(np.copy(X))
         if (output == l.W).all():
             print "RIGHT letter W"
         else:
