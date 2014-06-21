@@ -111,10 +111,10 @@ if __name__ == "__main__":
     # generate the memories
     memories = []
     cantMemorias = 3
-    for i in xrange(cantMemorias):
-        mem = np.random.randint(2, size=net.cantNeuronas)
-        mem = mem * 2 - 1
-        memories.append(mem)
+
+    memories.append([1,1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1])
+    memories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+    memories.append([1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1])
 
     print "Memories: %s" % memories
     net.createWeights(memories)
