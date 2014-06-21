@@ -43,6 +43,7 @@ class HopfieldNetwork():
             Eh.append(E)
             # self.plotEnergy(Eh)
             # show(E,S)
+        plt.ioff()
         return S
 
     def plotWeights(self):
@@ -87,10 +88,10 @@ if __name__ == "__main__":
     print "\n VALIDATION with modified letters\n"
     # each letter has 196 bits so..
     Amod = []
-    Amod.append(du.getTestSetWithNoise(l.A, 0.1)) #letter A with 20 bits switched
-    Amod.append(du.getTestSetWithNoise(l.A, 0.2)) #letter A with 39 bits switched
-    Amod.append(du.getTestSetWithNoise(l.A, 0.3)) #letter A with 59 bits switched
-    Amod.append(du.getTestSetWithNoise(l.A, 0.4)) #letter A with 78 bits switched
+    Amod.append(du.getTestSetWithNoise(l.A, 0.05, plot=True)) #letter A with 10 bits switched
+    Amod.append(du.getTestSetWithNoise(l.A, 0.1, plot=True)) #letter A with 20 bits switched
+    Amod.append(du.getTestSetWithNoise(l.A, 0.15, plot=True)) #letter A with 29 bits switched
+    Amod.append(du.getTestSetWithNoise(l.A, 0.2, plot=True)) #letter A with 39 bits switched
 
     for X in Amod:
         output = net.activate(X)
@@ -100,10 +101,10 @@ if __name__ == "__main__":
             print "WRONG letter A"
 
     Gmod = []
+    Gmod.append(du.getTestSetWithNoise(l.G, 0.05)) #letter G with 10 bits switched
     Gmod.append(du.getTestSetWithNoise(l.G, 0.1)) #letter G with 20 bits switched
+    Gmod.append(du.getTestSetWithNoise(l.G, 0.15)) #letter G with 29 bits switched
     Gmod.append(du.getTestSetWithNoise(l.G, 0.2)) #letter G with 39 bits switched
-    Gmod.append(du.getTestSetWithNoise(l.G, 0.3)) #letter G with 59 bits switched
-    Gmod.append(du.getTestSetWithNoise(l.G, 0.4)) #letter G with 78 bits switched
 
     for X in Gmod:
         output = net.activate(X)
@@ -113,10 +114,10 @@ if __name__ == "__main__":
             print "WRONG letter G"
 
     Mmod = []
+    Mmod.append(du.getTestSetWithNoise(l.M, 0.05)) #letter M with 10 bits switched
     Mmod.append(du.getTestSetWithNoise(l.M, 0.1)) #letter M with 20 bits switched
+    Mmod.append(du.getTestSetWithNoise(l.M, 0.15)) #letter M with 29 bits switched
     Mmod.append(du.getTestSetWithNoise(l.M, 0.2)) #letter M with 39 bits switched
-    Mmod.append(du.getTestSetWithNoise(l.M, 0.3)) #letter M with 59 bits switched
-    Mmod.append(du.getTestSetWithNoise(l.M, 0.4)) #letter M with 78 bits switched
 
     for X in Mmod:
         output = net.activate(X)
@@ -126,10 +127,10 @@ if __name__ == "__main__":
             print "WRONG letter M"
 
     Wmod = []
+    Wmod.append(du.getTestSetWithNoise(l.W, 0.05)) #letter W with 10 bits switched
     Wmod.append(du.getTestSetWithNoise(l.W, 0.1)) #letter W with 20 bits switched
-    Wmod.append(du.getTestSetWithNoise(l.W, 0.2)) #letter W with 39 bits switched
-    Wmod.append(du.getTestSetWithNoise(l.W, 0.3)) #letter W with 59 bits switched
-    Wmod.append(du.getTestSetWithNoise(l.W, 0.4)) #letter W with 78 bits switched
+    Wmod.append(du.getTestSetWithNoise(l.W, 0.15)) #letter W with 29 bits switched
+    Wmod.append(du.getTestSetWithNoise(l.W, 0.20)) #letter W with 39 bits switched
 
     for X in Wmod:
         output = net.activate(X)

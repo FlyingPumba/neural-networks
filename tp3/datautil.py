@@ -13,7 +13,7 @@ def getTestSetWithNoise(testset, noiseRate, plot=False):
         newset[i] *= -1
 
     if(plot):
-        new_letter = new_testset
+        new_letter = np.copy(newset)
         new_letter = new_letter.reshape(14,14)
         plt.imshow(new_letter, interpolation='none')
         plt.show()
