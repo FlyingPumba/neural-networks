@@ -21,11 +21,18 @@ class HopfieldNetwork():
     def energy(self, S, W):
         return -0.5 * np.dot(np.dot(S, W), S.T)
 
-    def activate(self, X, synch=False, plot=False):
+    def activate(self, X, synch=False, plot=False, plotOutput=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
         Eh = []
         plt.ion()
+
+        if plotOutput:
+            plt.clf()
+            letterReshaped = np.copy(S).reshape(14,14)
+            plt.imshow(letterReshaped, interpolation='none', cmap=cm.gray)
+            plt.draw()
+            raw_input()
 
         while(not np.array_equal(S,Saux)):
             Saux = np.copy(S)
@@ -37,6 +44,13 @@ class HopfieldNetwork():
                 for i in I:
                     #print "I: %s" % S
                     S[i] = np.sign(np.dot(S, self.W[:,i]))
+
+            if plotOutput:
+                plt.clf()
+                letterReshaped = np.copy(S).reshape(14,14)
+                plt.imshow(letterReshaped, interpolation='none', cmap=cm.gray)
+                plt.draw()
+                raw_input()
 
             E = self.energy(S,self.W)
             print "E: %s" % E
@@ -81,12 +95,12 @@ if __name__ == "__main__":
     # test that for all the memories, the ouput of the activation is the same
     print "\n VALIDATION with original letters\n"
     for X in memories:
-        output = net.activate(np.copy(X))
+        output = net.activate(np.copy(X), plotOutput=True, synch=True)
         if (output == X).all():
             print "RIGHT memory"
         else:
             print "WRONG memory"
-            du.plotLetters(X, output)
+            #du.plotLetters(X, output)
 
     # test some letters with noise
     print "\n VALIDATION with modified letters\n"
