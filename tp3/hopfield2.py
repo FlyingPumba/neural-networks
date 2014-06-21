@@ -31,7 +31,7 @@ class HopfieldNetwork():
             Saux = np.copy(S)
 
             if synch:
-                S = np.sign(S*self.W)
+                S = np.sign(np.dot(S,self.W))
             else:
                 I = np.random.permutation(self.cantNeuronas)
                 for i in I:
