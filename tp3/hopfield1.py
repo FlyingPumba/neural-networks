@@ -39,7 +39,7 @@ class HopfieldNetwork():
             print "E: %s" % E
             Eh.append(E)
             # self.plotEnergy(Eh)
-            # show(E,S)
+            # 	show(E,S)
         return S
 
     def plotWeights(self):
@@ -114,7 +114,7 @@ if __name__ == "__main__":
 
     memories.append([1,1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1])
     memories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
-    memories.append([1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1])
+    memories.append([1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1])
 
     print "Memories: %s" % memories
     net.createWeights(memories)
