@@ -21,7 +21,7 @@ class HopfieldNetwork():
     def energy(self, S, W):
         return -0.5 * np.dot(np.dot(S, W), S.T)
 
-    def activate(self, X, synch=False, plot=False, plotOutput=False):
+    def activate(self, X, synch=False, plotEnergy=False, plotOutput=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
         Eh = []
@@ -55,9 +55,9 @@ class HopfieldNetwork():
             E = self.energy(S,self.W)
             print "E: %s" % E
             Eh.append(E)
-            if plot:
+            if plotEnergy:
                 self.plotEnergy(Eh)
-        if plot:
+        if plotEnergy:
             raw_input()
         plt.ioff()
         return S
