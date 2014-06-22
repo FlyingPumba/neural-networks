@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import datautil as du
 import random as rnd
 
 class HopfieldNetwork():
@@ -18,7 +19,7 @@ class HopfieldNetwork():
     def energy(self, S, W):
         return -0.5 * np.dot(np.dot(S, W), S.T)
 
-    def activate(self, X, synch=False):
+    def activate(self, X, synch=False, plotEnergy=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
         Eh = []
@@ -28,7 +29,7 @@ class HopfieldNetwork():
             Saux = np.copy(S)
 
             if synch:
-                S = np.sign(S*self.W)
+                S = np.sign(np.dot(S,self.W))
             else:
                 I = np.random.permutation(self.cantNeuronas)
                 for i in I:
@@ -38,8 +39,11 @@ class HopfieldNetwork():
             E = self.energy(S,self.W)
             print "E: %s" % E
             Eh.append(E)
-            # self.plotEnergy(Eh)
-            # 	show(E,S)
+            if plotEnergy:
+                self.plotEnergy(Eh)
+        if plotEnergy:
+            raw_input()
+        plt.ioff()
         return S
 
     def plotWeights(self):
@@ -48,56 +52,11 @@ class HopfieldNetwork():
         plt.show()
 
     def plotEnergy(self, energyHistory):
+        plt.clf()
         plt.xlabel('Iteracion')
         plt.ylabel('Energia')
         plt.plot(energyHistory)
         plt.draw()
-
-    def validateNetwork(self, validationset, keepDrawing=True):
-        frecuencias = [0]*self.nOutput
-        for X in validationset:
-            Y = self.activation(X,self.W)
-            indice = Y.index(True)
-            #print "X: %d -> Neurona: %d" % (X, indice)
-            frecuencias[indice] += 1
-
-        pos = np.arange(self.nOutput)
-        width = 1.0     # gives histogram aspect to the bar diagram
-        # show label for all bins
-        sp1 = plt.subplot(211)
-
-        # show histogram
-
-        # don't let pyplot remove the values from the margins that are zero
-        if frecuencias[0] == 0:
-                frecuencias[0] = 0.00001
-        if frecuencias[self.nOutput-1] == 0:
-                frecuencias[self.nOutput-1] = 0.00001
-
-        sp1.bar(pos, frecuencias, width, color='r')
-        sp1.set_title("Frecuencias de Activacion")
-        sp1.set_xlabel('Neurona')
-        sp1.set_ylabel('Frecuencia')
-
-        # show eta and sigma history
-        sp2 = plt.subplot(212)
-        labelEta = 'eta (alpha-ord: %.2f alpha-conv: %.2f)' % (self.etaAlphaOrdenamiento, self.etaAlphaConvergencia)
-        sp2.plot(self.etaHistory, label=labelEta)
-        labelSigma = 'sigma (alpha: %.2f)' % self.sigmaAlpha
-        sp2.plot(self.sigmaHistory, label=labelSigma)
-        sp2.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05), ncol=3, fancybox=True)
-
-        if keepDrawing:
-            plt.draw()
-            plt.clf()
-        else:
-            fileName = 'kohonen1-%d.png' % np.random.randint(1000)
-            print fileName
-            figure = plt.gcf() # get current figure
-            figure.set_size_inches(10, 8) #this will give us a 800x600 image
-            # when saving, specify the DPI
-            plt.savefig(fileName, bbox_inches='tight', dpi = 100)
-            plt.close()
 
 # ========== MAIN ==========
 # numpy print options
@@ -118,33 +77,58 @@ if __name__ == "__main__":
 
     print "Memories: %s" % memories
     net.createWeights(memories)
-    print "Weights: %s" % net.W
+    #print "Weights: %s" % net.W
+
+    # ========== VALIDATION with original memories ==========
+    print "\n VALIDATION with original memories\n"
+    for X in memories:
+        output = net.activate(np.copy(X))
+        if (output == X).all():
+            print "RIGHT memory"
+        else:
+            print "WRONG memory"
     
-    print "\nTesting memory 1 (with one bit changed). \nOriginal memory is: %s" % memories[0]
-    validation = np.copy(memories[0])
-    validation[3] *= -1;
-    output = net.activate(validation)
-    print "\nNetwork output: %s" % output
-    print "Equals original memory: %s" % (output ==memories[0]).all()
-    
-    print "\nTesting memory 1 (with 5 bit changed). \nOriginal memory is: %s" % memories[0]
-    validation = np.copy(memories[0])
-    validation[3] *= -1;
-    validation[6] *= -1;
-    validation[9] *= -1;
-    validation[12] *= -1;
-    validation[15] *= -1;
-    output = net.activate(validation)
-    print "\nNetwork output: %s" % output
-    print "Equals original memory: %s" % (output ==memories[0]).all()
-    
-    print "\nTesting memory 2 (with 5 bit changed). \nOriginal memory is: %s" % memories[1]
-    validation = np.copy(memories[1])
-    validation[3] *= -1;
-    validation[6] *= -1;
-    validation[9] *= -1;
-    validation[12] *= -1;
-    validation[15] *= -1;
-    output = net.activate(validation)
-    print "\nNetwork output: %s" % output
-    print "Equals original memory: %s" % (output ==memories[1]).all()
+    # ========== VALIDATION with modified memories ==========
+    print "\n VALIDATION with modified memories\n"
+    memory0Set = []
+    # each memory has 20 bits so..
+    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.05)) #memory with 1 bit switched
+    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.1)) #memory with 2 bits switched
+    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.15)) #memory with 3 bits switched
+    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.2)) #memory with 4 bits switched
+    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.3)) #memory with 6 bits switched
+
+    for X in memory0Set:
+        output = net.activate(np.copy(X))
+        if (output == memories[0]).all():
+            print "RIGHT memory 0"
+        else:
+            print "WRONG memory 0"
+
+    memory1Set = []
+    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.05))
+    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.1))
+    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.15))
+    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.2))
+    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.3))
+
+    for X in memory1Set:
+        output = net.activate(np.copy(X))
+        if (output == memories[1]).all():
+            print "RIGHT memory 1"
+        else:
+            print "WRONG memory 1"
+
+    memory2Set = []
+    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.05))
+    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.1))
+    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.15))
+    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.2))
+    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.3))
+
+    for X in memory2Set:
+        output = net.activate(np.copy(X))
+        if (output == memories[2]).all():
+            print "RIGHT memory 2"
+        else:
+            print "WRONG memory 2"
