@@ -92,11 +92,11 @@ if __name__ == "__main__":
     print "\n VALIDATION with modified memories\n"
     memory0Set = []
     # each memory has 20 bits so..
-    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.05)) #memory with 1 bit switched
-    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.1)) #memory with 2 bits switched
-    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.15)) #memory with 3 bits switched
-    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.2)) #memory with 4 bits switched
-    memory0Set.append(du.getTestSetWithNoise(memories[0], 0.3)) #memory with 6 bits switched
+    memory0Set.append(du.getPatternWithNoise(memories[0], 0.05)) #memory with 1 bit switched
+    memory0Set.append(du.getPatternWithNoise(memories[0], 0.1)) #memory with 2 bits switched
+    memory0Set.append(du.getPatternWithNoise(memories[0], 0.15)) #memory with 3 bits switched
+    memory0Set.append(du.getPatternWithNoise(memories[0], 0.2)) #memory with 4 bits switched
+    memory0Set.append(du.getPatternWithNoise(memories[0], 0.3)) #memory with 6 bits switched
 
     for X in memory0Set:
         output = net.activate(np.copy(X))
@@ -106,11 +106,11 @@ if __name__ == "__main__":
             print "WRONG memory 0"
 
     memory1Set = []
-    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.05))
-    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.1))
-    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.15))
-    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.2))
-    memory1Set.append(du.getTestSetWithNoise(memories[1], 0.3))
+    memory1Set.append(du.getPatternWithNoise(memories[1], 0.05))
+    memory1Set.append(du.getPatternWithNoise(memories[1], 0.1))
+    memory1Set.append(du.getPatternWithNoise(memories[1], 0.15))
+    memory1Set.append(du.getPatternWithNoise(memories[1], 0.2))
+    memory1Set.append(du.getPatternWithNoise(memories[1], 0.3))
 
     for X in memory1Set:
         output = net.activate(np.copy(X))
@@ -120,11 +120,11 @@ if __name__ == "__main__":
             print "WRONG memory 1"
 
     memory2Set = []
-    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.05))
-    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.1))
-    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.15))
-    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.2))
-    memory2Set.append(du.getTestSetWithNoise(memories[2], 0.3))
+    memory2Set.append(du.getPatternWithNoise(memories[2], 0.05))
+    memory2Set.append(du.getPatternWithNoise(memories[2], 0.1))
+    memory2Set.append(du.getPatternWithNoise(memories[2], 0.15))
+    memory2Set.append(du.getPatternWithNoise(memories[2], 0.2))
+    memory2Set.append(du.getPatternWithNoise(memories[2], 0.3))
 
     for X in memory2Set:
         output = net.activate(np.copy(X))

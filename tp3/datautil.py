@@ -2,24 +2,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
-def getTestSetWithNoise(testset, noiseRate, plot=False):
-    cantBits = len(testset)
+def getPatternWithNoise(pattern, noiseRate, plot=False):
+    cantBits = len(pattern)
     cantBitsToSwitch = int(cantBits * noiseRate)
 
     indicesToSwitch = np.random.permutation(np.arange(cantBits))[:cantBitsToSwitch]
 
-    newset = np.copy(testset)
+    newpattern = np.copy(pattern)
 
     for i in indicesToSwitch:
-        newset[i] *= -1
+        newpattern[i] *= -1
 
     if(plot):
-        new_letter = np.copy(newset)
+        # assuming it is an OCR letter
+        new_letter = np.copy(newpattern)
         new_letter = new_letter.reshape(14,14)
         plt.imshow(new_letter, interpolation='none', cmap=cm.gray)
         plt.show()
 
-    return newset
+    return newpattern
 
 def plotLetter(letter):
     letterReshaped = np.copy(letter).reshape(14,14)
