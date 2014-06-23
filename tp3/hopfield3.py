@@ -24,80 +24,47 @@ class HopfieldNetwork():
     def sigmoid(self, x, temp) :
         return 1/(1 + np.exp( -x / temp ))
 
-    def activate(self, X, temp, synch=False, plotEnergy=False):
+    def activate(self, X, temp, dist, hamming = False, plotEnergy=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
         Eh = []
         plt.ion()
 
-        while(not np.array_equal(S,Saux)):
-            Saux = np.copy(S)
+        currentDist = self.dist(S, Saux, hamming)
+        print currentDist
 
-            if synch:
-                S = np.sign(S*self.W)
-            else:
-                I = np.random.permutation(self.cantNeuronas)
-                for i in I:
-                    #print "I: %s" % S
-                    #S[i] = np.sign(np.dot(S, self.W[:,i]))
-                    S[i] = np.sign(self.sigmoid(np.dot(S, self.W[:,i]), temp) - np.random.uniform(0,1))
+        while currentDist > dist:
+            Saux = np.copy(S)
+            I = np.random.permutation(self.cantNeuronas)
+            for i in I:
+                S[i] = np.sign(self.sigmoid(np.dot(S, self.W[:,i]), temp) - np.random.uniform(0,1))
+
+            currentDist = self.dist(S, Saux, hamming)
+            print currentDist
 
             E = self.energy(S,self.W)
-            print "E: %s" % E
+            #print "E: %s" % E
             Eh.append(E)
+
             if plotEnergy:
                 self.plotEnergy(Eh)
+
         if plotEnergy:
             raw_input()
+
         plt.ioff()
         return S
 
-    def activatewd(self, X, temp, desiredMem, dist, hamming = False, synch=False):
-        S = X
-        Saux = np.zeros(self.cantNeuronas)
-        Eh = []
-        plt.ion()
-       
-        if hamming = False :
-            while(np.sqrt(numpy.sum((desiredMem - Saux)**2)) > dist) :
-               
-                if synch:
-                    S = np.sign(S*self.W)
-                else:
-                    I = np.random.permutation(self.cantNeuronas)
-                    for i in I:
-                        #print "I: %s" % S
-                        #S[i] = np.sign(np.dot(S, self.W[:,i]))
-                        S[i] = np.sign(self.sigmoid(np.dot(S, self.W[:,i]), temp) - np.random.uniform(0,1))
- 
-                E = self.energy(S,self.W)
-                #print "E: %s" % E
-                Eh.append(E)
-                # self.plotEnergy(Eh)
-                # show(E,S)
-                Saux = np.copy(S)
-            return S
-        else :
-            while(distHamming(desiredMem, Saux) > dist) :
- 
-                if synch:
-                    S = np.sign(S*self.W)
-                else:
-                    I = np.random.permutation(self.cantNeuronas)
-                    for i in I:
-                        #print "I: %s" % S
-                        #S[i] = np.sign(np.dot(S, self.W[:,i]))
-                        S[i] = np.sign(self.sigmoid(np.dot(S, self.W[:,i]), temp) - np.random.uniform(0,1))
- 
-                E = self.energy(S,self.W)
-                #print "E: %s" % E
-                Eh.append(E)
-                # self.plotEnergy(Eh)
-                # show(E,S)
-                Saux = np.copy(S)
-            return S
+    def dist(self, a, b, hamming=False):
+        if hamming:
+            return self.distHamming(a, b)
+        else:
+            return self.distEuclidean(a, b)
+
+    def distEuclidean(self, a, b):
+        return np.sqrt(np.sum((b - a)**2))
    
-    def distHamming(a, b) :
+    def distHamming(self, a, b):
         dist = 0
         for i in xrange(len(a)) :
             if a[i] != b[i]:
@@ -124,6 +91,12 @@ np.set_printoptions(precision=5)
 if __name__ == "__main__":
     net = HopfieldNetwork()
 
+    # temperature
+    temp = 0.4
+
+    # threshold distance to consider one pattern the same as other
+    tDist = 0.01
+
     # generate the memories
     cantMemorias = 10
     memories = []
@@ -132,5 +105,16 @@ if __name__ == "__main__":
         memories.append(np.round(np.random.sample(100)) * 2 - 1)
         cantMemorias -= 1
 
-    # sets the temperature
-    temp = 0.4
+    net.createWeights(memories)
+
+
+    # ========== VALIDATION ==========
+
+    # test that for all the memories, the ouput of the activation is the same
+    print "\n VALIDATION with original memories\n"
+    for X in memories:
+        output = net.activate(np.copy(X), temp, tDist,  plotEnergy=True)
+        if (output == X).all():
+            print "RIGHT memory"
+        else:
+            print "WRONG memory"
