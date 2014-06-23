@@ -59,15 +59,15 @@ class HopfieldNetwork():
         plt.draw()
 
     def isEspurious(self, memories, pattern, note="", doPrint=True):
-    	for X in memories:
-    		output = self.activate(np.copy(pattern))
-    		if (output == X).all():
-    			if (doPrint):		
-    				print "RIGHT memory: %s" % pattern + " " + note 
-				return False
-    	if (doPrint):
-    		print "ESPURIOUS memory: %s" % pattern + " " + note
-		return True
+        for X in memories:
+            output = self.activate(np.copy(pattern))
+            if (output == X).all():
+                if (doPrint):		
+                    print "RIGHT memory: %s" % pattern + " " + note 
+                return False
+        if (doPrint):
+            print "ESPURIOUS memory: %s" % pattern + " " + note
+        return True
 
 # ========== MAIN ==========
 # numpy print options
@@ -164,7 +164,6 @@ if __name__ == "__main__":
         # save the pattern
         numbers[i] = lista
 
-    print numbers[0]
     count = 0
     for X in numbers:
         if net.isEspurious(memories, X, "", False):
