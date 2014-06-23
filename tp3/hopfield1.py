@@ -168,7 +168,7 @@ if __name__ == "__main__":
         lista = np.array(lista)
         # convert string representation to integers
         lista = lista.astype(np.int)
-        # replace zeros with ones
+        # replace zeros with -1s
         lista[lista == 0] = -1
         # save the pattern
         numbers[i] = lista
