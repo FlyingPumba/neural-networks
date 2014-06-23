@@ -141,6 +141,7 @@ if __name__ == "__main__":
     # replace zeros with ones, is this ok ?
     e[e == 0] = 1
     espurious.append(e)
+    espurious.append([-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1])
 
     for X in espurious:
         print "Testing espurious: %s" % X
