@@ -58,6 +58,17 @@ class HopfieldNetwork():
         plt.plot(energyHistory)
         plt.draw()
 
+    def isEspurious(self, memories, pattern, note="", doPrint=True):
+    	for X in memories:
+    		output = self.activate(np.copy(pattern))
+    		if (output == X).all():
+    			if (doPrint):		
+    				print "RIGHT memory: %s" % pattern + " " + note 
+				return False
+    	if (doPrint):
+    		print "ESPURIOUS memory: %s" % pattern + " " + note
+		return True
+
 # ========== MAIN ==========
 # numpy print options
 np.set_printoptions(suppress=True)
@@ -82,11 +93,8 @@ if __name__ == "__main__":
     # ========== VALIDATION with original memories ==========
     print "\n VALIDATION with original memories\n"
     for X in memories:
-        output = net.activate(np.copy(X))
-        if (output == X).all():
-            print "RIGHT memory"
-        else:
-            print "WRONG memory"
+        net.isEspurious(memories, X, "(original memory)")
+
     
     # ========== VALIDATION with modified memories ==========
     print "\n VALIDATION with modified memories\n"
@@ -99,11 +107,7 @@ if __name__ == "__main__":
     memory0Set.append(du.getPatternWithNoise(memories[0], 0.3)) #memory with 6 bits switched
 
     for X in memory0Set:
-        output = net.activate(np.copy(X))
-        if (output == memories[0]).all():
-            print "RIGHT memory 0"
-        else:
-            print "WRONG memory 0"
+        net.isEspurious(memories, X, "(distorted memory 0)")
 
     memory1Set = []
     memory1Set.append(du.getPatternWithNoise(memories[1], 0.05))
@@ -113,11 +117,7 @@ if __name__ == "__main__":
     memory1Set.append(du.getPatternWithNoise(memories[1], 0.3))
 
     for X in memory1Set:
-        output = net.activate(np.copy(X))
-        if (output == memories[1]).all():
-            print "RIGHT memory 1"
-        else:
-            print "WRONG memory 1"
+        net.isEspurious(memories, X, "(distorted memory 1)")
 
     memory2Set = []
     memory2Set.append(du.getPatternWithNoise(memories[2], 0.05))
@@ -127,35 +127,25 @@ if __name__ == "__main__":
     memory2Set.append(du.getPatternWithNoise(memories[2], 0.3))
 
     for X in memory2Set:
-        output = net.activate(np.copy(X))
-        if (output == memories[2]).all():
-            print "RIGHT memory 2"
-        else:
-            print "WRONG memory 2"
+        net.isEspurious(memories, X, "(distorted memory 2)")
 
     # ========== VALIDATION analytic espurious states ==========
     print "\n VALIDATION analytic espurious states\n"
     espurious = []
-
-    e = np.sign(np.add(memories[0], memories[2]))
-    # replace zeros with ones, is this ok ?
-    e[e == 0] = 1
-    espurious.append(e)
+    espurious.append([-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1,1,1])
     espurious.append([-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1])
+    espurious.append([-1,-1,-1,-1,-1,1,1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1])
+
 
     for X in espurious:
-        print "Testing espurious: %s" % X
-        output = net.activate(np.copy(X))
-        if (output == X).all():
-            print "FOUND espurious state"
-        else:
-            print "NOT an espurious state"
+        net.isEspurious(memories, X, "(inverted memory = espurious)")
 
     # ========== VALIDATION empiric espurious states ==========
     print "\n VALIDATION empiric espurious states\n"
 
     # get 1000 numbers within 1 and 2**20 (1048576)
-    numbers = np.random.randint(2**19, 2**20, size=1000)
+    #numbers = np.random.randint(2**19, 2**20, size=1000)
+    numbers = xrange(0,2**10)
     # transform them in binary
     numbers = [np.binary_repr(x, width=20) for x in numbers]
 
@@ -174,10 +164,10 @@ if __name__ == "__main__":
         # save the pattern
         numbers[i] = lista
 
+    print numbers[0]
     count = 0
     for X in numbers:
-        output = net.activate(np.copy(X))
-        if (output == X).all():
+        if net.isEspurious(memories, X, "", False):
             count = count + 1
 
     print "FOUND %d espirious states of %d" % (count, len(numbers))
