@@ -37,7 +37,7 @@ class HopfieldNetwork():
                     S[i] = np.sign(np.dot(S, self.W[:,i]))
 
             E = self.energy(S,self.W)
-            print "E: %s" % E
+            #print "E: %s" % E
             Eh.append(E)
             if plotEnergy:
                 self.plotEnergy(Eh)
@@ -132,3 +132,51 @@ if __name__ == "__main__":
             print "RIGHT memory 2"
         else:
             print "WRONG memory 2"
+
+    # ========== VALIDATION analytic espurious states ==========
+    print "\n VALIDATION analytic espurious states\n"
+    espurious = []
+
+    e = np.sign(np.add(memories[0], memories[2]))
+    # replace zeros with ones, is this ok ?
+    e[e == 0] = 1
+    espurious.append(e)
+
+    for X in espurious:
+        print "Testing espurious: %s" % X
+        output = net.activate(np.copy(X))
+        if (output == X).all():
+            print "FOUND espurious state"
+        else:
+            print "NOT an espurious state"
+
+    # ========== VALIDATION empiric espurious states ==========
+    print "\n VALIDATION empiric espurious states\n"
+
+    # get 1000 numbers within 1 and 2**20 (1048576)
+    numbers = np.random.randint(2**19, 2**20, size=1000)
+    # transform them in binary
+    numbers = [np.binary_repr(x, width=20) for x in numbers]
+
+    offset = 1
+    for i in xrange(len(numbers)):
+        aux = numbers[i]
+        lista = []
+        # split binary representation into list
+        lista[offset:offset+len(aux)] = list(aux)
+        # convert list to numpy array
+        lista = np.array(lista)
+        # convert string representation to integers
+        lista = lista.astype(np.int)
+        # replace zeros with ones
+        lista[lista == 0] = -1
+        # save the pattern
+        numbers[i] = lista
+
+    count = 0
+    for X in numbers:
+        output = net.activate(np.copy(X))
+        if (output == X).all():
+            count = count + 1
+
+    print "FOUND %d espirious states of %d" % (count, len(numbers))
