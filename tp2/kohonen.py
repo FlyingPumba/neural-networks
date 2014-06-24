@@ -8,8 +8,10 @@ class NoSupervisedNetwork():
     def __init__(self):
         self.nInput = 1
         self.nOutput = 20
-        self.etaAlpha = 0.1
-        self.sigmaAlpha  = 0.2
+        self.etaAlphaOrdenamiento = 0.3
+        self.thresholdConvergencia = 0.0001
+        self.etaAlphaConvergencia = 0.4
+        self.sigmaAlpha  = 0.3
 
         self.etaHistory = []
         self.sigmaHistory = []
@@ -18,25 +20,35 @@ class NoSupervisedNetwork():
         self.W = np.random.uniform(-0.1,0.1,size=(self.nInput, self.nOutput))
 
         cant_epochs = 1
-        max_epochs = 400
+        max_epochs = 250
 
         while cant_epochs <= max_epochs:
             # begin a new epoch
-
-            self.etaHistory.append(self.eta(cant_epochs))
-            self.sigmaHistory.append(self.sigma(cant_epochs))
 
             # stochastic learning
             if(stochastic):
                 trainingset = np.copy(dataset)
                 np.random.shuffle(trainingset)
 
+            convergencia = False
+
             for X in trainingset:
                 Y = self.activation(X,self.W)
                 P = self.winner(Y)
                 D = self.proxy(P, self.sigma(cant_epochs))
-                dW = self.eta(cant_epochs) * (X.T - self.W) * D
+                if (D > self.thresholdConvergencia).sum() > 1:
+                    dW = self.eta(self.etaAlphaOrdenamiento, cant_epochs) * (X.T - self.W) * D
+                else:
+                    dW = self.eta(self.etaAlphaConvergencia, cant_epochs) * (X.T - self.W) * D
+                    convergencia = True
                 self.W = self.W + dW
+
+            if convergencia:
+                self.etaHistory.append(self.eta(self.etaAlphaConvergencia, cant_epochs))
+            else:
+                self.etaHistory.append(self.eta(self.etaAlphaOrdenamiento, cant_epochs))
+
+            self.sigmaHistory.append(self.sigma(cant_epochs))
 
             if cant_epochs % 5 == 0:
                 self.validateNetwork(valset)
@@ -47,8 +59,8 @@ class NoSupervisedNetwork():
         Y = np.array(Y)
         return [True if x == min(Y[0]) else False for x in Y[0]]
 
-    def eta(self, t):
-        return t**(-self.etaAlpha)
+    def eta(self, alpha, t):
+        return t**(-alpha)
 
     def sigma(self, t):
         return t**(-self.sigmaAlpha)
@@ -64,9 +76,9 @@ class NoSupervisedNetwork():
     def proxy(self, p, sigma):
         d = []
         for i in xrange(self.nOutput):
-            aux = np.exp( (-(i-p)**2)/ 2*sigma**2)
+            aux = np.exp( (-(i-p)**2)/ (2*sigma**2))
             d.append(aux)
-        return d
+        return np.array(d)
 
     def plotWeights(self):
         plt.xlabel("Final weights")
@@ -85,11 +97,15 @@ class NoSupervisedNetwork():
         width = 1.0     # gives histogram aspect to the bar diagram
         # show label for all bins
         sp1 = plt.subplot(211)
-        #ax = sp1.axes()
-        #ax.set_xticks(pos + (width / 2))
-        #ax.set_xticklabels(pos)
 
         # show histogram
+
+        # don't let pyplot remove the values from the margins that are zero
+        if frecuencias[0] == 0:
+                frecuencias[0] = 0.00001
+        if frecuencias[self.nOutput-1] == 0:
+                frecuencias[self.nOutput-1] = 0.00001
+
         sp1.bar(pos, frecuencias, width, color='r')
         sp1.set_title("Frecuencias de Activacion")
         sp1.set_xlabel('Neurona')
@@ -97,7 +113,7 @@ class NoSupervisedNetwork():
 
         # show eta and sigma history
         sp2 = plt.subplot(212)
-        labelEta = 'eta (alpha: %.2f)' % self.etaAlpha
+        labelEta = 'eta (alpha-ord: %.2f alpha-conv: %.2f)' % (self.etaAlphaOrdenamiento, self.etaAlphaConvergencia)
         sp2.plot(self.etaHistory, label=labelEta)
         labelSigma = 'sigma (alpha: %.2f)' % self.sigmaAlpha
         sp2.plot(self.sigmaHistory, label=labelSigma)
@@ -108,8 +124,12 @@ class NoSupervisedNetwork():
             plt.clf()
         else:
             fileName = 'kohonen1-%d.png' % np.random.randint(1000)
-            plt.savefig(fileName, bbox_inches='tight')
-            plt.show()
+            print fileName
+            figure = plt.gcf() # get current figure
+            figure.set_size_inches(10, 8) #this will give us a 800x600 image
+            # when saving, specify the DPI
+            plt.savefig(fileName, bbox_inches='tight', dpi = 100)
+            plt.close()
 
 # ========== MAIN ==========
 # numpy print options
