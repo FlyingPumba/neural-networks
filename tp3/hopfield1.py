@@ -42,7 +42,7 @@ class HopfieldNetwork():
             if plotEnergy and len(Eh) > 1:
                 self.plotEnergy(Eh)
         if plotEnergy and len(Eh) > 1:
-            raw_input()
+            self.plotEnergy(Eh, saveFile=True)
         plt.ioff()
         return S
 
@@ -51,11 +51,19 @@ class HopfieldNetwork():
         plt.imshow(self.W,interpolation='none', cmap=cm.gray)
         plt.show()
 
-    def plotEnergy(self, energyHistory):
+    def plotEnergy(self, energyHistory, saveFile=False):
         plt.clf()
         plt.xlabel('Iteracion')
         plt.ylabel('Energia')
         plt.plot(energyHistory)
+        if saveFile:
+            filekey = np.random.randint(1000)
+            fileName = 'hopfield1-energy-%d.png' % filekey
+            print fileName
+            figure = plt.gcf() # get current figure
+            figure.set_size_inches(10, 8) #this will give us a 800x600 image
+            # when saving, specify the DPI
+            plt.savefig(fileName, bbox_inches='tight', dpi = 100)
         plt.draw()
 
     def isEspurious(self, memories, pattern, note="", doPrint=True):
