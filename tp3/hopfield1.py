@@ -19,7 +19,7 @@ class HopfieldNetwork():
     def energy(self, S, W):
         return -0.5 * np.dot(np.dot(S, W), S.T)
 
-    def activate(self, X, synch=False, plotEnergy=False):
+    def activate(self, X, sync=False, plotEnergy=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
         Eh = []
@@ -28,7 +28,7 @@ class HopfieldNetwork():
         while(not np.array_equal(S,Saux)):
             Saux = np.copy(S)
 
-            if synch:
+            if sync:
                 S = np.sign(np.dot(S,self.W))
             else:
                 I = np.random.permutation(self.cantNeuronas)
@@ -39,9 +39,9 @@ class HopfieldNetwork():
             E = self.energy(S,self.W)
             #print "E: %s" % E
             Eh.append(E)
-            if plotEnergy:
+            if plotEnergy and len(Eh) > 1:
                 self.plotEnergy(Eh)
-        if plotEnergy:
+        if plotEnergy and len(Eh) > 1:
             raw_input()
         plt.ioff()
         return S
@@ -97,7 +97,19 @@ if __name__ == "__main__":
     # ========== VALIDATION with original memories ==========
     print "\n VALIDATION with original memories\n"
     for X in memories:
-        net.isEspurious(memories, X, "(original memory)")
+        output = net.activate(np.copy(X), plotEnergy=True)
+        if (output == X).all():
+            print "Memory %s is RIGHT (asyncronic activation)" % X
+        else:
+            print "Memory %s is WRONG (asyncronic activation)" % X
+
+    print "\n VALIDATION with original memories (syncronic activation)\n"
+    for X in memories:
+        output = net.activate(np.copy(X), plotEnergy=True, sync=True)
+        if (output == X).all():
+            print "Memory %s is RIGHT (syncronic activation)" % X
+        else:
+            print "Memory %s is WRONG (syncronic activation)" % X
 
     
     # ========== VALIDATION with modified memories ==========
