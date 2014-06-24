@@ -77,17 +77,21 @@ np.set_printoptions(precision=5)
 if __name__ == "__main__":
     #plt.ion()
     net = HopfieldNetwork()
-
+    orthNet = HopfieldNetwork()
     # generate the memories
     memories = []
-    cantMemorias = 3
-
     memories.append([1,1,1,1,1,1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1])
     memories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
     memories.append([1,1,1,1,1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,1,1,1,1,1])
-
     print "Memories: %s" % memories
+
+    orthMemories = []
+    orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+    orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-1])
+    orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-1,1])
+
     net.createWeights(memories)
+    orthNet.createWeights(orthMemories)
     #print "Weights: %s" % net.W
 
     # ========== VALIDATION with original memories ==========
@@ -144,8 +148,8 @@ if __name__ == "__main__":
     print "\n VALIDATION empiric espurious states\n"
 
     # get 1000 numbers within 1 and 2**20 (1048576)
-    #numbers = np.random.randint(2**19, 2**20, size=1000)
-    numbers = xrange(0,2**10)
+    numbers = np.random.randint(1, 2**20, size=10000)
+    #numbers = xrange(0,2**10)
     # transform them in binary
     numbers = [np.binary_repr(x, width=20) for x in numbers]
 
@@ -169,4 +173,11 @@ if __name__ == "__main__":
         if net.isEspurious(memories, X, "", False):
             count = count + 1
 
-    print "FOUND %d espirious states of %d" % (count, len(numbers))
+    count2 = 0
+    for X in numbers:
+        if orthNet.isEspurious(orthMemories, X, "", False):
+            count2 = count2 + 1
+
+    print "FOUND %d espirious states of %d with orthogonal memories" % (count, len(numbers))
+    print "FOUND %d espirious states of %d with non orthogonal memories" % (count2, len(numbers))
+
