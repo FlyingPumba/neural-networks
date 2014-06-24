@@ -59,15 +59,15 @@ class HopfieldNetwork():
         plt.draw()
 
     def isEspurious(self, memories, pattern, note="", doPrint=True):
-        for X in memories:
-            output = self.activate(np.copy(pattern))
-            if (output == X).all():
-                if (doPrint):		
-                    print "RIGHT memory: %s" % pattern + " " + note 
-                return False
-        if (doPrint):
-            print "ESPURIOUS memory: %s" % pattern + " " + note
-        return True
+        output = self.activate(np.copy(pattern))
+        if any((output == x).all() for x in memories):
+            if (doPrint):
+                print "Pattern %s ended in a known memory." % pattern + " " + note 
+            return False
+        else:   
+            if (doPrint):
+                print "Pattern %s ended in a not known memory. FOUND ESPURIOS state" % pattern + " " + note 
+            return True
 
 # ========== MAIN ==========
 # numpy print options
