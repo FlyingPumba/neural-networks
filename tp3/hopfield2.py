@@ -95,7 +95,8 @@ if __name__ == "__main__":
     # test that for all the memories, the ouput of the activation is the same
     print "\n VALIDATION with original letters\n"
     for X in memories:
-        output = net.activate(np.copy(X), plotOutput=True, synch=True)
+        #du.plotLetter(X, saveFile=True)
+        output = net.activate(np.copy(X))
         if (output == X).all():
             print "RIGHT memory"
         else:
