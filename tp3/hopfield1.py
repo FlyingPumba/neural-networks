@@ -72,7 +72,7 @@ class HopfieldNetwork():
             if (doPrint):
                 print "Pattern %s ended in a known memory." % pattern + " " + note 
             return False
-        else:   
+        else:
             if (doPrint):
                 print "Pattern %s ended in a not known memory. FOUND ESPURIOS state" % pattern + " " + note 
             return True
@@ -189,13 +189,19 @@ if __name__ == "__main__":
         numbers[i] = lista
 
     count = 0
+    espuriousEncontrados = []
     for X in numbers:
-        if net.isEspurious(memories, X, "", False):
+        output = net.activate(np.copy(X))
+        if not any((output == x).all() for x in memories) and not any((output == x).all() for x in espuriousEncontrados):
+            espuriousEncontrados.append(output)
             count = count + 1
 
     count2 = 0
+    espuriousEncontrados2 = []
     for X in numbers:
-        if orthNet.isEspurious(orthMemories, X, "", False):
+        output = orthNet.activate(np.copy(X))
+        if not any((output == x).all() for x in memories) and not any((output == x).all() for x in espuriousEncontrados2):
+            espuriousEncontrados2.append(output)
             count2 = count2 + 1
 
     print "FOUND %d espirious states of %d with orthogonal memories" % (count, len(numbers))

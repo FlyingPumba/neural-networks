@@ -27,10 +27,10 @@ def plotLetter(letter, saveFile=False):
     plt.imshow(letterReshaped, interpolation='none', cmap=cm.gray)
     if saveFile:
         filekey = np.random.randint(1000)
-        fileName = 'hopfield1-energy-%d.png' % filekey
+        fileName = 'ocr-letter-%d.png' % filekey
         print fileName
         figure = plt.gcf() # get current figure
-        figure.set_size_inches(10, 8) #this will give us a 800x600 image
+        figure.set_size_inches(5, 4) #this will give us a 400x300 image
         # when saving, specify the DPI
         plt.savefig(fileName, bbox_inches='tight', dpi = 100)
     plt.show()
