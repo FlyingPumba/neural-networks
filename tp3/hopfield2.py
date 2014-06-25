@@ -32,7 +32,6 @@ class HopfieldNetwork():
             letterReshaped = np.copy(S).reshape(14,14)
             plt.imshow(letterReshaped, interpolation='none', cmap=cm.gray)
             plt.draw()
-            raw_input()
 
         while(not np.array_equal(S,Saux)):
             Saux = np.copy(S)
@@ -50,14 +49,13 @@ class HopfieldNetwork():
                 letterReshaped = np.copy(S).reshape(14,14)
                 plt.imshow(letterReshaped, interpolation='none', cmap=cm.gray)
                 plt.draw()
-                raw_input()
 
             E = self.energy(S,self.W)
             print "E: %s" % E
             Eh.append(E)
             if plotEnergy:
                 self.plotEnergy(Eh)
-        if plotEnergy:
+        if plotEnergy or plotOutput:
             raw_input()
         plt.ioff()
         return S
@@ -84,7 +82,8 @@ if __name__ == "__main__":
     net = HopfieldNetwork()
 
     # generate the memories
-    memories = d.OCR.trainingset
+    #memories = d.OCR.trainingset
+    memories = np.asarray([l.A, l.G, l.M, l.W])
 
     # ========== TRAINING ==========
     net.createWeights(memories)
@@ -101,7 +100,6 @@ if __name__ == "__main__":
             print "RIGHT memory"
         else:
             print "WRONG memory"
-            #du.plotLetters(X, output)
 
     # test some letters with noise
     print "\n VALIDATION with modified letters\n"
@@ -113,12 +111,11 @@ if __name__ == "__main__":
     Amod.append(du.getPatternWithNoise(l.A, 0.2)) #letter A with 39 bits switched
 
     for X in Amod:
-        output = net.activate(np.copy(X))
+        output = net.activate(np.copy(X), plotOutput=True)
         if (output == l.A).all():
             print "RIGHT letter A"
         else:
             print "WRONG letter A"
-            du.plotLetters(X, output)
 
     Gmod = []
     Gmod.append(du.getPatternWithNoise(l.G, 0.05)) #letter G with 10 bits switched
