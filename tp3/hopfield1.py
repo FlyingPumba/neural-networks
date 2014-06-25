@@ -104,9 +104,13 @@ if __name__ == "__main__":
     print "Memories: %s" % memories
 
     orthMemories = []
-    orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+    #orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1])
+    #orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-1])
+    #orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-1,1])
+
     orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-1])
     orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-1,1])
+    orthMemories.append([1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,-1,1,1])
 
     net.createWeights(memories)
     orthNet.createWeights(orthMemories)
@@ -246,17 +250,19 @@ if __name__ == "__main__":
     espuriousEncontrados = []
     for X in numbers:
         output = net.activate(np.copy(X))
-        if not any((output == x).all() for x in memories) and not any((output == x).all() for x in espuriousEncontrados):
-            espuriousEncontrados.append(output)
+        if not any((output == x).all() for x in memories):
+            if not any((output == x).all() for x in espuriousEncontrados):
+                espuriousEncontrados.append(output)
             count = count + 1
 
     count2 = 0
     espuriousEncontrados2 = []
     for X in numbers:
         output = orthNet.activate(np.copy(X))
-        if not any((output == x).all() for x in orthMemories) and not any((output == x).all() for x in espuriousEncontrados2):
-            espuriousEncontrados2.append(output)
+        if not any((output == x).all() for x in orthMemories):
+            if not any((output == x).all() for x in espuriousEncontrados2):
+                espuriousEncontrados2.append(output)
             count2 = count2 + 1
 
-    print "FOUND %d espirious states on %d patterns with orthogonal memories" % (count, len(numbers))
-    print "FOUND %d espirious states on %d patterns non orthogonal memories" % (count2, len(numbers))
+    print "FOUND %d espirious states (%d occurrences) on %d patterns with orthogonal memories" % (len(espuriousEncontrados), count, len(numbers))
+    print "FOUND %d espirious states (%d occurrences) on %d patterns non orthogonal memories" % (len(espuriousEncontrados2), count2, len(numbers))
