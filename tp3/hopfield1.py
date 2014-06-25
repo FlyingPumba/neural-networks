@@ -253,6 +253,7 @@ if __name__ == "__main__":
         if not any((output == x).all() for x in memories):
             if not any((output == x).all() for x in espuriousEncontrados):
                 espuriousEncontrados.append(output)
+                print "Espurious %d: %s" % (len(espuriousEncontrados), output)
             count = count + 1
 
     count2 = 0
@@ -262,7 +263,8 @@ if __name__ == "__main__":
         if not any((output == x).all() for x in orthMemories):
             if not any((output == x).all() for x in espuriousEncontrados2):
                 espuriousEncontrados2.append(output)
+                print "Espurious %d: %s" % (len(espuriousEncontrados2), output)
             count2 = count2 + 1
 
-    print "FOUND %d espirious states (%d occurrences) on %d patterns with orthogonal memories" % (len(espuriousEncontrados), count, len(numbers))
-    print "FOUND %d espirious states (%d occurrences) on %d patterns non orthogonal memories" % (len(espuriousEncontrados2), count2, len(numbers))
+    print "FOUND %d espurious states (%d occurrences) on %d patterns with orthogonal memories" % (len(espuriousEncontrados), count, len(numbers))
+    print "FOUND %d espurious states (%d occurrences) on %d patterns non orthogonal memories" % (len(espuriousEncontrados2), count2, len(numbers))
