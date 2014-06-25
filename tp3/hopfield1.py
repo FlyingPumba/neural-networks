@@ -177,9 +177,9 @@ if __name__ == "__main__":
 
     # get 1000 numbers within 1 and 2**20 (1048576)
     #numbers = np.random.randint(1, 2**20, size=10000)
-    numbers = xrange(0,2**10)
+    numbers = xrange(0,2**20)
     # transform them in binary
-    #numbers = [np.binary_repr(x, width=20) for x in numbers]
+    numbers = [np.binary_repr(x, width=20) for x in numbers]
 
     offset = 1
     for i in xrange(len(numbers)):
