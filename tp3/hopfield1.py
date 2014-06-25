@@ -74,8 +74,18 @@ class HopfieldNetwork():
             return False
         else:   
             if (doPrint):
-                print "Pattern %s ended in a not known memory. FOUND ESPURIOS state" % pattern + " " + note 
+                print "Pattern %s ended in a not known memory. FOUND ESPURIOUS state" % pattern + " " + note 
             return True
+
+    def getEspuriousRate(self, memories, pattern, noise, times):
+    	count = 0.0
+    	for i in xrange(1, times): 
+    		X = du.getPatternWithNoise(pattern, noise)
+    		result = self.activate(np.copy(X))
+    		if self.isEspurious(memories, result, doPrint=False):
+    			count = count + 1.0
+    	print "Espurious rate of %f %%  with %f %%  noise " % (count / times * 100, noise * 100)
+
 
 # ========== MAIN ==========
 # numpy print options
@@ -122,36 +132,29 @@ if __name__ == "__main__":
     
     # ========== VALIDATION with modified memories ==========
     print "\n VALIDATION with modified memories\n"
-    memory0Set = []
-    # each memory has 20 bits so..
-    memory0Set.append(du.getPatternWithNoise(memories[0], 0.05)) #memory with 1 bit switched
-    memory0Set.append(du.getPatternWithNoise(memories[0], 0.1)) #memory with 2 bits switched
-    memory0Set.append(du.getPatternWithNoise(memories[0], 0.15)) #memory with 3 bits switched
-    memory0Set.append(du.getPatternWithNoise(memories[0], 0.2)) #memory with 4 bits switched
-    memory0Set.append(du.getPatternWithNoise(memories[0], 0.3)) #memory with 6 bits switched
 
-    for X in memory0Set:
-        net.isEspurious(memories, X, "(distorted memory 0)")
+    print "\n First memory"
+    net.getEspuriousRate(memories, memories[0], 0.05, 10000)
+    net.getEspuriousRate(memories, memories[0], 0.1, 10000)
+    net.getEspuriousRate(memories, memories[0], 0.15, 10000)
+    net.getEspuriousRate(memories, memories[0], 0.2, 10000)
+    net.getEspuriousRate(memories, memories[0], 0.3, 10000)
 
-    memory1Set = []
-    memory1Set.append(du.getPatternWithNoise(memories[1], 0.05))
-    memory1Set.append(du.getPatternWithNoise(memories[1], 0.1))
-    memory1Set.append(du.getPatternWithNoise(memories[1], 0.15))
-    memory1Set.append(du.getPatternWithNoise(memories[1], 0.2))
-    memory1Set.append(du.getPatternWithNoise(memories[1], 0.3))
+    print "\n Second memory"
+    net.getEspuriousRate(memories, memories[1], 0.05, 10000)
+    net.getEspuriousRate(memories, memories[1], 0.1, 10000)
+    net.getEspuriousRate(memories, memories[1], 0.15, 10000)
+    net.getEspuriousRate(memories, memories[1], 0.2, 10000)
+    net.getEspuriousRate(memories, memories[1], 0.3, 10000)
 
-    for X in memory1Set:
-        net.isEspurious(memories, X, "(distorted memory 1)")
+    print "\n Third memory"
+    net.getEspuriousRate(memories, memories[2], 0.05, 10000)
+    net.getEspuriousRate(memories, memories[2], 0.1, 10000)
+    net.getEspuriousRate(memories, memories[2], 0.15, 10000)
+    net.getEspuriousRate(memories, memories[2], 0.2, 10000)
+    net.getEspuriousRate(memories, memories[2], 0.3, 10000)
 
-    memory2Set = []
-    memory2Set.append(du.getPatternWithNoise(memories[2], 0.05))
-    memory2Set.append(du.getPatternWithNoise(memories[2], 0.1))
-    memory2Set.append(du.getPatternWithNoise(memories[2], 0.15))
-    memory2Set.append(du.getPatternWithNoise(memories[2], 0.2))
-    memory2Set.append(du.getPatternWithNoise(memories[2], 0.3))
-
-    for X in memory2Set:
-        net.isEspurious(memories, X, "(distorted memory 2)")
+    
 
     # ========== VALIDATION analytic espurious states ==========
     print "\n VALIDATION analytic espurious states\n"
