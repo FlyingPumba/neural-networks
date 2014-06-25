@@ -30,17 +30,17 @@ class HopfieldNetwork():
         Eh = []
         plt.ion()
 
-        currentDist = min(self.dist(Saux, i) > dist for i in memories)
-        print currentDist
+        currentDist = min(self.dist(Saux, i, hamming) > dist for i in memories)
+        #print currentDist
 
-        while all(self.dist(Saux, i) > dist for i in memories):
-            Saux = np.copy(S)
+        while all(self.dist(Saux, i, hamming) > dist for i in memories):
+            
             I = np.random.permutation(self.cantNeuronas)
             for i in I:
                 S[i] = np.sign(self.sigmoid(np.dot(S, self.W[:,i]), temp) - np.random.uniform(0,1))
 
             currentDist = min(self.dist(Saux, i) > dist for i in memories)
-            print currentDist
+            #print currentDist
 
             E = self.energy(S,self.W)
             #print "E: %s" % E
@@ -48,12 +48,14 @@ class HopfieldNetwork():
 
             if plotEnergy:
                 self.plotEnergy(Eh)
+            
+            Saux = np.copy(S)
 
         if plotEnergy:
             raw_input()
 
         plt.ioff()
-        return [i for i in memories if self.dist(Saux, i) <= dist][0]
+        return Saux
 
     def dist(self, a, b, hamming=False):
         if hamming:
@@ -91,18 +93,36 @@ np.set_printoptions(precision=5)
 if __name__ == "__main__":
     net = HopfieldNetwork()
     
-    def ham(a, b): #Lo copie para probar una cosa
+    def dist(a, b, hamming=False):
+        if hamming:
+            return distHamming(a, b)
+        else:
+            return distEuclidean(a, b)
+
+    def distEuclidean(a, b):
+        return np.sqrt(np.sum((b - a)**2))
+   
+    def distHamming(a, b):
         dist = 0
         for i in xrange(len(a)) :
             if a[i] != b[i]:
                 dist += 1
         return dist
+    
+    def cMem(a, mem, hamming = False):
+        mindist = dist(a, mem[0], hamming)
+        for i in mem:
+            if dist(a, i, hamming) <= mindist:
+                mindist = dist(a, i, hamming)
+                minmem = i
+                
+        return minmem
 
     # temperature
     temp = 0.4
 
     # threshold distance to consider one pattern the same as other
-    tDist = 5
+    tDist = 15
 
     # generate the memories
     cantMemorias = 10
@@ -116,16 +136,16 @@ if __name__ == "__main__":
 
 
     # ========== VALIDATION ==========
-
+    # print [i for i in memories if self.dist(Saux, i, hamming) <= dist]
     # test that for all the memories, the ouput of the activation is the same
     print "\n VALIDATION with original memories\n"
     for X in memories:
-        output = net.activate(np.copy(X), memories, temp, tDist, plotEnergy=False)
-        if (output == X).all():
-            print "RIGHT memory"
-            print output
-        else:
-            print "WRONG memory"
-            print output
-            print X
-            print ham(output, X)
+        output = net.activate(np.copy(X), memories, temp, tDist, hamming = True, plotEnergy=False)
+        print "INITIAL activation state"
+        print X
+        print "FINAL activation state with given distance"
+        print output
+        print "Distance obtained:", dist(X, output, hamming = True)
+        print "CLOSEST memory"
+        print cMem(output, memories, hamming = True)
+        print "Is the closest memory the same as the initial?", (cMem(output, memories, hamming = True) == X).all()
