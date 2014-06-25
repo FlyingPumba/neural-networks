@@ -82,7 +82,7 @@ class HopfieldNetwork():
     	for i in xrange(1, times): 
     		X = du.getPatternWithNoise(pattern, noise)
     		result = self.activate(np.copy(X))
-    		if self.isEspurious(memories, result, doPrint=False):
+    		if (pattern != result).any():
     			count = count + 1.0
     	print "Espurious rate of %f %%  with %f %%  noise " % (count / times * 100, noise * 100)
 
@@ -139,6 +139,8 @@ if __name__ == "__main__":
     net.getEspuriousRate(memories, memories[0], 0.15, 10000)
     net.getEspuriousRate(memories, memories[0], 0.2, 10000)
     net.getEspuriousRate(memories, memories[0], 0.3, 10000)
+    net.getEspuriousRate(memories, memories[0], 0.4, 10000)
+    net.getEspuriousRate(memories, memories[0], 0.5, 10000)
 
     print "\n Second memory"
     net.getEspuriousRate(memories, memories[1], 0.05, 10000)
@@ -146,6 +148,8 @@ if __name__ == "__main__":
     net.getEspuriousRate(memories, memories[1], 0.15, 10000)
     net.getEspuriousRate(memories, memories[1], 0.2, 10000)
     net.getEspuriousRate(memories, memories[1], 0.3, 10000)
+    net.getEspuriousRate(memories, memories[1], 0.4, 10000)
+    net.getEspuriousRate(memories, memories[1], 0.5, 10000)
 
     print "\n Third memory"
     net.getEspuriousRate(memories, memories[2], 0.05, 10000)
@@ -153,7 +157,8 @@ if __name__ == "__main__":
     net.getEspuriousRate(memories, memories[2], 0.15, 10000)
     net.getEspuriousRate(memories, memories[2], 0.2, 10000)
     net.getEspuriousRate(memories, memories[2], 0.3, 10000)
-
+    net.getEspuriousRate(memories, memories[2], 0.4, 10000)
+    net.getEspuriousRate(memories, memories[2], 0.5, 10000)
     
 
     # ========== VALIDATION analytic espurious states ==========
@@ -171,10 +176,10 @@ if __name__ == "__main__":
     print "\n VALIDATION empiric espurious states\n"
 
     # get 1000 numbers within 1 and 2**20 (1048576)
-    numbers = np.random.randint(1, 2**20, size=10000)
-    #numbers = xrange(0,2**10)
+    #numbers = np.random.randint(1, 2**20, size=10000)
+    numbers = xrange(0,2**10)
     # transform them in binary
-    numbers = [np.binary_repr(x, width=20) for x in numbers]
+    #numbers = [np.binary_repr(x, width=20) for x in numbers]
 
     offset = 1
     for i in xrange(len(numbers)):
@@ -198,6 +203,7 @@ if __name__ == "__main__":
         if not any((output == x).all() for x in memories) and not any((output == x).all() for x in espuriousEncontrados):
             espuriousEncontrados.append(output)
             count = count + 1
+            print count
 
     count2 = 0
     espuriousEncontrados2 = []
@@ -206,6 +212,7 @@ if __name__ == "__main__":
         if not any((output == x).all() for x in memories) and not any((output == x).all() for x in espuriousEncontrados2):
             espuriousEncontrados2.append(output)
             count2 = count2 + 1
+            print count2
 
     print "FOUND %d espirious states of %d with orthogonal memories" % (count, len(numbers))
     print "FOUND %d espirious states of %d with non orthogonal memories" % (count2, len(numbers))
