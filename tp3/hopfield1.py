@@ -115,7 +115,7 @@ if __name__ == "__main__":
     # ========== VALIDATION with original memories ==========
     print "\n VALIDATION with original memories\n"
     for X in memories:
-        output = net.activate(np.copy(X), plotEnergy=True)
+        output = net.activate(np.copy(X))
         if (output == X).all():
             print "Memory %s is RIGHT (asyncronic activation)" % X
         else:
@@ -123,15 +123,31 @@ if __name__ == "__main__":
 
     print "\n VALIDATION with original memories (syncronic activation)\n"
     for X in memories:
-        output = net.activate(np.copy(X), plotEnergy=True, sync=True)
+        output = net.activate(np.copy(X), sync=True)
         if (output == X).all():
             print "Memory %s is RIGHT (syncronic activation)" % X
         else:
             print "Memory %s is WRONG (syncronic activation)" % X
 
     
+    print "\n VALIDATION with original memories (no orthogonal network)\n"
+    for X in orthMemories:
+        output = orthNet.activate(np.copy(X))
+        if (output == X).all():
+            print "Memory %s is RIGHT (asyncronic activation)" % X
+        else:
+            print "Memory %s is WRONG (asyncronic activation)" % X
+
+    print "\n VALIDATION with original memories (syncronic activation) (no orthogonal network)\n"
+    for X in orthMemories:
+        output = orthNet.activate(np.copy(X), sync=True)
+        if (output == X).all():
+            print "Memory %s is RIGHT (syncronic activation)" % X
+        else:
+            print "Memory %s is WRONG (syncronic activation)" % X
+
     # ========== VALIDATION with modified memories ==========
-    print "\n VALIDATION with modified memories\n"
+    print "\n VALIDATION with modified memories for the orthogonal network"
 
     print "\n First memory"
     net.getEspuriousRate(memories, memories[0], 0.05, 1000)
@@ -159,6 +175,35 @@ if __name__ == "__main__":
     net.getEspuriousRate(memories, memories[2], 0.3, 1000)
     net.getEspuriousRate(memories, memories[2], 0.4, 1000)
     net.getEspuriousRate(memories, memories[2], 0.5, 1000)
+
+    print "\n VALIDATION with modified memories for the non orthogonal network"
+
+    print "\n First memory"
+    orthNet.getEspuriousRate(orthMemories, orthMemories[0], 0.05, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[0], 0.1, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[0], 0.15, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[0], 0.2, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[0], 0.3, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[0], 0.4, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[0], 0.5, 1000)
+
+    print "\n Second memory"
+    orthNet.getEspuriousRate(orthMemories, orthMemories[1], 0.05, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[1], 0.1, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[1], 0.15, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[1], 0.2, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[1], 0.3, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[1], 0.4, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[1], 0.5, 1000)
+
+    print "\n Third memory"
+    orthNet.getEspuriousRate(orthMemories, orthMemories[2], 0.05, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[2], 0.1, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[2], 0.15, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[2], 0.2, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[2], 0.3, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[2], 0.4, 1000)
+    orthNet.getEspuriousRate(orthMemories, orthMemories[2], 0.5, 1000)
     
 
     # ========== VALIDATION analytic espurious states ==========
@@ -209,7 +254,7 @@ if __name__ == "__main__":
     espuriousEncontrados2 = []
     for X in numbers:
         output = orthNet.activate(np.copy(X))
-        if not any((output == x).all() for x in memories) and not any((output == x).all() for x in espuriousEncontrados2):
+        if not any((output == x).all() for x in orthMemories) and not any((output == x).all() for x in espuriousEncontrados2):
             espuriousEncontrados2.append(output)
             count2 = count2 + 1
 
