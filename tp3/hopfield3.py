@@ -24,20 +24,24 @@ class HopfieldNetwork():
     def sigmoid(self, x, temp) :
         return 1/(1 + np.exp( -x / temp ))
 
-    def activate(self, X, memories, temp, dist, hamming = False, plotEnergy=False):
+    def activate(self, X, memories, temp, dist, max, hamming = False, plotEnergy=False):
         S = X
         Saux = np.zeros(self.cantNeuronas)
         Eh = []
         plt.ion()
+        vueltas = 0
 
         currentDist = min(self.dist(Saux, i, hamming) > dist for i in memories)
         #print currentDist
 
-        while all(self.dist(Saux, i, hamming) > dist for i in memories):
+        while all(self.dist(Saux, i, hamming) > dist for i in memories) and max >= 0:
             
             I = np.random.permutation(self.cantNeuronas)
             for i in I:
-                S[i] = np.sign(self.sigmoid(np.dot(S, self.W[:,i]), temp) - np.random.uniform(0,1))
+                if temp != 0 :
+                    S[i] = np.sign(self.sigmoid(np.dot(S, self.W[:,i]), temp) - np.random.uniform(0,1))
+                else:
+                    S[i] = np.sign(np.dot(S, self.W[:,i]))
 
             currentDist = min(self.dist(Saux, i) > dist for i in memories)
             #print currentDist
@@ -50,7 +54,10 @@ class HopfieldNetwork():
                 self.plotEnergy(Eh)
             
             Saux = np.copy(S)
-
+            vueltas += 1
+            max -= 1
+        
+        #print vueltas
         if plotEnergy:
             raw_input()
 
@@ -111,6 +118,7 @@ if __name__ == "__main__":
     
     def cMem(a, mem, hamming = False):
         mindist = dist(a, mem[0], hamming)
+        minmem = mem[0]
         for i in mem:
             if dist(a, i, hamming) <= mindist:
                 mindist = dist(a, i, hamming)
@@ -119,11 +127,18 @@ if __name__ == "__main__":
         return minmem
 
     # temperature
-    temp = 0.4
+    temp = 0
+    maxTemp = 0.6
+    inc = 0.1
 
-    # threshold distance to consider one pattern the same as other
-    tDist = 15
+    # distance
+    distances = [5, 10, 15]
+    totalDists = 3
+    maxActIt = [9000, 500, 100] # Max itereations for the activation function
 
+    # noise
+    noise = [0.05, 0.10, 0.15, 0.20]
+    
     # generate the memories
     cantMemorias = 10
     memories = []
@@ -131,21 +146,50 @@ if __name__ == "__main__":
     while cantMemorias > 0 :
         memories.append(np.round(np.random.sample(100)) * 2 - 1)
         cantMemorias -= 1
-
+    
+    cantMemorias = 10
+    
     net.createWeights(memories)
 
 
     # ========== VALIDATION ==========
     # print [i for i in memories if self.dist(Saux, i, hamming) <= dist]
     # test that for all the memories, the ouput of the activation is the same
+    
     print "\n VALIDATION with original memories\n"
-    for X in memories:
-        output = net.activate(np.copy(X), memories, temp, tDist, hamming = True, plotEnergy=False)
-        print "INITIAL activation state"
-        print X
-        print "FINAL activation state with given distance"
-        print output
-        print "Distance obtained:", dist(X, output, hamming = True)
-        print "CLOSEST memory"
-        print cMem(output, memories, hamming = True)
-        print "Is the closest memory the same as the initial?", (cMem(output, memories, hamming = True) == X).all()
+    while temp <= maxTemp :
+        curDistIndex = 0
+        while curDistIndex < totalDists :
+            proportions = []
+            for X in memories:
+                output = net.activate(np.copy(X), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
+                """
+                print "INITIAL activation state"
+                print X
+                print "FINAL activation state with given distance"
+                print output
+                print "Distance from its initial state:", dist(output, X, hamming = True)
+                print "CLOSEST memory"
+                print cMem(output, memories, hamming = True)
+                print "Is the closest memory the same as the initial?", (cMem(output, memories, hamming = True) == X).all()
+                print "\n"
+                """
+                proportions.append((cMem(output, memories, hamming = True) == X).all())
+            
+            print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantMemorias)
+            curDistIndex += 1
+        temp += inc
+    
+    print "\n NOISE tests"
+    for n in noise:
+        print "Current noise level: ", n
+        while temp <= maxTemp :
+            curDistIndex = 0
+            while curDistIndex < totalDists :
+                 proportions = []
+                for X in memories:
+                    output = net.activate(np.copy(du.getPatternWithNoise(X, n)), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
+                    proportions.append((cMem(output, memories, hamming = True) == X).all())
+                print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantMemorias)
+                curDistIndex += 1
+        temp += inc
