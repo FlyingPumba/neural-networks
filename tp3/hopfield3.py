@@ -188,11 +188,11 @@ if __name__ == "__main__":
     print "\n RANDOMLY generated patterns"
     temp = 0
     randPat = []
-    cantRandPat = 10
+    cantRandPat = 2000
     while cantRandPat > 0 :
         randPat.append(np.round(np.random.sample(100)) * 2 - 1)
         cantRandPat -= 1
-    cantRandPat = 10
+    cantRandPat = 2000
     #print randPat
     while temp <= maxTemp :
         curDistIndex = 0
@@ -223,7 +223,7 @@ if __name__ == "__main__":
                 output = net.activate(np.copy(X), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
                 proportions.append((cMem(output, spurious, hamming = True) == X).all())
             
-            print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantMemorias)
+            print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / len(combinations))
             curDistIndex += 1
         temp += inc
     
