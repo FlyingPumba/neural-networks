@@ -151,7 +151,6 @@ if __name__ == "__main__":
     
     net.createWeights(memories)
 
-
     # ========== VALIDATION ==========
     # print [i for i in memories if self.dist(Saux, i, hamming) <= dist]
     # test that for all the memories, the ouput of the activation is the same
@@ -163,17 +162,7 @@ if __name__ == "__main__":
             proportions = []
             for X in memories:
                 output = net.activate(np.copy(X), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
-                """
-                print "INITIAL activation state"
-                print X
-                print "FINAL activation state with given distance"
-                print output
-                print "Distance from its initial state:", dist(output, X, hamming = True)
-                print "CLOSEST memory"
-                print cMem(output, memories, hamming = True)
-                print "Is the closest memory the same as the initial?", (cMem(output, memories, hamming = True) == X).all()
-                print "\n"
-                """
+             
                 proportions.append((cMem(output, memories, hamming = True) == X).all())
             
             print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantMemorias)
@@ -182,14 +171,59 @@ if __name__ == "__main__":
     
     print "\n NOISE tests"
     for n in noise:
+        temp = 0
         print "Current noise level: ", n
         while temp <= maxTemp :
             curDistIndex = 0
             while curDistIndex < totalDists :
-                 proportions = []
+                proportions = []
                 for X in memories:
                     output = net.activate(np.copy(du.getPatternWithNoise(X, n)), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
                     proportions.append((cMem(output, memories, hamming = True) == X).all())
+                    break
                 print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantMemorias)
                 curDistIndex += 1
+            temp += inc
+    
+    print "\n RANDOMLY generated patterns"
+    temp = 0
+    randPat = []
+    cantRandPat = 10
+    while cantRandPat > 0 :
+        randPat.append(np.round(np.random.sample(100)) * 2 - 1)
+        cantRandPat -= 1
+    cantRandPat = 10
+    #print randPat
+    while temp <= maxTemp :
+        curDistIndex = 0
+        while curDistIndex < totalDists :
+            proportions = []
+            for X in randPat:
+                output = net.activate(np.copy(X), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
+                proportions.append((cMem(output, randPat, hamming = True) == X).all())
+            print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantRandPat)
+            curDistIndex += 1
         temp += inc
+    
+    print "\n SPURIOUS states\n"
+    temp = 0
+    combinations = [3, 5, 7]
+    spurious = []
+    for c in combinations:
+        tSpurious = []
+        for i in range(c):
+            tSpurious.append(rnd.choice(memories))
+        spurious.append(sum(tSpurious))
+
+    while temp <= maxTemp :
+        curDistIndex = 0
+        while curDistIndex < totalDists :
+            proportions = []
+            for X in spurious:
+                output = net.activate(np.copy(X), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
+                proportions.append((cMem(output, spurious, hamming = True) == X).all())
+            
+            print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantMemorias)
+            curDistIndex += 1
+        temp += inc
+    
