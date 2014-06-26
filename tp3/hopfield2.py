@@ -154,7 +154,7 @@ if __name__ == "__main__":
     print "\n VALIDATION empiric espurious states\n"
 
     # get 1000 numbers within 1 and 2**20 (1048576)
-    numbers = np.random.randint(1, 2**20, size=10000)
+    numbers = np.random.randint(1, 2**30, size=10000)
     #numbers = xrange(0,2**20)
 
     # transform them in binary
@@ -183,4 +183,5 @@ if __name__ == "__main__":
             if not any((output == x).all() for x in espuriousEncontrados):
                 espuriousEncontrados.append(output)
                 print "Espurious %d: %s" % (len(espuriousEncontrados), output)
+                #du.plotLetter(output, saveFile=True)
             count = count + 1
