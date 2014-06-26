@@ -190,11 +190,11 @@ if __name__ == "__main__":
     print "\n RANDOMLY generated patterns"
     temp = 0
     randPat = []
-    cantRandPat = 500
+    cantRandPat = 5000
     while cantRandPat > 0 :
         randPat.append(np.round(np.random.sample(100)) * 2 - 1)
         cantRandPat -= 1
-    cantRandPat = 500
+    cantRandPat = 5000
     #print randPat
     while temp <= maxTemp :
         curDistIndex = 0
