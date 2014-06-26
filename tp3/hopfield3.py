@@ -134,7 +134,7 @@ if __name__ == "__main__":
     # distance
     distances = [5, 10, 15]
     totalDists = 3
-    maxActIt = [9000, 500, 100] # Max itereations for the activation function
+    maxActIt = [50, 40, 30] # Max itereations for the activation function
 
     # noise
     noise = [0.05, 0.10, 0.15, 0.20]
@@ -150,7 +150,9 @@ if __name__ == "__main__":
     cantMemorias = 10
     
     net.createWeights(memories)
-
+    
+    print memories
+    
     # ========== VALIDATION ==========
     # print [i for i in memories if self.dist(Saux, i, hamming) <= dist]
     # test that for all the memories, the ouput of the activation is the same
@@ -180,7 +182,7 @@ if __name__ == "__main__":
                 for X in memories:
                     output = net.activate(np.copy(du.getPatternWithNoise(X, n)), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
                     proportions.append((cMem(output, memories, hamming = True) == X).all())
-                    break
+                    
                 print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantMemorias)
                 curDistIndex += 1
             temp += inc
@@ -188,11 +190,11 @@ if __name__ == "__main__":
     print "\n RANDOMLY generated patterns"
     temp = 0
     randPat = []
-    cantRandPat = 2000
+    cantRandPat = 500
     while cantRandPat > 0 :
         randPat.append(np.round(np.random.sample(100)) * 2 - 1)
         cantRandPat -= 1
-    cantRandPat = 2000
+    cantRandPat = 500
     #print randPat
     while temp <= maxTemp :
         curDistIndex = 0
@@ -200,7 +202,8 @@ if __name__ == "__main__":
             proportions = []
             for X in randPat:
                 output = net.activate(np.copy(X), memories, temp, distances[curDistIndex], maxActIt[curDistIndex], hamming = True, plotEnergy=False)
-                proportions.append((cMem(output, randPat, hamming = True) == X).all())
+                #proportions.append((cMem(output, randPat, hamming = True) == X).all())
+                proportions.append(dist(cMem(output, memories, hamming = True), output) < distances[curDistIndex])
             print "Current distance: " + str(distances[curDistIndex]) + " Current temperature: " + str(temp) + " Correctly detected memories (in percent): " + str((proportions.count(True) * 100.0) / cantRandPat)
             curDistIndex += 1
         temp += inc
