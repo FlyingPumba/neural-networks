@@ -51,7 +51,7 @@ class HopfieldNetwork():
                 plt.draw()
 
             E = self.energy(S,self.W)
-            print "E: %s" % E
+            #print "E: %s" % E
             Eh.append(E)
             if plotEnergy:
                 self.plotEnergy(Eh)
@@ -71,6 +71,17 @@ class HopfieldNetwork():
         plt.ylabel('Energia')
         plt.plot(energyHistory)
         plt.draw()
+
+    def getEspuriousRate(self, memories, pattern, noise, times):
+        count = 0.0
+        for i in xrange(1, times):
+            X = du.getPatternWithNoise(pattern, noise)
+            #du.plotLetter(X, saveFile=True)
+            result = self.activate(np.copy(X))
+            if (pattern != result).any():
+                count = count + 1.0
+        print "Espurious rate of %.1f %%  with %.1f %%  noise " % (count / times * 100.0, noise * 100)
+
 
 # ========== MAIN ==========
 # numpy print options
@@ -103,55 +114,39 @@ if __name__ == "__main__":
 
     # test some letters with noise
     print "\n VALIDATION with modified letters\n"
-    # each letter has 196 bits so..
-    Amod = []
-    Amod.append(du.getPatternWithNoise(l.A, 0.05)) #letter A with 10 bits switched
-    Amod.append(du.getPatternWithNoise(l.A, 0.1)) #letter A with 20 bits switched
-    Amod.append(du.getPatternWithNoise(l.A, 0.15)) #letter A with 29 bits switched
-    Amod.append(du.getPatternWithNoise(l.A, 0.2)) #letter A with 39 bits switched
 
-    for X in Amod:
-        output = net.activate(np.copy(X), plotOutput=True)
-        if (output == l.A).all():
-            print "RIGHT letter A"
-        else:
-            print "WRONG letter A"
+    print "\n First memory"
+    net.getEspuriousRate(memories, memories[0], 0.05, 100)
+    net.getEspuriousRate(memories, memories[0], 0.1, 1000)
+    net.getEspuriousRate(memories, memories[0], 0.15, 1000)
+    net.getEspuriousRate(memories, memories[0], 0.2, 1000)
+    net.getEspuriousRate(memories, memories[0], 0.3, 1000)
+    net.getEspuriousRate(memories, memories[0], 0.4, 1000)
+    net.getEspuriousRate(memories, memories[0], 0.5, 1000)
 
-    Gmod = []
-    Gmod.append(du.getPatternWithNoise(l.G, 0.05)) #letter G with 10 bits switched
-    Gmod.append(du.getPatternWithNoise(l.G, 0.1)) #letter G with 20 bits switched
-    Gmod.append(du.getPatternWithNoise(l.G, 0.15)) #letter G with 29 bits switched
-    Gmod.append(du.getPatternWithNoise(l.G, 0.2)) #letter G with 39 bits switched
+    print "\n Second memory"
+    net.getEspuriousRate(memories, memories[1], 0.05, 1000)
+    net.getEspuriousRate(memories, memories[1], 0.1, 1000)
+    net.getEspuriousRate(memories, memories[1], 0.15, 1000)
+    net.getEspuriousRate(memories, memories[1], 0.2, 1000)
+    net.getEspuriousRate(memories, memories[1], 0.3, 1000)
+    net.getEspuriousRate(memories, memories[1], 0.4, 1000)
+    net.getEspuriousRate(memories, memories[1], 0.5, 1000)
 
-    for X in Gmod:
-        output = net.activate(np.copy(X))
-        if (output == l.G).all():
-            print "RIGHT letter G"
-        else:
-            print "WRONG letter G"
+    print "\n Third memory"
+    net.getEspuriousRate(memories, memories[2], 0.05, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.1, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.15, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.2, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.3, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.4, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.5, 1000)
 
-    Mmod = []
-    Mmod.append(du.getPatternWithNoise(l.M, 0.05)) #letter M with 10 bits switched
-    Mmod.append(du.getPatternWithNoise(l.M, 0.1)) #letter M with 20 bits switched
-    Mmod.append(du.getPatternWithNoise(l.M, 0.15)) #letter M with 29 bits switched
-    Mmod.append(du.getPatternWithNoise(l.M, 0.2)) #letter M with 39 bits switched
-
-    for X in Mmod:
-        output = net.activate(np.copy(X))
-        if (output == l.M).all():
-            print "RIGHT letter M"
-        else:
-            print "WRONG letter M"
-
-    Wmod = []
-    Wmod.append(du.getPatternWithNoise(l.W, 0.05)) #letter W with 10 bits switched
-    Wmod.append(du.getPatternWithNoise(l.W, 0.1)) #letter W with 20 bits switched
-    Wmod.append(du.getPatternWithNoise(l.W, 0.15)) #letter W with 29 bits switched
-    Wmod.append(du.getPatternWithNoise(l.W, 0.20)) #letter W with 39 bits switched
-
-    for X in Wmod:
-        output = net.activate(np.copy(X))
-        if (output == l.W).all():
-            print "RIGHT letter W"
-        else:
-            print "WRONG letter W"
+    print "\n Fourth memory"
+    net.getEspuriousRate(memories, memories[2], 0.05, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.1, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.15, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.2, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.3, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.4, 1000)
+    net.getEspuriousRate(memories, memories[2], 0.5, 1000)
