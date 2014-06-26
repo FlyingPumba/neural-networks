@@ -150,3 +150,37 @@ if __name__ == "__main__":
     net.getEspuriousRate(memories, memories[2], 0.3, 1000)
     net.getEspuriousRate(memories, memories[2], 0.4, 1000)
     net.getEspuriousRate(memories, memories[2], 0.5, 1000)
+
+    print "\n VALIDATION empiric espurious states\n"
+
+    # get 1000 numbers within 1 and 2**20 (1048576)
+    numbers = np.random.randint(1, 2**20, size=10000)
+    #numbers = xrange(0,2**20)
+
+    # transform them in binary
+    numbers = [np.binary_repr(x, width=196) for x in numbers]
+
+    offset = 1
+    for i in xrange(len(numbers)):
+        aux = numbers[i]
+        lista = []
+        # split binary representation into list
+        lista[offset:offset+len(aux)] = list(aux)
+        # convert list to numpy array
+        lista = np.array(lista)
+        # convert string representation to integers
+        lista = lista.astype(np.int)
+        # replace zeros with -1s
+        lista[lista == 0] = -1
+        # save the pattern
+        numbers[i] = lista
+
+    count = 0
+    espuriousEncontrados = []
+    for X in numbers:
+        output = net.activate(np.copy(X))
+        if not any((output == x).all() for x in memories):
+            if not any((output == x).all() for x in espuriousEncontrados):
+                espuriousEncontrados.append(output)
+                print "Espurious %d: %s" % (len(espuriousEncontrados), output)
+            count = count + 1
