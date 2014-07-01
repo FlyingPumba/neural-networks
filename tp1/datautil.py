@@ -45,3 +45,8 @@ def plotLetters(original, output):
     sp2.imshow(outputReshaped, interpolation='none', cmap=cm.gray)
 
     plt.show()
+    
+def rangef(min, max, step):
+    while min<max:
+        yield min
+        min = min+step

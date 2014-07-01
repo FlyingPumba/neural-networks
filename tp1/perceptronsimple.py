@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import data as data
+import datautil as du
 
 class PerceptronSimple():
     """Perceptron Simple"""
@@ -10,7 +11,7 @@ class PerceptronSimple():
         self.lRate = learning_rate
         self.epsilon = epsilon
 
-    def train_network(self, dataset, batch=False, stochastic=True):
+    def trainNetwork(self, dataset, batch=False, stochastic=True):
         # how many training patterns do we have ?
         cant_patterns = dataset.shape[0]
         trainingset = np.copy(dataset)
@@ -108,7 +109,6 @@ class PerceptronSimple():
         return X
 
     def testNetwork(self, testset, testepsilon):
-        print "\nTesting the network"
         cant_patterns = testset.shape[0]
         patterns_with_error = 0
 
@@ -132,3 +132,79 @@ class PerceptronSimple():
                 patterns_with_error = patterns_with_error + 1
 
         print "\nThere were %d errors over %d patterns" % (patterns_with_error, cant_patterns)
+        
+# ========== MAIN ==========
+# numpy print options
+np.set_printoptions(suppress=True)
+np.set_printoptions(precision=5)
+
+if __name__ == "__main__":
+    a = PerceptronSimple(25, 5, 0.05, 0.01)
+    a.trainNetwork(data.BipolarOCR.trainingset)
+    a.plotErrorThroughLearning()
+    
+    # ========== VALIDATION WITH ORIGINAL LETTERS ==========
+    print "\n VALIDATION with original letters\n"
+    a.testNetwork(data.BipolarOCR.trainingset, 0.1)
+    raw_input()
+    
+    # ========== VALIDATION WITH MODIFIED LETTERS ==========
+
+    testSet05 = []
+    testSet10 = []
+    testSet15 = []
+    testSet20 = []
+    testSet30 = []
+    testSet40 = []
+    testSet50 = []
+    
+    for i in xrange(len(data.BipolarOCR.trainingset)):
+        #du.plotLetter(data.BipolarOCR.trainingset[i,0], saveFile=True)
+        pattern05 = du.getPatternWithNoise(data.BipolarOCR.trainingset[i,0], 0.05)       
+        testSet05.append(np.array([pattern05, data.BipolarOCR.trainingset[i,1]]))
+
+    for i in xrange(len(data.BipolarOCR.trainingset)):
+        pattern10 = du.getPatternWithNoise(data.BipolarOCR.trainingset[i,0], 0.1)
+        testSet.append(np.array([pattern10, data.BipolarOCR.trainingset[i,1]]))
+        
+    for i in xrange(len(data.BipolarOCR.trainingset)):
+        pattern15 = du.getPatternWithNoise(data.BipolarOCR.trainingset[i,0], 0.15)
+        testSet.append(np.array([pattern15, data.BipolarOCR.trainingset[i,1]]))
+        
+    for i in xrange(len(data.BipolarOCR.trainingset)):
+        pattern20 = du.getPatternWithNoise(data.BipolarOCR.trainingset[i,0], 0.2)
+        testSet.append(np.array([pattern20, data.BipolarOCR.trainingset[i,1]]))
+        
+    for i in xrange(len(data.BipolarOCR.trainingset)):
+        pattern30 = du.getPatternWithNoise(data.BipolarOCR.trainingset[i,0], 0.3)
+        testSet.append(np.array([pattern30, data.BipolarOCR.trainingset[i,1]]))
+
+    for i in xrange(len(data.BipolarOCR.trainingset)):
+        pattern40 = du.getPatternWithNoise(data.BipolarOCR.trainingset[i,0], 0.4)
+        testSet.append(np.array([pattern40, data.BipolarOCR.trainingset[i,1]]))
+        
+    for i in xrange(len(data.BipolarOCR.trainingset)):
+        pattern50 = du.getPatternWithNoise(data.BipolarOCR.trainingset[i,0], 0.5)
+        testSet.append(np.array([pattern50, data.BipolarOCR.trainingset[i,1]]))
+
+    print "\n VALIDATION with modified letters - noise rate: 05%\n"
+    a.testNetwork(np.asarray(testSet05), 0.1)
+    raw_input()
+    print "\n VALIDATION with modified letters - noise rate: 10%\n"
+    a.testNetwork(np.asarray(testSet10), 0.1)
+    raw_input()
+    print "\n VALIDATION with modified letters - noise rate: 15%\n"
+    a.testNetwork(np.asarray(testSet15), 0.1)
+    raw_input()
+    print "\n VALIDATION with modified letters - noise rate: 20%\n"
+    a.testNetwork(np.asarray(testSet20), 0.1)
+    raw_input()
+    print "\n VALIDATION with modified letters - noise rate: 30%\n"
+    a.testNetwork(np.asarray(testSet30), 0.1)
+    raw_input()
+    print "\n VALIDATION with modified letters - noise rate: 40%\n"
+    a.testNetwork(np.asarray(testSet40), 0.1)
+    raw_input()
+    print "\n VALIDATION with modified letters - noise rate: 50%\n"
+    a.testNetwork(np.asarray(testSet50), 0.1)
+
