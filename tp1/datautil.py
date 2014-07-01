@@ -1,50 +1,47 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 
-def getTestSetWithNoise(testset, noiseRate, plot=False):
-    cant_patterns = testset.shape[0]
-    new_testset = []
-    for i in range(0, cant_patterns):
-        # alter the pattern
-        new_testset.append([alterPattern(noiseRate, testset[i,0]), testset[i,1]])
-        #print "original \n %s" % testset[i]
-        #print "with noise \n %s" % new_testset[i]
+def getPatternWithNoise(pattern, noiseRate, plot=False):
+    cantBits = len(pattern)
+    cantBitsToSwitch = int(cantBits * noiseRate)
 
-        if(plot):
-            new_letter = new_testset[i][0]
-            new_letter = new_letter.reshape(5,5)
-            print "letter reshaped \n %s" % new_letter
-            plt.imshow(new_letter, interpolation='none')
-            plt.title("letter %d" % i)
-            plt.show()
-    #raw_input()
-    return np.array(new_testset)
+    indicesToSwitch = np.random.permutation(np.arange(cantBits))[:cantBitsToSwitch]
 
-def alterPattern(noiseRate, pattern):
-    return pattern + np.random.uniform(-noiseRate/2,noiseRate/2, size=pattern.shape)
+    newpattern = np.copy(pattern)
 
-def getTestSetWithSwitchedUnits(testset, noiseRate, plot=False):
-    cant_patterns = testset.shape[0]
-    new_testset = []
-    for i in range(0, cant_patterns):
-        # alter the pattern
-        A = np.random.uniform(0, 1, testset[i,0].shape)
-        B = np.where(A<noiseRate, -1, 1)
-        new_testset.append(np.array([np.array(testset[i,0] * B), testset[i,1]]))
-        #print "original \n %s" % testset[i]
-        #print "with switched units \n %s" % new_testset[i]
+    for i in indicesToSwitch:
+        newpattern[i] *= -1
 
-        if(plot):
-            new_letter = new_testset[i][0]
-            new_letter = new_letter.reshape(5,5)
-            print "letter reshaped \n %s" % new_letter
-            plt.imshow(new_letter, interpolation='none')
-            plt.title("letter %d" % i)
-            plt.show()
-    #raw_input()
-    return np.array(new_testset)
+    if(plot):
+        # assuming it is an OCR letter
+        new_letter = np.copy(newpattern)
+        new_letter = new_letter.reshape(5,5)
+        plt.imshow(new_letter, interpolation='none', cmap=cm.gray)
+        plt.show()
 
-def rangef(min, max, step):
-    while min<max:
-        yield min
-        min = min+step
+    return newpattern
+
+def plotLetter(letter, saveFile=False):
+    letterReshaped = np.copy(letter).reshape(5,5)
+    plt.imshow(letterReshaped, interpolation='none', cmap=cm.gray)
+    if saveFile:
+        filekey = np.random.randint(1000)
+        fileName = 'ocr-letter-%d.png' % filekey
+        print fileName
+        figure = plt.gcf() # get current figure
+        figure.set_size_inches(5, 4) #this will give us a 400x300 image
+        # when saving, specify the DPI
+        plt.savefig(fileName, bbox_inches='tight', dpi = 100)
+    plt.show()
+
+def plotLetters(original, output):
+    sp1 = plt.subplot(211)
+    originalReshaped = np.copy(original).reshape(5,5)
+    sp1.imshow(originalReshaped, interpolation='none', cmap=cm.gray)
+
+    sp2 = plt.subplot(212)
+    outputReshaped = np.copy(output).reshape(5,5)
+    sp2.imshow(outputReshaped, interpolation='none', cmap=cm.gray)
+
+    plt.show()
